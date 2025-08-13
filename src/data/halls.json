@@ -1,0 +1,97 @@
+{
+    "halls": [
+      {
+        "id": 1,
+        "name": "Andrés",
+        "size": 34,
+        "banquet": 18,
+        "classroom": 18,
+        "conference": 20,
+        "featured": false,
+        "description": "Salón íntimo perfecto para reuniones ejecutivas y eventos pequeños.",
+        "amenities": [
+          "Aire acondicionado",
+          "Wi-Fi",
+          "Equipos audiovisuales",
+          "Estación de café"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Rose", 
+        "size": 18,
+        "banquet": null,
+        "classroom": null,
+        "conference": 8,
+        "featured": false,
+        "description": "Espacio exclusivo para reuniones de alta dirección y conferencias privadas.",
+        "amenities": [
+          "Aire acondicionado",
+          "Wi-Fi",
+          "Equipos audiovisuales",
+          "Mesa de conferencias"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "María Ximena",
+        "size": 85,
+        "banquet": 60,
+        "classroom": 45,
+        "conference": 35,
+        "featured": true,
+        "description": "Nuestro salón principal, ideal para eventos grandes y celebraciones especiales.",
+        "amenities": [
+          "Aire acondicionado",
+          "Wi-Fi",
+          "Equipos audiovisuales completos",
+          "Estación de café",
+          "Iluminación profesional",
+          "Sistema de sonido avanzado"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Valeria",
+        "size": 42,
+        "banquet": 25,
+        "classroom": 20,
+        "conference": 18,
+        "featured": false,
+        "description": "Salón versátil para eventos medianos con ambientación elegante.",
+        "amenities": [
+          "Aire acondicionado",
+          "Wi-Fi",
+          "Equipos audiovisuales",
+          "Estación de café",
+          "Iluminación ambiental"
+        ]
+      }
+    ],
+    "capacityTypes": [
+      {
+        "key": "size",
+        "label": "Tamaño (m²)",
+        "icon": "📐",
+        "description": "Área total del salón en metros cuadrados"
+      },
+      {
+        "key": "banquet",
+        "label": "Banquete",
+        "icon": "🍽️",
+        "description": "Capacidad para eventos con mesas redondas y servicio de banquete"
+      },
+      {
+        "key": "classroom",
+        "label": "Aula",
+        "icon": "🎓",
+        "description": "Capacidad para conferencias y capacitaciones estilo aula"
+      },
+      {
+        "key": "conference",
+        "label": "Sala de juntas/conferencias",
+        "icon": "💼",
+        "description": "Capacidad para reuniones ejecutivas y conferencias"
+      }
+    ]
+  }

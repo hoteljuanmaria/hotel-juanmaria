@@ -39,12 +39,18 @@ export const InitTheme: React.FC = () => {
       }
     }
 
-    document.documentElement.setAttribute('data-theme', themeToSet)
+    var root = document.documentElement
+    root.setAttribute('data-theme', themeToSet)
+    if (themeToSet === 'dark') {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
   })();
   `,
       }}
-      id="theme-script"
-      strategy="beforeInteractive"
+      id='theme-script'
+      strategy='beforeInteractive'
     />
   )
 }

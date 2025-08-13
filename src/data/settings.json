@@ -1,0 +1,53 @@
+{
+    "site": {
+      "name": "Hotel Elegance",
+      "tagline": "Donde el lujo se encuentra con la comodidad",
+      "description": "Experiencia hotelera de lujo en el corazón de Tuluá, Colombia. Ofrecemos servicios excepcionales y instalaciones de primera clase.",
+      "logo": "/images/logo.png",
+      "favicon": "/favicon.ico",
+      "currency": "COP",
+      "language": "es",
+      "timezone": "America/Bogota"
+    },
+    "hero": {
+      "title": "Bienvenido al Hotel Elegance",
+      "subtitle": "Donde cada detalle cuenta para crear momentos inolvidables",
+      "backgroundImage": "/images/hero-bg.jpg",
+      "ctaText": "Reservar Ahora",
+      "ctaLink": "/reservas"
+    },
+    "features": [
+      {
+        "icon": "wifi",
+        "title": "WiFi Gratuito",
+        "description": "Internet de alta velocidad en todas las áreas"
+      },
+      {
+        "icon": "parking",
+        "title": "Parqueadero",
+        "description": "Estacionamiento gratuito y seguro"
+      },
+      {
+        "icon": "concierge",
+        "title": "Concierge 24h",
+        "description": "Servicio personalizado las 24 horas"
+      },
+      {
+        "icon": "airport",
+        "title": "Transporte",
+        "description": "Servicio de transporte al aeropuerto"
+      }
+    ],
+    "booking": {
+      "checkInTime": "15:00",
+      "checkOutTime": "12:00",
+      "cancellationPolicy": "Cancelación gratuita hasta 24 horas antes",
+      "petPolicy": "No se permiten mascotas",
+      "smokingPolicy": "Hotel 100% libre de humo"
+    },
+    "seo": {
+      "metaTitle": "Hotel Elegance - Lujo y Comodidad en Cali",
+      "metaDescription": "Descubre la experiencia hotelera más exclusiva de Cali. Habitaciones de lujo, servicios excepcionales y ubicación privilegiada.",
+      "keywords": "hotel lujo Cali, hotel elegance, hospedaje Cali, hotel zona rosa"
+    }
+  }

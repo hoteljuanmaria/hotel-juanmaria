@@ -1,0 +1,119 @@
+{
+    "blog": {
+      "posts": [
+        {
+          "id": 1,
+          "title": "Eventos Corporativos: El Espacio Perfecto para tu Empresa",
+          "slug": "eventos-corporativos-hotel-elegance",
+          "excerpt": "Conoce nuestras instalaciones y servicios especializados para eventos empresariales exitosos.",
+          "content": "En Hotel Juan María entendemos que los eventos corporativos requieren atención especial y un ambiente que inspire productividad y networking efectivo...\n\n**Nuestras Instalaciones:**\n\n**Salón Principal (200 personas)**\nEspacio amplio y versátil con tecnología de punta, perfecto para conferencias, presentaciones y cenas de gala.\n\n**Salas de Reuniones (10-50 personas)**\nEspacios íntimos ideales para juntas directivas, workshops y reuniones estratégicas.\n\n**Terraza Panorámica**\nAmbiente al aire libre con vista a la ciudad, perfecto para cóctel de bienvenida y networking.\n\n**Servicios Incluidos:**\n- Equipo audiovisual de última generación\n- WiFi de alta velocidad dedicado\n- Servicio de catering personalizado\n- Coordinador de eventos especializado\n- Servicio de valet parking\n- Alojamiento preferencial para asistentes\n\n**Paquetes Corporativos:**\n- Day meetings con coffee breaks\n- Eventos de medio día con almuerzo\n- Conferencias de día completo\n- Retiros empresariales de fin de semana\n\nNuestro equipo trabaja contigo desde la planificación hasta la ejecución para garantizar el éxito de tu evento.",
+          "author": {
+            "name": "José",
+            "role": "Botones",
+            "avatar": "/Team3.jpg"
+          },
+          "category": "Eventos",
+          "tags": ["eventos corporativos", "reuniones", "conferencias", "empresa"],
+          "publishedAt": "2025-06-03T08:45:00Z",
+          "updatedAt": "2025-06-03T08:45:00Z",
+          "featuredImage": "/corporate-events.jpg",
+          "featured": false,
+          "readTime": 6,
+          "seo": {
+            "metaTitle": "Eventos Corporativos en Cali | Hotel Juan María",
+            "metaDescription": "Espacios y servicios especializados para eventos corporativos exitosos en Cali. Salas de reuniones y tecnología de punta."
+          }
+        },
+        {
+          "id": 2,
+          "title": "Sostenibilidad: Nuestro Compromiso con el Turismo Responsable",
+          "slug": "sostenibilidad-hotel-juan-maria",
+          "excerpt": "Conoce nuestro compromiso con la sostenibilidad turística y las acciones que implementamos para proteger el medio ambiente y la comunidad.",
+          "content": "En Hotel Juan María, estamos comprometidos con la Sostenibilidad Turística bajo la norma NTS-TS 002, promoviendo un turismo responsable que respete nuestro entorno natural y cultural.\n\n**Nuestro Marco Legal y Compromisos:**\n\n**Protección de Menores**\nRechazamos categóricamente la explotación, pornografía y turismo sexual con menores, cumpliendo estrictamente con la Ley 679 de 2001.\n\n**Conservación de Biodiversidad**\nCumplimos con la Ley 17 de 1981 y Resolución 1367 de 2000, prohibiendo la comercialización y tráfico de especies de fauna y flora silvestre.\n\n**Patrimonio Cultural**\nProtegemos nuestro patrimonio cultural rechazando el tráfico ilegal de bienes culturales regionales y nacionales, según las Leyes 103 de 1991, 397 de 1997 y 1185 de 2008.\n\n**Ambiente Saludable**\nMantenemos espacios 100% libres de humo conforme a la Ley 1335 de 2009, garantizando un ambiente saludable para todos.\n\n**No Discriminación**\nRechazamos toda forma de discriminación y racismo hacia poblaciones vulnerables, cumpliendo las Leyes 1752 de 2015 y 1482 de 2011.\n\n**Protección de Datos**\nTodos los datos personales son tratados según la Ley 1581 de 2012, garantizando su privacidad y seguridad.\n\n**Iniciativas de Ahorro y Conservación:**\n\n**Energía Eficiente**\n- Te invitamos a apagar televisor y aire acondicionado cuando no los uses\n- Aprovecha la luz solar abriendo cortinas en horas tempranas\n- Enciende solo las luces necesarias\n- Desconecta cargadores que no estén en uso\n\n**Conservación del Agua**\n- Cierra la llave mientras te enjabonas, cepillas o afeitas\n- Reporta a recepción cualquier daño en sanitarios o llaves que goteen\n- Cuelga tu toalla después de usarla si no necesitas cambio\n- Solicita cambio de sábanas solo cuando sea necesario\n\n**Gestión de Residuos**\n- Clasificamos residuos sólidos en orgánicos e inorgánicos\n- No arrojes papel higiénico en los inodoros\n- Promovemos la reducción, reutilización y reciclaje\n\n**Tu Participación Hace la Diferencia:**\n\nCada huésped es parte fundamental de nuestro compromiso sostenible. Te invitamos a unirte a nuestras prácticas de uso racional del agua y energía, así como a la correcta disposición de residuos.\n\nJuntos construimos un turismo más responsable y sostenible, preservando nuestros recursos naturales y culturales para las futuras generaciones.\n\n**Certificación NTS-TS 002**\nNuestro compromiso con la Sostenibilidad Turística se refleja en el cumplimiento de la norma técnica sectorial, garantizando prácticas responsables en todas nuestras operaciones.",
+          "author": {
+            "name": "Julián",
+            "role": "Responsable de Calidad",
+            "avatar": "/Team4.jpg"
+          },
+          "category": "Sostenibilidad",
+          "tags": ["sostenibilidad", "turismo responsable", "NTS-TS 002", "medio ambiente", "conservación"],
+          "publishedAt": "2025-06-02T10:00:00Z",
+          "updatedAt": "2025-06-02T10:00:00Z",
+          "featuredImage": "/Sostenibilidad.jpg",
+          "featured": true,
+          "readTime": 8,
+          "seo": {
+            "metaTitle": "Hotel Sostenible en Tuluá | Turismo Responsable NTS-TS 002",
+            "metaDescription": "Conoce el compromiso del Hotel Juan María con la sostenibilidad turística NTS-TS 002. Turismo responsable, conservación ambiental y protección cultural."
+          }
+        },
+        {
+          "id": 3,
+          "title": "Guía Completa: Qué Hacer en Tuluá Durante tu Estadía",
+          "slug": "que-hacer-tulua-turismo",
+          "excerpt": "Descubre los mejores lugares turísticos, restaurantes y actividades que Tuluá, el 'Corazón del Valle', tiene para ofrecer.",
+          "content": "Ubicado estratégicamente en el corazón del Valle del Cauca, Tuluá ofrece a sus visitantes una amplia variedad de atractivos turísticos, culturales y naturales que enriquecen la experiencia de quienes llegan a la región.\n\n## Ubicación Privilegiada\n\nComo ciudad región, Tuluá cuenta con excelentes vías de acceso, doble calzada y cercanía a importantes centros urbanos como Cali, Pereira y Armenia, lo que facilita el desplazamiento tanto para turistas como para viajeros de negocios. Nos encontramos a una hora del aeropuerto Alfonso Bonilla Aragón.\n\n## Atractivos Urbanos\n\n**Parque Carlos Sarmiento Lora**\nTradicional punto de encuentro rodeado de áreas verdes, senderos peatonales y espacios de recreación familiar. El corazón social de la ciudad.\n\n**Iglesia San Bartolomé**\nJoya arquitectónica de gran valor histórico que ofrece un espacio de contemplación y fotografía. Un ícono imperdible de Tuluá.\n\n**Parque de la Guadua \"Guillermo Ponce de León\"**\nRecorridos ecológicos y educativos en contacto con la biodiversidad del Valle. Un santuario natural dentro de la ciudad.\n\n**Jardín Botánico Juan María Céspedes**\nUn tesoro eco-turístico que honra la memoria del sacerdote, científico y patriota tulueño. Explora la diversidad de flora local en este santuario natural.\n\n**Lago Chilicote**\nIdeal para el descanso y la observación de aves. Un oasis de tranquilidad en el entorno urbano.\n\n**Estadio Doce de Octubre**\nSede de importantes eventos deportivos y culturales que enriquecen la vida social de la ciudad.\n\n## Excursiones Regionales\n\n**Turismo Religioso**\n- **La Basílica del Señor de los Milagros de Buga**: Un importante centro de peregrinación a corta distancia\n\n**Naturaleza y Aventura**\n- **Lago Calima**: Excursiones de un día para deportes acuáticos y relajación\n- **Parque Nacional del Café**: Experiencia cultural y gastronómica única\n- **El Museo Rayo en Roldanillo**: Arte y cultura a pocos minutos de distancia\n\n## Cultura y Tradición\n\n**Feria de Tuluá (Junio)**\nLa tradicional celebración que llena la ciudad de música, color y alegría vallecaucana.\n\n**Gastronomía Típica del Valle**\nSabores auténticos que reflejan la riqueza culinaria de la región:\n- Sancocho valluno\n- Tamales vallecaucanos\n- Manjar blanco\n- Chuleta valluna\n- Café de origen\n\n## Ecoturismo y Aventura\n\nEn los alrededores de Tuluá, descubre paisajes ideales para:\n- Caminatas ecológicas\n- Avistamiento de aves\n- Turismo rural\n- Fotografía de naturaleza\n- Deportes de aventura\n\nTuluá es, sin duda, un destino que combina lo mejor de la naturaleza, la cultura y el bienestar, convirtiéndose en un lugar ideal tanto para el descanso como para los negocios.\n\nNuestro experimentado equipo está disponible 24/7 para ayudarte a planificar tu itinerario perfecto y descubrir todos estos tesoros que Tuluá tiene para ofrecer.",
+          "author": {
+            "name": "Néstor",
+            "role": "Recepcionista",
+            "avatar": "/Team1.jpg"
+          },
+          "category": "Turismo",
+          "tags": ["tuluá", "turismo", "actividades", "guía de viaje", "valle del cauca"],
+          "publishedAt": "2025-06-05T10:15:00Z",
+          "updatedAt": "2025-06-05T10:15:00Z",
+          "featuredImage": "/Turismo.jpg",
+          "featured": true,
+          "readTime": 8,
+          "seo": {
+            "metaTitle": "Qué Hacer en Tuluá | Guía Turística Completa 2025",
+            "metaDescription": "Descubre los mejores lugares turísticos, restaurantes y actividades en Tuluá, el Corazón del Valle. Guía completa desde Hotel Juan María."
+          }
+        }
+      ],
+      "categories": [
+        {
+          "id": "gastronomia",
+          "name": "Gastronomía",
+          "description": "Descubre nuestra propuesta culinaria y experiencias gastronómicas",
+          "color": "#FF6B6B",
+          "postCount": 1
+        },
+        {
+          "id": "bienestar",
+          "name": "Bienestar",
+          "description": "Todo sobre spa, relajación y cuidado personal",
+          "color": "#4ECDC4",
+          "postCount": 1
+        },
+        {
+          "id": "turismo",
+          "name": "Turismo",
+          "description": "Guías y recomendaciones para explorar Cali y sus alrededores",
+          "color": "#45B7D1",
+          "postCount": 1
+        },
+        {
+          "id": "eventos",
+          "name": "Eventos",
+          "description": "Información sobre nuestros espacios y servicios para eventos",
+          "color": "#F7B731",
+          "postCount": 1
+        },
+        {
+          "id": "sostenibilidad",
+          "name": "Sostenibilidad",
+          "description": "Nuestro compromiso con el medio ambiente y turismo responsable",
+          "color": "#26de81",
+          "postCount": 1
+        }
+      ],
+      "settings": {
+        "postsPerPage": 6,
+        "featuredPostsCount": 3,
+        "enableComments": false,
+        "enableNewsletter": true,
+        "socialSharing": true
+      }
+    }
+  }

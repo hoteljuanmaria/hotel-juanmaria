@@ -1,4 +1,3 @@
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
@@ -7,15 +6,22 @@ import { searchPlugin } from '@payloadcms/plugin-search'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import {
+  FixedToolbarFeature,
+  HeadingFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
-
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { payloadTotp } from 'payload-totp'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  return doc?.title
+    ? `${doc.title} | Payload Website Template`
+    : 'Payload Website Template'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
@@ -35,7 +41,8 @@ export const plugins: Plugin[] = [
             return {
               ...field,
               admin: {
-                description: 'You will need to rebuild the website when changing this field.',
+                description:
+                  'You will need to rebuild the website when changing this field.',
               },
             }
           }
@@ -70,7 +77,9 @@ export const plugins: Plugin[] = [
                   return [
                     ...rootFeatures,
                     FixedToolbarFeature(),
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                    HeadingFeature({
+                      enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'],
+                    }),
                   ]
                 },
               }),
@@ -90,5 +99,18 @@ export const plugins: Plugin[] = [
       },
     },
   }),
-  payloadCloudPlugin(),
+  vercelBlobStorage({
+    enabled: true,
+    collections: {
+      media: true,
+    },
+    token: process.env.VERCEL_READ_WRITE_TOKEN,
+  }),
+  payloadTotp({
+    collection: 'users',
+    disableAccessWrapper: true,
+    totp: {
+      issuer: 'Hotel Juan Maria',
+    },
+  }),
 ]

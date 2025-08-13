@@ -1,0 +1,97 @@
+{
+    "gallery": [
+      {
+        "id": 1,
+        "url": "/images/gallery/hotel-exterior.jpg",
+        "alt": "Vista exterior del hotel",
+        "category": "exterior",
+        "title": "Fachada Principal",
+        "featured": true
+      },
+      {
+        "id": 2,
+        "url": "/images/gallery/lobby.jpg",
+        "alt": "Lobby principal del hotel",
+        "category": "interior",
+        "title": "Lobby de Recepción",
+        "featured": true
+      },
+      {
+        "id": 3,
+        "url": "/images/gallery/restaurant-dining.jpg",
+        "alt": "Área de comedor del restaurante",
+        "category": "restaurant",
+        "title": "Restaurante Principal",
+        "featured": false
+      },
+      {
+        "id": 4,
+        "url": "/images/gallery/pool-night.jpg",
+        "alt": "Piscina iluminada en la noche",
+        "category": "amenities",
+        "title": "Piscina Nocturna",
+        "featured": true
+      },
+      {
+        "id": 5,
+        "url": "/images/gallery/spa-treatment.jpg",
+        "alt": "Sala de tratamientos de spa",
+        "category": "spa",
+        "title": "Sala de Spa",
+        "featured": false
+      },
+      {
+        "id": 6,
+        "url": "/images/gallery/room-suite.jpg",
+        "alt": "Suite presidencial",
+        "category": "rooms",
+        "title": "Suite de Lujo",
+        "featured": true
+      },
+      {
+        "id": 7,
+        "url": "/images/gallery/bar-lounge.jpg",
+        "alt": "Bar lounge con ambiente nocturno",
+        "category": "bar",
+        "title": "Bar Lounge",
+        "featured": false
+      },
+      {
+        "id": 8,
+        "url": "/images/gallery/conference-room.jpg",
+        "alt": "Sala de conferencias",
+        "category": "business",
+        "title": "Centro de Negocios",
+        "featured": false
+      },
+      {
+        "id": 9,
+        "url": "/images/gallery/gym-equipment.jpg",
+        "alt": "Equipos de gimnasio",
+        "category": "fitness",
+        "title": "Gimnasio Completo",
+        "featured": false
+      },
+      {
+        "id": 10,
+        "url": "/images/gallery/city-view.jpg",
+        "alt": "Vista panorámica de la ciudad",
+        "category": "views",
+        "title": "Vista de la Ciudad",
+        "featured": true
+      }
+    ],
+    "categories": [
+      { "id": "all", "name": "Todas", "count": 10 },
+      { "id": "exterior", "name": "Exterior", "count": 1 },
+      { "id": "interior", "name": "Interior", "count": 1 },
+      { "id": "rooms", "name": "Habitaciones", "count": 1 },
+      { "id": "restaurant", "name": "Restaurante", "count": 1 },
+      { "id": "amenities", "name": "Amenidades", "count": 1 },
+      { "id": "spa", "name": "Spa", "count": 1 },
+      { "id": "bar", "name": "Bar", "count": 1 },
+      { "id": "business", "name": "Negocios", "count": 1 },
+      { "id": "fitness", "name": "Gimnasio", "count": 1 },
+      { "id": "views", "name": "Vistas", "count": 1 }
+    ]
+  }
