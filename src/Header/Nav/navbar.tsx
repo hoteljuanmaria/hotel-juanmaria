@@ -19,8 +19,15 @@ type NavbarProps = {
 
 function linkToHref(link?: PayloadLink | null): string | null {
   if (!link) return null
-  const { type, url, reference } = link
-  if (type === 'custom') return url || null
+  const { type, url, reference, hash } = link as any
+  const appendHash = (href: string | null) => {
+    if (!href) return null
+    if (hash && typeof hash === 'string' && hash.trim() && !href.includes('#')) {
+      return `${href}#${hash.replace(/^#/, '')}`
+    }
+    return href
+  }
+  if (type === 'custom') return appendHash(url || null)
   if (
     type === 'reference' &&
     reference &&
@@ -29,7 +36,9 @@ function linkToHref(link?: PayloadLink | null): string | null {
     const base =
       reference.relationTo !== 'pages' ? `/${reference.relationTo}` : ''
     const slug = (reference.value as any)?.slug
-    if (slug) return `${base}/${slug}`
+    // Special case: pages with slug 'home' should link to site root
+    if (reference.relationTo === 'pages' && slug === 'home') return appendHash('/')
+    if (slug) return appendHash(`${base}/${slug}`)
   }
   if (
     type === 'reference' &&
@@ -39,7 +48,7 @@ function linkToHref(link?: PayloadLink | null): string | null {
     // Fallback: if only id is present, link to relation base
     const base =
       reference.relationTo !== 'pages' ? `/${reference.relationTo}` : ''
-    return base || '/'
+    return appendHash(base || '/')
   }
   return null
 }
@@ -165,7 +174,7 @@ export default function Navbar({ items }: NavbarProps) {
 
                   {/* Logo para Móvil - OCULTO en desktop */}
                   <img
-                    src='/GrayIcon.png'
+                    src='/GrayIcon.jpg'
                     alt='Hotel'
                     className='block md:hidden w-14 h-14 relative z-10 transition-all duration-500 group-hover:rotate-3 group-hover:scale-105 drop-shadow-lg'
                     style={{

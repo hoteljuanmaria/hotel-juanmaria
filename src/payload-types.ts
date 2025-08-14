@@ -1606,6 +1606,104 @@ export interface Header {
  */
 export interface Footer {
   id: string;
+  site?: {
+    /**
+     * Se usa cuando no hay nombre de hotel.
+     */
+    name?: string | null;
+    tagline?: string | null;
+    /**
+     * Texto corto bajo el nombre/lema
+     */
+    description?: string | null;
+  };
+  contact: {
+    hotel: {
+      name?: string | null;
+      address: {
+        street?: string | null;
+        neighborhood?: string | null;
+        city: string;
+        state?: string | null;
+        country?: string | null;
+      };
+    };
+    phone?: {
+      main?: string | null;
+      secondary?: string | null;
+      whatsapp?: string | null;
+    };
+    email?: {
+      reservations?: string | null;
+      marketing?: string | null;
+    };
+    hours?:
+      | {
+          label?: string | null;
+          value?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Incluye URLs completas con https://
+     */
+    social?: {
+      facebook?: string | null;
+      instagram?: string | null;
+      twitter?: string | null;
+      youtube?: string | null;
+      linkedin?: string | null;
+    };
+  };
+  /**
+   * Enlaces principales (Inicio, Sobre Nosotros, etc.)
+   */
+  companyLinks?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Enlaces de utilidad (Reservas, FAQ, etc.)
+   */
+  usefulLinks?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Campo de compatibilidad con versiones anteriores
+   */
   navItems?:
     | {
         link: {
@@ -1626,6 +1724,50 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  privacyLink: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+  };
+  termsLink: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+  };
+  enabled?: boolean | null;
+  title?: string | null;
+  description?: string | null;
+  placeholder?: string | null;
+  buttonLabel?: string | null;
+  showScrollTop?: boolean | null;
+  /**
+   * Muestra el botón cuando se supera este scroll vertical.
+   */
+  scrollTopThreshold?: number | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1672,6 +1814,88 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  site?:
+    | T
+    | {
+        name?: T;
+        tagline?: T;
+        description?: T;
+      };
+  contact?:
+    | T
+    | {
+        hotel?:
+          | T
+          | {
+              name?: T;
+              address?:
+                | T
+                | {
+                    street?: T;
+                    neighborhood?: T;
+                    city?: T;
+                    state?: T;
+                    country?: T;
+                  };
+            };
+        phone?:
+          | T
+          | {
+              main?: T;
+              secondary?: T;
+              whatsapp?: T;
+            };
+        email?:
+          | T
+          | {
+              reservations?: T;
+              marketing?: T;
+            };
+        hours?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
+        social?:
+          | T
+          | {
+              facebook?: T;
+              instagram?: T;
+              twitter?: T;
+              youtube?: T;
+              linkedin?: T;
+            };
+      };
+  companyLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  usefulLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
   navItems?:
     | T
     | {
@@ -1686,6 +1910,39 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  privacyLink?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+      };
+  termsLink?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+      };
+  enabled?: T;
+  title?: T;
+  description?: T;
+  placeholder?: T;
+  buttonLabel?: T;
+  showScrollTop?: T;
+  scrollTopThreshold?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

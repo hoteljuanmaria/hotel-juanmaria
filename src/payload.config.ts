@@ -17,18 +17,19 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { metaConfig } from './metaConfig'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    meta: metaConfig,
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
+      graphics: {
+        Logo: './components/Graphics/Logo',
+        Icon: './components/Graphics/Icon',
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),

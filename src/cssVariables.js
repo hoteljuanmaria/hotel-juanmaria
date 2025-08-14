@@ -10,3 +10,12 @@ export const cssVariables = {
     sm: 640,
   },
 }
+ 
+// Enable smooth scroll globally via a CSS variable hook (Tailwind preflight can pick it up)
+if (typeof document !== 'undefined') {
+  try {
+    const style = document.createElement('style')
+    style.innerHTML = `html{scroll-behavior:smooth}`
+    document.head.appendChild(style)
+  } catch {}
+}

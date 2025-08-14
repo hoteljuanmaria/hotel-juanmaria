@@ -135,5 +135,17 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
     })
   }
 
+  // Optional hash/anchor to support in-page navigation (e.g., /rooms#rooms-list)
+  linkResult.fields.push({
+    name: 'hash',
+    type: 'text',
+    label: 'Anchor (optional)',
+    admin: {
+      description:
+        'Optional section ID to append as a hash fragment (without #). Example: rooms-list',
+      width: '50%',
+    },
+  })
+
   return deepMerge(linkResult, overrides)
 }
