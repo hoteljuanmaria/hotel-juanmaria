@@ -263,13 +263,22 @@ export const Rooms: CollectionConfig = {
                   options: [
                     {
                       label: { en: 'Single', es: 'Individual' },
-                      value: 'single',
+                      value: 'Individual',
                     },
-                    { label: { en: 'Double', es: 'Doble' }, value: 'double' },
-                    { label: { en: 'Queen', es: 'Queen' }, value: 'queen' },
-                    { label: { en: 'King', es: 'King' }, value: 'king' },
-                    { label: { en: 'Twin', es: 'Dos Camas' }, value: 'twin' },
-                    { label: { en: 'Bunk Bed', es: 'Litera' }, value: 'bunk' },
+                    {
+                      label: { en: 'Double', es: 'Doble' },
+                      value: 'Cama Doble',
+                    },
+                    { label: { en: 'Queen', es: 'Queen' }, value: 'Queen' },
+                    { label: { en: 'King', es: 'King' }, value: 'King' },
+                    {
+                      label: { en: 'Twin', es: 'Dos Camas' },
+                      value: 'Dos Camas',
+                    },
+                    {
+                      label: { en: 'Bunk Bed', es: 'Litera' },
+                      value: 'Litera',
+                    },
                   ],
                   label: {
                     en: 'Bed Type',
