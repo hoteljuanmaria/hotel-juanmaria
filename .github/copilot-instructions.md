@@ -1,136 +1,64 @@
-# Hotel Juan María Website - AI Coding Instructions
+# Copilot instructions for this repo
 
-## Architecture Overview
+Use these rules to be productive immediately in this codebase.
 
-This is a **Next.js 15 + Payload CMS 3.45** hotel website using TypeScript, Tailwind CSS v4, and PostgreSQL. The project follows a hybrid architecture:
+## Architecture and key concepts
 
-- **Frontend**: Next.js App Router with route groups `(frontend)` and `(payload)`
-- **CMS**: Payload CMS provides admin interface and API endpoints
-- **Data Layer**: Currently uses static JSON files (`src/data/*.json`) with plans to migrate to Payload collections
-- **Database**: Vercel Postgres via `@payloadcms/db-vercel-postgres`
-- **Storage**: Vercel Blob Storage for media files
+- Monolith: Next.js App Router frontend + Payload CMS backend in the same app. Entry points live under `src/app`.
+- CMS: Payload v3 with MongoDB (`mongooseAdapter`). Payload config: `src/payload.config.ts` (aliased as `@payload-config`).
+- Content model highlights: collections `Pages`, `Posts`, `Rooms`, `Experiences`, `Media`, `Categories`, `Users`; globals `Header`, `Footer`, `ExperiencesPage`.
+- UI/Styling: Tailwind CSS, shadcn-like primitives, and Payload UI components.
+- SEO/Redirects/Search: Uses `@payloadcms/plugin-seo`, `@payloadcms/plugin-redirects`, `@payloadcms/plugin-search`.
+- i18n: Spanish default, English supported (see `i18n` + `localization` in `payload.config.ts`).
 
-## Key Development Patterns
+## Path aliases and important directories
 
-### Route Structure
+- TypeScript paths (see `tsconfig.json`): `@/*` → `src/*`, `@payload-config` → `src/payload.config.ts`, `@/payload-types` → `src/payload-types.ts`.
+- Frontend pages: `src/app/(frontend)/**`. Sitemaps under `src/app/(frontend)/(sitemaps)/**`.
+- Blocks/components: `src/blocks/**`, `src/components/**`.
+- Collections/globals definitions: `src/collections/**`, `src/globals/**`, header/footer configs in `src/Header` and `src/Footer`.
+- Utilities to know: `src/utilities/generateMeta.ts`, `src/utilities/getURL.ts`.
 
-- Frontend routes: `src/app/(frontend)/` - Public website pages
-- Admin routes: `src/app/(payload)/` - Auto-generated Payload admin interface
-- Custom API routes: `src/app/my-route/` - Custom endpoints outside Payload
+## Data fetching and SSR patterns (copy these)
 
-### Data Access Pattern
+- Always get a Payload instance server-side: `const payload = await getPayload({ config: configPromise })`.
+- Prefer server components for data fetching; use a `*.client.tsx` alongside when client interactivity is needed (see `posts` route pattern: `page.tsx` + `page.client.tsx`).
+- Limit fields with `select` to reduce payload size. Use `depth` sparingly.
+- Draft/live preview: use `draftMode()`; pass `draft` to Payload queries and render `<LivePreviewListener />` when enabled.
+- Redirect compatibility: include `<PayloadRedirects url={url} />` (and `disableNotFound` when you still want to render content) on dynamic routes.
+- Metadata: generate with `generateMetadata` and the helper `generateMeta({ doc })` where possible.
 
-**Critical**: The app uses a transitional data architecture. All data access goes through `src/lib/data.ts` which currently reads from JSON files but provides async interfaces ready for CMS migration:
+## Static generation and caching
 
-```typescript
-// Always use these functions, never import JSON directly
-import { getRooms, getServices, getAboutInfo } from '@/lib/data'
+- Use `export const revalidate = <seconds>` for ISR when content changes infrequently (common pattern here is `600`).
+- For large indexes, implement `generateStaticParams()` to prebuild slugs/pages (see `src/app/(frontend)/posts/[slug]/page.tsx` and `.../page/[pageNumber]/page.tsx`).
+- Memoize expensive payload queries with `cache()` from React where appropriate.
+- Images: remote patterns derive from `NEXT_PUBLIC_SERVER_URL` in `next.config.js`.
 
-// All functions are async even though they're reading JSON
-const rooms = await getRooms()
-const featuredRooms = await getFeaturedRooms()
-```
+## Posts route as a reference implementation
 
-### Content Types & Data Structure
+- Index page: `src/app/(frontend)/posts/page.tsx`
+  - Static (`dynamic = 'force-static'`), `revalidate = 600`, queries `posts` via Payload, renders pagination using `PageRange`/`Pagination` and `CollectionArchive`.
+- Detail page: `src/app/(frontend)/posts/[slug]/page.tsx`
+  - Has `generateStaticParams`, uses `draftMode`, `PayloadRedirects`, `LivePreviewListener`, `PostHero`, `RichText`, `RelatedPosts`.
+  - Metadata via `generateMeta` from the loaded doc.
+- Paged index: `src/app/(frontend)/posts/page/[pageNumber]/page.tsx` with `generateStaticParams` based on `payload.count`.
 
-- **Rooms**: Full booking system with availability, pricing, amenities
-- **Services**: Hotel services with hours, descriptions, featured status
-- **Halls**: Event spaces with multiple capacity configurations (banquet/classroom/conference)
-- **History**: Complex timeline with milestones, key figures, and anniversaries
-- **Blog**: Full content management with categories, tags, SEO
-- **Gallery**: Categorized images with featured status
-- **Testimonials**: Customer reviews with ratings and highlights
+## Developer workflows
 
-### Component Architecture
+- Package manager: pnpm (Node 18.20+ or 20.9+). Scripts (see `package.json`):
+  - Dev: `pnpm dev` (Next + Payload)
+  - Build: `pnpm build` then `pnpm start` (site + admin)
+  - Lint: `pnpm lint` / `pnpm lint:fix`
+  - Tests: unit `pnpm test:int` (Vitest), e2e `pnpm test:e2e` (Playwright), all `pnpm test`
+  - Types/import map after schema changes: `pnpm generate:types` and `pnpm generate:importmap`
+- Environment (common): `DATABASE_URI`, `PAYLOAD_SECRET`, `RESEND_API_KEY`, and server URL vars for images (see `next.config.js`).
 
-```
-src/components/
-├── [feature]/     # Feature-specific components (rooms, blog, etc.)
-├── ui/           # shadcn/ui components and custom UI components
-└── [layout]/     # Layout components (navbar, footer, hero)
-```
+## Project conventions and tips
 
-**UI Library**: Uses **shadcn/ui** for base components with Tailwind CSS v4
+- When adding CMS-driven pages: define collection/global in `payload.config.ts`, run types generation, then fetch via server component with caching + metadata wired.
+- Keep “all content in Payload”: avoid hard-coded strings; model as fields in a collection/global and select them at runtime.
+- Use `select` for fields and shared presentational components (e.g., `PostHero`, `CollectionArchive`).
+- Follow the `posts` route for pagination, metadata, redirects, and preview patterns.
 
-- Base components in `src/components/ui/` follow shadcn/ui patterns
-- Custom styling with Tailwind CSS utilities
-- Consistent design system across all components
-
-### Payload CMS Configuration
-
-**Collections**: Currently minimal (Users, Media) - static data will migrate here
-
-```typescript
-// Access control patterns in src/access/
-authenticated: { req: { user } }) => Boolean(user)
-authenticatedOrPublished: published content OR authenticated users
-```
-
-**Plugins Used**:
-
-- `@payloadcms/storage-vercel-blob` - File storage
-- `@payloadcms/plugin-form-builder` - Dynamic forms
-- `payload-totp` - 2FA authentication
-
-### Internationalization
-
-- **Locales**: Spanish (default), English
-- **Payload i18n**: Configured with fallback to Spanish
-- **Frontend**: Uses Spanish throughout (check localization strategy when adding features)
-
-## Development Workflows
-
-### Essential Commands
-
-```bash
-pnpm dev              # Start dev server with Turbopack
-pnpm generate:types   # Generate Payload TypeScript types
-pnpm generate:importmap # Update Payload import map
-pnpm payload          # Access Payload CLI commands
-```
-
-### Environment Requirements
-
-```env
-PAYLOAD_SECRET=        # Required for Payload auth
-POSTGRES_URL=         # Vercel Postgres connection
-VERCEL_BLOB_STORAGE_TOKEN= # For media uploads
-```
-
-### File Generation
-
-- `payload-types.ts` - Auto-generated, never edit manually
-- `src/app/(payload)/` - Auto-generated admin interface
-- Always run `pnpm generate:types` after schema changes
-
-## Critical Integration Points
-
-### Data Migration Strategy
-
-When moving from JSON to Payload collections:
-
-1. Keep existing functions in `src/lib/data.ts` as interface
-2. Replace JSON reads with Payload API calls
-3. Maintain async/await pattern (already implemented)
-4. Update TypeScript interfaces to match Payload schema
-
-### Media Handling
-
-- Upload path: Payload admin → Vercel Blob Storage
-- Public access: Via Payload media collection with `authenticatedOrPublished` access
-- Local development: Uses local Payload media server
-
-## Common Gotchas
-
-1. **Payload route conflicts** - Custom API routes must not conflict with `/admin` or `/api/payload`
-2. **Type generation** - Run `pnpm generate:types` before working with Payload data
-3. **Access patterns** - Check `src/access/` files for collection permissions
-4. **Localization** - Spanish is the primary language; English is secondary
-5. **Static data** - JSON files in `src/data/` are temporary; design with Payload migration in mind
-
-## Testing & Deployment
-
-- **Build command**: `pnpm build` (includes sitemap generation)
-- **Vercel deployment**: Auto-deploys from Git with Postgres and Blob Storage
-- **Environment**: Production uses Vercel Postgres + Blob Storage
-- **Admin access**: `/admin` route for Payload CMS interface
+If any section is unclear or you notice a pattern that differs in a specific feature (e.g., Rooms/Experiences), point it out so we can refine these rules.

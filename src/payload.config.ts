@@ -9,26 +9,34 @@ import { fileURLToPath } from 'url'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { Experiences } from './collections/Experiences'
+import { BlogPosts } from './collections/BlogPosts'
 import { Posts } from './collections/Posts'
+import { Rooms } from './collections/Rooms'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { ExperiencesPage } from './globals/ExperiencesPage'
+import { BlogPage } from './globals/BlogPage'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { metaConfig } from './metaConfig'
+import { en } from '@payloadcms/translations/languages/en'
+import { es } from '@payloadcms/translations/languages/es'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    meta: metaConfig,
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
+      graphics: {
+        Logo: './components/Graphics/Logo',
+        Icon: './components/Graphics/Icon',
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -62,13 +70,19 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
-  cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
-  plugins: [
-    ...plugins,
-    // storage-adapter-placeholder
+  collections: [
+    Pages,
+    Posts,
+    BlogPosts,
+    Media,
+    Categories,
+    Rooms,
+    Experiences,
+    Users,
   ],
+  cors: [getServerSideURL()].filter(Boolean),
+  globals: [Header, Footer, ExperiencesPage, BlogPage],
+  plugins: [...plugins],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
@@ -79,6 +93,17 @@ export default buildConfig({
     defaultFromName: 'Hotel Juan Maria',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
+
+  i18n: {
+    fallbackLanguage: 'es',
+    supportedLanguages: { es, en },
+  },
+
+  localization: {
+    locales: ['en', 'es'],
+    defaultLocale: 'es',
+  },
+
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {

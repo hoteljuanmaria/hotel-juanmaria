@@ -5,6 +5,7 @@ import Navbar from './Nav/navbar'
 import type { Header as HeaderGlobal } from '@/payload-types'
 
 export async function Header() {
-  const headerData: HeaderGlobal = await getCachedGlobal('header', 1)()
+  // Use higher depth so relationship references (pages/posts) include slug for proper navbar links
+  const headerData: HeaderGlobal = await getCachedGlobal('header', 2)()
   return <Navbar items={headerData?.navItems} />
 }

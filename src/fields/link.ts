@@ -4,7 +4,10 @@ import deepMerge from '@/utilities/deepMerge'
 
 export type LinkAppearances = 'default' | 'outline'
 
-export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
+export const appearanceOptions: Record<
+  LinkAppearances,
+  { label: string; value: string }
+> = {
   default: {
     label: 'Default',
     value: 'default',
@@ -21,7 +24,11 @@ type LinkType = (options?: {
   overrides?: Partial<GroupField>
 }) => Field
 
-export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
+export const link: LinkType = ({
+  appearances,
+  disableLabel = false,
+  overrides = {},
+} = {}) => {
   const linkResult: GroupField = {
     name: 'link',
     type: 'group',
@@ -75,7 +82,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
       label: 'Document to link to',
-      relationTo: ['pages', 'posts'],
+      relationTo: ['pages', 'posts', 'rooms', 'experiences'],
       required: true,
     },
     {
@@ -118,10 +125,15 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
   }
 
   if (appearances !== false) {
-    let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
+    let appearanceOptionsToUse = [
+      appearanceOptions.default,
+      appearanceOptions.outline,
+    ]
 
     if (appearances) {
-      appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
+      appearanceOptionsToUse = appearances.map(
+        (appearance) => appearanceOptions[appearance],
+      )
     }
 
     linkResult.fields.push({
@@ -134,6 +146,18 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       options: appearanceOptionsToUse,
     })
   }
+
+  // Optional hash/anchor to support in-page navigation (e.g., /rooms#rooms-list)
+  linkResult.fields.push({
+    name: 'hash',
+    type: 'text',
+    label: 'Anchor (optional)',
+    admin: {
+      description:
+        'Optional section ID to append as a hash fragment (without #). Example: rooms-list',
+      width: '50%',
+    },
+  })
 
   return deepMerge(linkResult, overrides)
 }

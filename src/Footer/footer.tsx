@@ -13,7 +13,6 @@ import {
   Instagram,
   Linkedin,
 } from 'lucide-react'
-import { getContactInfo, getSiteSettings } from '@/lib/data'
 
 interface ContactInfo {
   hotel: {
@@ -51,42 +50,49 @@ interface SiteSettings {
   }
 }
 
-const Footer = () => {
+type SimpleLink = { name: string; href: string }
+type FooterProps = {
+  contactInfo: ContactInfo
+  siteSettings: SiteSettings
+  companyLinks: SimpleLink[]
+  usefulLinks: SimpleLink[]
+  privacy: { href: string; label: string }
+  terms: { href: string; label: string }
+  options?: { showScrollTopEnabled?: boolean; scrollTopThreshold?: number }
+  newsletter?: {
+    enabled?: boolean
+    title?: string
+    description?: string
+    placeholder?: string
+    buttonLabel?: string
+  }
+}
+
+const Footer: React.FC<FooterProps> = ({
+  contactInfo,
+  siteSettings,
+  companyLinks,
+  usefulLinks,
+  privacy,
+  terms,
+  options,
+  newsletter,
+}) => {
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
-  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null)
-  const [loading, setLoading] = useState(true)
+  const threshold = options?.scrollTopThreshold ?? 400
+  const showScrollBtn = options?.showScrollTopEnabled !== false
 
   useEffect(() => {
+    if (!showScrollBtn) return
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400)
+      setShowScrollTop(window.scrollY > threshold)
     }
-
     window.addEventListener('scroll', handleScroll)
-
+    handleScroll()
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [contact, settings] = await Promise.all([
-          getContactInfo(),
-          getSiteSettings(),
-        ])
-        setContactInfo(contact)
-        setSiteSettings(settings)
-      } catch (error) {
-        console.error('Error loading footer data:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadData()
-  }, [])
+  }, [showScrollBtn, threshold])
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -113,40 +119,7 @@ const Footer = () => {
       }))
   }
 
-  const companyLinks = [
-    { name: 'Inicio', href: '/' },
-    { name: 'Sobre Nosotros', href: '/sobre-nosotros' },
-    { name: 'Habitaciones', href: '/habitaciones' },
-    { name: 'Experiencias', href: '/experiencias' },
-    { name: 'Blog', href: '/blog' },
-  ]
-
-  const usefulLinks = [
-    { name: 'Reservas', href: '/reserva' },
-    { name: 'Preguntas frecuentes', href: '/faq' },
-  ]
-
-  if (loading) {
-    return (
-      <footer className='bg-gradient-to-br from-gray-50 via-white to-gray-100 py-16'>
-        <div className='container mx-auto px-6 lg:px-8'>
-          <div className='animate-pulse'>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className='bg-white/50 rounded-xl p-6 space-y-4'>
-                  <div className='h-4 bg-gray-300 rounded w-3/4'></div>
-                  <div className='space-y-2'>
-                    <div className='h-3 bg-gray-200 rounded'></div>
-                    <div className='h-3 bg-gray-200 rounded w-5/6'></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
-    )
-  }
+  // No loading state here; data comes from server component
 
   const socialLinks = getSocialLinks()
 
@@ -289,26 +262,29 @@ const Footer = () => {
           </div>
 
           {/* Newsletter section */}
-          <div className='mt-12 bg-gradient-to-r from-gray-900 via-gray-800 to-black rounded-xl p-8 relative overflow-hidden'>
-            <div className='relative z-10 text-center max-w-2xl mx-auto'>
-              <h3 className='text-2xl font-bold text-white mb-4'>
-                Mantente Informado
-              </h3>
-              <p className='text-gray-300 mb-6'>
-                Recibe ofertas exclusivas y noticias sobre nuestros servicios
-              </p>
-              <div className='flex flex-col sm:flex-row gap-4 max-w-md mx-auto'>
-                <input
-                  type='email'
-                  placeholder='Tu email'
-                  className='flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-white/40 transition-all duration-300'
-                />
-                <button className='px-6 py-3 bg-white/20 text-white border border-white/30 hover:bg-white/30 rounded-lg transition-all duration-300'>
-                  Suscribirse
-                </button>
+          {newsletter?.enabled !== false && (
+            <div className='mt-12 bg-gradient-to-r from-gray-900 via-gray-800 to-black rounded-xl p-8 relative overflow-hidden'>
+              <div className='relative z-10 text-center max-w-2xl mx-auto'>
+                <h3 className='text-2xl font-bold text-white mb-4'>
+                  {newsletter?.title || 'Mantente Informado'}
+                </h3>
+                <p className='text-gray-300 mb-6'>
+                  {newsletter?.description ||
+                    'Recibe ofertas exclusivas y noticias sobre nuestros servicios'}
+                </p>
+                <div className='flex flex-col sm:flex-row gap-4 max-w-md mx-auto'>
+                  <input
+                    type='email'
+                    placeholder={newsletter?.placeholder || 'Tu email'}
+                    className='flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-white/40 transition-all duration-300'
+                  />
+                  <button className='px-6 py-3 bg-white/20 text-white border border-white/30 hover:bg-white/30 rounded-lg transition-all duration-300'>
+                    {newsletter?.buttonLabel || 'Suscribirse'}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Bottom bar */}
           <div className='mt-8 pt-6 border-t border-gray-200/50 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600'>
@@ -321,23 +297,23 @@ const Footer = () => {
             </p>
             <div className='flex space-x-6 mt-4 sm:mt-0'>
               <Link
-                href='/privacy'
+                href={privacy.href}
                 className='hover:text-gray-900 transition-colors duration-300'
               >
-                Privacidad
+                {privacy.label}
               </Link>
               <Link
-                href='/terms'
+                href={terms.href}
                 className='hover:text-gray-900 transition-colors duration-300'
               >
-                Términos y condiciones
+                {terms.label}
               </Link>
             </div>
           </div>
         </div>
 
         {/* Scroll to top button */}
-        {showScrollTop && (
+        {showScrollBtn && showScrollTop && (
           <button
             onClick={scrollToTop}
             className='fixed bottom-8 right-8 p-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-lg shadow-2xl hover:scale-110 hover:-translate-y-1 transition-all duration-500 z-50 group'
