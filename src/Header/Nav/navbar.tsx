@@ -22,7 +22,12 @@ function linkToHref(link?: PayloadLink | null): string | null {
   const { type, url, reference, hash } = link as any
   const appendHash = (href: string | null) => {
     if (!href) return null
-    if (hash && typeof hash === 'string' && hash.trim() && !href.includes('#')) {
+    if (
+      hash &&
+      typeof hash === 'string' &&
+      hash.trim() &&
+      !href.includes('#')
+    ) {
       return `${href}#${hash.replace(/^#/, '')}`
     }
     return href
@@ -37,7 +42,8 @@ function linkToHref(link?: PayloadLink | null): string | null {
       reference.relationTo !== 'pages' ? `/${reference.relationTo}` : ''
     const slug = (reference.value as any)?.slug
     // Special case: pages with slug 'home' should link to site root
-    if (reference.relationTo === 'pages' && slug === 'home') return appendHash('/')
+    if (reference.relationTo === 'pages' && slug === 'home')
+      return appendHash('/')
     if (slug) return appendHash(`${base}/${slug}`)
   }
   if (
@@ -267,7 +273,7 @@ export default function Navbar({ items }: NavbarProps) {
             {/* Revolutionary CTA Buttons */}
             <div className='hidden lg:flex items-center space-x-4'>
               <Link
-                href='/reserva'
+                href='/booking'
                 className='group relative px-8 py-3 text-sm font-semibold text-white rounded-lg overflow-hidden transition-all duration-300 hover:scale-105'
               >
                 <div
@@ -278,7 +284,7 @@ export default function Navbar({ items }: NavbarProps) {
               </Link>
 
               <Link
-                href='/contacto'
+                href='/contact'
                 className='px-8 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300'
               >
                 Contacto

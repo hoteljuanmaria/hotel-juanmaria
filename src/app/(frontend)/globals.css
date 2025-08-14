@@ -1,16 +1,56 @@
 @import 'tailwindcss';
 
+/* Force light mode always - Override any dark mode styles */
+html,
+html[data-theme='dark'],
+html.dark {
+  /* Base - Force light mode */
+  --background: 0 0% 100% !important;
+  --foreground: 0 0% 0% !important;
+
+  /* UI surfaces */
+  --card: 0 0% 100% !important;
+  --card-foreground: 0 0% 0% !important;
+  --popover: 0 0% 100% !important;
+  --popover-foreground: 0 0% 0% !important;
+
+  /* Brand */
+  --primary: 221.2 83.2% 53.3% !important;
+  --primary-foreground: 210 40% 98% !important;
+
+  /* Secondary */
+  --secondary: 210 40% 96.1% !important;
+  --secondary-foreground: 0 0% 0% !important;
+
+  /* Muted */
+  --muted: 210 40% 96.1% !important;
+  --muted-foreground: 0 0% 20% !important;
+
+  /* Accent */
+  --accent: 210 40% 96.1% !important;
+  --accent-foreground: 0 0% 0% !important;
+
+  /* Destructive */
+  --destructive: 0 84.2% 60.2% !important;
+  --destructive-foreground: 210 40% 98% !important;
+
+  /* Misc */
+  --border: 214.3 31.8% 91.4% !important;
+  --input: 214.3 31.8% 91.4% !important;
+  --ring: 221.2 83.2% 53.3% !important;
+}
+
 /* Design tokens (HSL components) used by Tailwind theme colors */
 :root {
   /* Base */
   --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+  --foreground: 0 0% 0%;
 
   /* UI surfaces */
   --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
+  --card-foreground: 0 0% 0%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
+  --popover-foreground: 0 0% 0%;
 
   /* Brand */
   --primary: 221.2 83.2% 53.3%;
@@ -18,15 +58,15 @@
 
   /* Secondary */
   --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
+  --secondary-foreground: 0 0% 0%;
 
   /* Muted */
   --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  --muted-foreground: 0 0% 20%;
 
   /* Accent */
   --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
+  --accent-foreground: 0 0% 0%;
 
   /* Destructive */
   --destructive: 0 84.2% 60.2%;
@@ -36,36 +76,6 @@
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
   --ring: 221.2 83.2% 53.3%;
-}
-
-/* Dark theme overrides controlled by data-theme attribute */
-[data-theme='dark'] {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 47.4% 11.2%;
-
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 48%;
 }
 
 ::selection {
@@ -79,9 +89,27 @@
 }
 
 body {
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background)) !important;
   font-family: 'Inter', sans-serif;
+}
+
+/* Force high contrast for booking page */
+.booking-page *,
+.booking-page {
+  color: rgb(31, 41, 55) !important; /* gray-800 */
+}
+
+.booking-page .text-gray-500 {
+  color: rgb(31, 41, 55) !important; /* Override any gray-500 */
+}
+
+.booking-page .text-gray-600 {
+  color: rgb(31, 41, 55) !important; /* Override any gray-600 */
+}
+
+.booking-page .text-gray-700 {
+  color: rgb(31, 41, 55) !important; /* Override any gray-700 */
 }
 
 /* Container utility fallback (Tailwind v4 removes container plugin by default) */

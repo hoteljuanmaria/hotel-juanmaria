@@ -557,7 +557,7 @@ const RoomsPage = () => {
 
                 <button
                   onClick={() =>
-                    (window.location.href = `/reservas?room=${room.id}`)
+                    (window.location.href = `/booking?room=${room.id}`)
                   }
                   className='border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-colors duration-200'
                 >
@@ -606,8 +606,11 @@ const RoomsPage = () => {
       {/* Floating background orbs */}
       <MouseOrbs />
 
-  {/* Hero Section */}
-  <div id='rooms-hero' className='relative max-w-7xl mx-auto px-6 py-12 z-10'>
+      {/* Hero Section */}
+      <div
+        id='rooms-hero'
+        className='relative max-w-7xl mx-auto px-6 py-12 z-10'
+      >
         <div className='text-center mb-12'>
           <h1
             className={`font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent transform transition-all duration-1000 ${

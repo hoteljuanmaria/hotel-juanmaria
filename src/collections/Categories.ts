@@ -21,6 +21,14 @@ export const Categories: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'color',
+      type: 'text',
+      admin: {
+        description: 'Optional hex/rgb color used for UI badges',
+      },
+      defaultValue: '#6B7280',
+    },
     ...slugField(),
   ],
 }

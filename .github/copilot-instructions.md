@@ -3,6 +3,7 @@
 Use these rules to be productive immediately in this codebase.
 
 ## Architecture and key concepts
+
 - Monolith: Next.js App Router frontend + Payload CMS backend in the same app. Entry points live under `src/app`.
 - CMS: Payload v3 with MongoDB (`mongooseAdapter`). Payload config: `src/payload.config.ts` (aliased as `@payload-config`).
 - Content model highlights: collections `Pages`, `Posts`, `Rooms`, `Experiences`, `Media`, `Categories`, `Users`; globals `Header`, `Footer`, `ExperiencesPage`.
@@ -11,6 +12,7 @@ Use these rules to be productive immediately in this codebase.
 - i18n: Spanish default, English supported (see `i18n` + `localization` in `payload.config.ts`).
 
 ## Path aliases and important directories
+
 - TypeScript paths (see `tsconfig.json`): `@/*` → `src/*`, `@payload-config` → `src/payload.config.ts`, `@/payload-types` → `src/payload-types.ts`.
 - Frontend pages: `src/app/(frontend)/**`. Sitemaps under `src/app/(frontend)/(sitemaps)/**`.
 - Blocks/components: `src/blocks/**`, `src/components/**`.
@@ -18,6 +20,7 @@ Use these rules to be productive immediately in this codebase.
 - Utilities to know: `src/utilities/generateMeta.ts`, `src/utilities/getURL.ts`.
 
 ## Data fetching and SSR patterns (copy these)
+
 - Always get a Payload instance server-side: `const payload = await getPayload({ config: configPromise })`.
 - Prefer server components for data fetching; use a `*.client.tsx` alongside when client interactivity is needed (see `posts` route pattern: `page.tsx` + `page.client.tsx`).
 - Limit fields with `select` to reduce payload size. Use `depth` sparingly.
@@ -26,12 +29,14 @@ Use these rules to be productive immediately in this codebase.
 - Metadata: generate with `generateMetadata` and the helper `generateMeta({ doc })` where possible.
 
 ## Static generation and caching
+
 - Use `export const revalidate = <seconds>` for ISR when content changes infrequently (common pattern here is `600`).
 - For large indexes, implement `generateStaticParams()` to prebuild slugs/pages (see `src/app/(frontend)/posts/[slug]/page.tsx` and `.../page/[pageNumber]/page.tsx`).
 - Memoize expensive payload queries with `cache()` from React where appropriate.
 - Images: remote patterns derive from `NEXT_PUBLIC_SERVER_URL` in `next.config.js`.
 
 ## Posts route as a reference implementation
+
 - Index page: `src/app/(frontend)/posts/page.tsx`
   - Static (`dynamic = 'force-static'`), `revalidate = 600`, queries `posts` via Payload, renders pagination using `PageRange`/`Pagination` and `CollectionArchive`.
 - Detail page: `src/app/(frontend)/posts/[slug]/page.tsx`
@@ -40,6 +45,7 @@ Use these rules to be productive immediately in this codebase.
 - Paged index: `src/app/(frontend)/posts/page/[pageNumber]/page.tsx` with `generateStaticParams` based on `payload.count`.
 
 ## Developer workflows
+
 - Package manager: pnpm (Node 18.20+ or 20.9+). Scripts (see `package.json`):
   - Dev: `pnpm dev` (Next + Payload)
   - Build: `pnpm build` then `pnpm start` (site + admin)
@@ -49,6 +55,7 @@ Use these rules to be productive immediately in this codebase.
 - Environment (common): `DATABASE_URI`, `PAYLOAD_SECRET`, `RESEND_API_KEY`, and server URL vars for images (see `next.config.js`).
 
 ## Project conventions and tips
+
 - When adding CMS-driven pages: define collection/global in `payload.config.ts`, run types generation, then fetch via server component with caching + metadata wired.
 - Keep “all content in Payload”: avoid hard-coded strings; model as fields in a collection/global and select them at runtime.
 - Use `select` for fields and shared presentational components (e.g., `PostHero`, `CollectionArchive`).
