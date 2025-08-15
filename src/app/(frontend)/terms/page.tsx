@@ -67,7 +67,7 @@ const TermsConditionsPage: React.FC = () => {
     },
     {
       title: "Check-out",
-      time: "12:00 PM",
+      time: "1:00 PM",
       subtitle: "Hora de salida",
     },
     {

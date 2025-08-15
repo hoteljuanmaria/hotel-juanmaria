@@ -471,22 +471,25 @@ export interface Room {
   currency?: ('COP' | 'USD') | null;
   capacity: number;
   size: string;
-  bedType: 'single' | 'double' | 'queen' | 'king' | 'twin' | 'bunk';
+  bedType: 'Individual' | 'Cama Doble' | 'Queen' | 'King' | 'Dos Camas' | 'Litera';
   amenities?:
     | {
-        amenity:
-          | 'wifi'
-          | 'air-conditioning'
-          | 'tv'
-          | 'safe'
-          | 'minibar'
-          | 'room-service'
-          | 'parking'
-          | 'airport-transfer'
-          | 'breakfast'
-          | 'balcony'
-          | 'ocean-view'
-          | 'city-view';
+        amenity?:
+          | (
+              | 'wifi'
+              | 'air-conditioning'
+              | 'tv'
+              | 'safe'
+              | 'minibar'
+              | 'room-service'
+              | 'parking'
+              | 'airport-transfer'
+              | 'breakfast'
+              | 'balcony'
+              | 'ocean-view'
+              | 'city-view'
+            )
+          | null;
         /**
          * Add a custom amenity not in the list above
          */
