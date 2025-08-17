@@ -662,16 +662,6 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               >
                 <List className='w-5 h-5' />
               </button>
-              <button
-                onClick={() => setViewMode('comparison')}
-                className={`p-3 rounded-lg transition-colors duration-200 ${
-                  viewMode === 'comparison'
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                <SlidersHorizontal className='w-5 h-5' />
-              </button>
             </div>
 
             {/* Filter Toggle */}
@@ -839,19 +829,6 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             {tPlural(getValidLocale(locale), 'rooms.results.found', filteredRooms.length)}
           </div>
 
-          {viewMode === 'comparison' && selectedRooms.length > 0 && (
-            <div className='flex items-center gap-4'>
-              <span className='font-sans text-sm text-gray-600'>
-                {selectedRooms.length} {tPlural(getValidLocale(locale), 'rooms.results.selected', selectedRooms.length)}
-              </span>
-              <button
-                onClick={() => setSelectedRooms([])}
-                className='text-gray-600 hover:text-gray-800 transition-colors duration-200'
-              >
-                <X className='w-4 h-4' />
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Rooms Grid/List - Only grid on mobile */}
@@ -892,75 +869,6 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
           </div>
         )}
       </div>
-
-      {/* Comparison Panel - Only show on desktop */}
-      {viewMode === 'comparison' && selectedRooms.length > 0 && (
-        <div className='hidden lg:block fixed bottom-6 left-6 right-6 z-40'>
-          <div className='bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6'>
-            <div className='flex items-center justify-between mb-4'>
-              <h3 className='font-serif text-xl font-bold text-gray-900'>
-                {t(getValidLocale(locale), 'rooms.comparison.title')} ({selectedRooms.length})
-              </h3>
-              <button
-                onClick={() => setSelectedRooms([])}
-                className='text-gray-600 hover:text-gray-800 transition-colors duration-200'
-              >
-                <X className='w-5 h-5' />
-              </button>
-            </div>
-
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-40 overflow-y-auto'>
-              {selectedRooms.map((roomId) => {
-                const room = rooms.find((r) => r.id === roomId)
-                if (!room) return null
-
-                return (
-                  <div
-                    key={roomId}
-                    className='flex items-center gap-3 p-3 bg-gray-50 rounded-lg'
-                  >
-                    <Image
-                      src={getImagePath(room.images?.[0])}
-                      alt={room.title}
-                      width={48}
-                      height={48}
-                      className='object-cover rounded'
-                    />
-                    <div className='flex-1 min-w-0'>
-                      <div className='font-sans font-medium text-gray-900 truncate'>
-                        {room.title}
-                      </div>
-                      <div className='font-sans text-sm text-gray-600'>
-                        {formatPrice(room.price)}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => toggleRoomSelection(roomId)}
-                      className='text-gray-400 hover:text-gray-600 transition-colors duration-200'
-                    >
-                      <X className='w-4 h-4' />
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className='flex gap-3 mt-4'>
-              <button className='flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-6 transition-colors duration-200'>
-                <span className='flex items-center justify-center'>
-                  {t(getValidLocale(locale), 'rooms.comparison.viewDetailed')}
-                  <Eye className='w-4 h-4 ml-2' />
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Spacer for bottom panel - Only on desktop */}
-      {viewMode === 'comparison' && selectedRooms.length > 0 && (
-        <div className='hidden lg:block h-40'></div>
-      )}
     </div>
   )
 }
