@@ -4,10 +4,12 @@ import Image from 'next/image'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/ui/button'
-import { getRooms, formatPrice, type Room } from '../../lib/data'
+import { getRooms, type Room } from '../../lib/data'
 import { NiceButton } from '../ui/niceButton'
+import { t, type Locale } from '@/lib/translations'
+import { formatPrice } from '@/lib/client-utils'
 
-const RoomCarousel = () => {
+const RoomCarousel = ({ locale = 'es' }: { locale?: Locale }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -156,9 +158,9 @@ const RoomCarousel = () => {
   if (rooms.length === 0) {
     return (
       <div className='relative max-w-screen-xl mx-auto p-6 overflow-hidden'>
-        <div className='text-center py-20'>
-          <p className='text-gray-500'>No hay habitaciones disponibles.</p>
-        </div>
+              <div className='text-center py-20'>
+        <p className='text-gray-500'>{t(locale, 'carousel.noRooms')}</p>
+      </div>
       </div>
     )
   }
@@ -190,7 +192,7 @@ const RoomCarousel = () => {
             isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
-          Nuestras Habitaciones
+          {t(locale, 'carousel.title')}
         </h1>
         <p
           className={`font-sans font-light text-lg text-gray-600 max-w-2xl mx-auto transform transition-all duration-1000 ${
@@ -198,7 +200,7 @@ const RoomCarousel = () => {
           }`}
           style={{ animationDelay: '0.2s' }}
         >
-          Descubre espacios únicos diseñados para crear experiencias memorables
+          {t(locale, 'carousel.subtitle')}
         </p>
       </div>
 
@@ -211,7 +213,7 @@ const RoomCarousel = () => {
               onClick={handlePrevClick}
               disabled={isTransitioning}
               className='p-3 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 text-gray-700 hover:text-gray-900 hover:bg-white/40 transition-all duration-300 shadow-lg disabled:opacity-50'
-              aria-label='Habitación anterior'
+              aria-label={t(locale, 'carousel.previous')}
             >
               <ChevronLeft className='w-5 h-5' />
             </button>
@@ -236,7 +238,7 @@ const RoomCarousel = () => {
               onClick={handleNextClick}
               disabled={isTransitioning}
               className='p-3 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 text-gray-700 hover:text-gray-900 hover:bg-white/40 transition-all duration-300 shadow-lg disabled:opacity-50'
-              aria-label='Siguiente habitación'
+              aria-label={t(locale, 'carousel.next')}
             >
               <ChevronRight className='w-5 h-5' />
             </button>
@@ -310,7 +312,7 @@ const RoomCarousel = () => {
                         showIndicator={false}
                         className='w-full font-medium'
                       >
-                        Verificar Tarifas
+                        {t(locale, 'carousel.checkRates')}
                       </NiceButton>
 
                       <NiceButton
@@ -319,7 +321,7 @@ const RoomCarousel = () => {
                         href={`/habitaciones/${rooms[currentIndex].id}`}
                         className='w-full font-medium'
                       >
-                        Ver Detalles
+                        {t(locale, 'carousel.viewDetails')}
                       </NiceButton>
                     </div>
                   </div>

@@ -471,7 +471,7 @@ export interface Room {
   currency?: ('COP' | 'USD') | null;
   capacity: number;
   size: string;
-  bedType: 'Individual' | 'Cama Doble' | 'Queen' | 'King' | 'Dos Camas' | 'Litera';
+  bedType: 'single' | 'double' | 'queen' | 'king' | 'twin' | 'bunk';
   amenities?:
     | {
         amenity?:

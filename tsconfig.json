@@ -44,7 +44,8 @@
       "@/public/*": ["./public/*"]
     },
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node"]
   },
   "include": [
     "next-env.d.ts",

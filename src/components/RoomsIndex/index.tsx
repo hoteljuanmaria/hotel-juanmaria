@@ -35,6 +35,9 @@ import Image from 'next/image'
 import { useDebouncedValue } from '@/hooks/useDebounce'
 import { useBreakpoint } from '@/hooks/useBreakpoint'
 import MouseOrbs from '@/components/Effects/MouseOrbs'
+import { t, tPlural, type Locale as LocaleType } from '@/lib/translations'
+import { getBedTypeLabel, getImagePath, renderDescription, getAmenityText } from '@/lib/client-utils'
+import BedTypeTest from '../BedTypeTest'
 
 const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('es-CO', {
@@ -44,49 +47,9 @@ const formatPrice = (price: number): string => {
   }).format(price)
 }
 
-type Locale = 'es' | 'en' | 'all'
+type Locale = LocaleType | 'all'
 
-// Helper functions for Payload CMS data
-const getImagePath = (imageObj: any): string => {
-  if (!imageObj) return '/placeholder-room.jpg'
-
-  if (typeof imageObj === 'string') {
-    return imageObj
-  }
-
-  if (imageObj?.image) {
-    if (typeof imageObj.image === 'string') {
-      return imageObj.image
-    }
-    if (imageObj.image?.url) {
-      return imageObj.image.url
-    }
-  }
-
-  return '/placeholder-room.jpg'
-}
-
-const renderDescription = (description: any): React.ReactNode => {
-  if (typeof description === 'string') {
-    return description
-  }
-
-  // For Lexical rich text content, render as plain text for now
-  if (description?.root?.children) {
-    return description.root.children
-      .map((child: any) => child.text || '')
-      .join(' ')
-  }
-
-  return 'Descripción no disponible'
-}
-
-const getAmenityText = (amenity: any): string => {
-  if (typeof amenity === 'string') {
-    return amenity
-  }
-  return amenity?.customAmenity || amenity?.amenity || 'Amenidad'
-}
+// Helper functions are now imported from client-utils
 
 const getAmenityIcon = (amenity: any) => {
   const amenityText = getAmenityText(amenity)
@@ -123,6 +86,21 @@ type ViewMode = 'grid' | 'list' | 'comparison'
 type SortOption = 'price-asc' | 'price-desc' | 'capacity' | 'size' | 'name'
 
 const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo locale
+  // Helper function to get valid locale for translations
+  const getValidLocale = (loc: Locale): LocaleType => {
+    const result = loc === 'all' ? 'es' : loc
+    
+    // Debug logging - remove in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('getValidLocale debug:', { 
+        original: loc, 
+        result, 
+        type: typeof result 
+      })
+    }
+    
+    return result
+  }
   const sp = useSearchParams()                                 
   const [rooms, setRooms] = useState<Room[]>([])
   const [loading, setLoading] = useState(true)
@@ -358,14 +336,14 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               {formatPrice(room.price)}
             </span>
             <span className='font-sans text-sm text-gray-600 ml-1'>
-              por noche
+              {t(getValidLocale(locale), 'rooms.room.perNight')}
             </span>
           </div>
 
           <div className='flex items-center gap-4 text-sm text-gray-600 mb-4'>
             <div className='flex items-center gap-1'>
               <Users className='w-4 h-4' />
-              <span>{room.capacity} huéspedes</span>
+              <span>{room.capacity} {t(getValidLocale(locale), 'rooms.room.guests')}</span>
             </div>
             <div className='flex items-center gap-1'>
               <Square className='w-4 h-4' />
@@ -373,7 +351,15 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             </div>
             <div className='flex items-center gap-1'>
               <Bed className='w-4 h-4' />
-              <span>{room.bedType}</span>
+              <span>
+                {getBedTypeLabel(room.bedType, getValidLocale(locale))}
+                {/* Debug info - remove in production */}
+                {process.env.NODE_ENV === 'development' && (
+                  <span className='text-xs text-gray-400 ml-1'>
+                    ({room.bedType})
+                  </span>
+                )}
+              </span>
             </div>
           </div>
 
@@ -390,7 +376,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             ))}
             {(room.amenities || []).length > 3 && (
               <div className='px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'>
-                +{(room.amenities || []).length - 3} más
+                +{(room.amenities || []).length - 3} {t(getValidLocale(locale), 'rooms.room.moreAmenities')}
               </div>
             )}
           </div>
@@ -400,7 +386,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               href={`/rooms/${room.slug || room.id}`}
               className='flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-4 text-center'
             >
-              Ver Detalles
+              {t(getValidLocale(locale), 'rooms.room.viewDetails')}
             </a>
 
             <button
@@ -409,7 +395,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               }
               className='border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-lg font-semibold text-sm'
             >
-              Reservar
+              {t(getValidLocale(locale), 'rooms.room.book')}
             </button>
           </div>
         </div>
@@ -443,7 +429,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                 {room.featured && (
                   <div className='bg-gray-900 text-white px-2 py-1 rounded text-xs font-medium'>
                     <Star className='w-3 h-3 inline mr-1' />
-                    Destacada
+                    {t(getValidLocale(locale), 'rooms.featured')}
                   </div>
                 )}
               </div>
@@ -498,7 +484,15 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                     </div>
                     <div className='flex items-center gap-1'>
                       <Bed className='w-3 h-3 sm:w-4 sm:h-4' />
-                      <span>{room.bedType}</span>
+                      <span>
+                        {getBedTypeLabel(room.bedType, getValidLocale(locale))}
+                        {/* Debug info - remove in production */}
+                        {process.env.NODE_ENV === 'development' && (
+                          <span className='text-xs text-gray-400 ml-1'>
+                            ({room.bedType})
+                          </span>
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -509,7 +503,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                     {formatPrice(room.price)}
                   </div>
                   <div className='font-sans text-sm text-gray-600'>
-                    por noche
+                    {t(getValidLocale(locale), 'rooms.room.perNight')}
                   </div>
                 </div>
               </div>
@@ -535,7 +529,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                   ))}
                 {(room.amenities || []).length > (isLg ? 6 : 3) && (
                   <div className='px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'>
-                    +{(room.amenities || []).length - (isLg ? 6 : 3)} más
+                    +{(room.amenities || []).length - (isLg ? 6 : 3)} {t(getValidLocale(locale), 'rooms.room.moreAmenities')}
                   </div>
                 )}
               </div>
@@ -547,7 +541,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                   className='bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-4 sm:px-6 transition-colors duration-200 text-center'
                 >
                   <span className='flex items-center justify-center'>
-                    Ver Detalles
+                    {t(getValidLocale(locale), 'rooms.room.viewDetails')}
                     <ArrowRight className='w-4 h-4 ml-2' />
                   </span>
                 </a>
@@ -558,7 +552,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                   }
                   className='border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-colors duration-200'
                 >
-                  Reservar
+                  {t(getValidLocale(locale), 'rooms.room.book')}
                 </button>
 
                 {viewMode === 'comparison' && (
@@ -574,8 +568,8 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                     }`}
                   >
                     {selectedRooms.includes(room.id)
-                      ? 'Seleccionada'
-                      : 'Comparar'}
+                      ? t(getValidLocale(locale), 'rooms.room.selected')
+                      : t(getValidLocale(locale), 'rooms.room.compare')}
                   </button>
                 )}
               </div>
@@ -614,7 +608,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
           >
-            Nuestras Habitaciones
+            {t(getValidLocale(locale), 'rooms.title')}
           </h1>
           <p
             className={`font-sans font-light text-xl text-gray-600 max-w-3xl mx-auto transform transition-all duration-1000 ${
@@ -622,9 +616,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             }`}
             style={{ animationDelay: '0.2s' }}
           >
-            Descubre espacios únicos diseñados para crear experiencias
-            memorables. Cada habitación combina elegancia, comodidad y atención
-            al detalle.
+            {t(getValidLocale(locale), 'rooms.subtitle')}
           </p>
         </div>
 
@@ -642,7 +634,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
               <input
                 type='text'
-                placeholder='Buscar habitaciones...'
+                placeholder={t(getValidLocale(locale), 'rooms.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className='w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-500 transition-colors duration-200'
@@ -689,7 +681,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               className='flex items-center gap-2 px-4 py-3 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors duration-200'
             >
               <Filter className='w-5 h-5' />
-              <span className='font-sans font-medium'>Filtros</span>
+              <span className='font-sans font-medium'>{t(getValidLocale(locale), 'rooms.filters.title')}</span>
               <ChevronDown
                 className={`w-4 h-4 transform transition-transform duration-200 ${
                   showFilters ? 'rotate-180' : ''
@@ -711,7 +703,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4'>
                 <div>
                   <label className='block font-sans text-sm font-medium text-gray-700 mb-2'>
-                    Precio mínimo
+                    {t(getValidLocale(locale), 'rooms.filters.minPrice')}
                   </label>
                   <input
                     type='number'
@@ -728,7 +720,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                 </div>
                 <div>
                   <label className='block font-sans text-sm font-medium text-gray-700 mb-2'>
-                    Precio máximo
+                    {t(getValidLocale(locale), 'rooms.filters.maxPrice')}
                   </label>
                   <input
                     type='number'
@@ -745,7 +737,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                 </div>
                 <div>
                   <label className='block font-sans text-sm font-medium text-gray-700 mb-2'>
-                    Capacidad mínima
+                    {t(getValidLocale(locale), 'rooms.filters.capacity')}
                   </label>
                   <input
                     type='number'
@@ -762,7 +754,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                 </div>
                 <div className='flex flex-col gap-2'>
                   <label className='block font-sans text-sm font-medium text-gray-700'>
-                    Opciones
+                    {t(getValidLocale(locale), 'rooms.filters.options')}
                   </label>
                   <label className='flex items-center gap-2'>
                     <input
@@ -777,7 +769,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                       className='rounded border-gray-300'
                     />
                     <span className='font-sans text-sm text-gray-700'>
-                      Solo disponibles
+                      {t(getValidLocale(locale), 'rooms.filters.availableOnly')}
                     </span>
                   </label>
                   <label className='flex items-center gap-2'>
@@ -793,7 +785,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                       className='rounded border-gray-300'
                     />
                     <span className='font-sans text-sm text-gray-700'>
-                      Solo destacadas
+                      {t(getValidLocale(locale), 'rooms.filters.featuredOnly')}
                     </span>
                   </label>
                 </div>
@@ -802,7 +794,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
               {/* Amenities Filter */}
               <div className='mb-4'>
                 <label className='block font-sans text-sm font-medium text-gray-700 mb-2'>
-                  Amenidades
+                  {t(getValidLocale(locale), 'rooms.filters.amenities')}
                 </label>
                 <div className='flex flex-wrap gap-2'>
                   {allAmenities.map((amenity) => (
@@ -828,7 +820,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
                 className='flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200'
               >
                 <X className='w-4 h-4' />
-                <span className='font-sans text-sm'>Limpiar filtros</span>
+                <span className='font-sans text-sm'>{t(getValidLocale(locale), 'rooms.filters.clearFilters')}</span>
               </button>
             </div>
           )}
@@ -845,16 +837,13 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             <span className='font-semibold text-gray-900'>
               {filteredRooms.length}
             </span>{' '}
-            habitación{filteredRooms.length !== 1 ? 'es' : ''} encontrada
-            {filteredRooms.length !== 1 ? 's' : ''}
+            {tPlural(getValidLocale(locale), 'rooms.results.found', filteredRooms.length)}
           </div>
 
           {viewMode === 'comparison' && selectedRooms.length > 0 && (
             <div className='flex items-center gap-4'>
               <span className='font-sans text-sm text-gray-600'>
-                {selectedRooms.length} habitación
-                {selectedRooms.length !== 1 ? 'es' : ''} seleccionada
-                {selectedRooms.length !== 1 ? 's' : ''}
+                {selectedRooms.length} {tPlural(getValidLocale(locale), 'rooms.results.selected', selectedRooms.length)}
               </span>
               <button
                 onClick={() => setSelectedRooms([])}
@@ -893,14 +882,21 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
         {filteredRooms.length === 0 && (
           <div className='text-center py-16'>
             <div className='font-sans text-xl text-gray-600 mb-4'>
-              No se encontraron habitaciones con los filtros aplicados
+              {t(getValidLocale(locale), 'rooms.noResults')}
             </div>
             <button
               onClick={clearFilters}
               className='bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-6 transition-colors duration-200'
             >
-              Limpiar filtros
+              {t(getValidLocale(locale), 'rooms.filters.clearFilters')}
             </button>
+          </div>
+        )}
+
+        {/* Debug Component - Remove in production */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className='mt-8'>
+            <BedTypeTest locale={getValidLocale(locale)} />
           </div>
         )}
       </div>
@@ -911,7 +907,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
           <div className='bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6'>
             <div className='flex items-center justify-between mb-4'>
               <h3 className='font-serif text-xl font-bold text-gray-900'>
-                Comparar Habitaciones ({selectedRooms.length})
+                {t(getValidLocale(locale), 'rooms.comparison.title')} ({selectedRooms.length})
               </h3>
               <button
                 onClick={() => setSelectedRooms([])}
@@ -960,7 +956,7 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             <div className='flex gap-3 mt-4'>
               <button className='flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-6 transition-colors duration-200'>
                 <span className='flex items-center justify-center'>
-                  Ver Comparación Detallada
+                  {t(getValidLocale(locale), 'rooms.comparison.viewDetailed')}
                   <Eye className='w-4 h-4 ml-2' />
                 </span>
               </button>

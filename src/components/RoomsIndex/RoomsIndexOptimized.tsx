@@ -6,10 +6,13 @@ import { useRoomFilters, type RoomSortOption } from '@/hooks/useRoomFilters'
 import { useBreakpoint } from '@/hooks/useBreakpoint'
 import RoomFiltersUI from '@/components/RoomsFilters'
 import type { Room } from '@/lib/data'
+import { t } from '@/lib/translations'
+import { getBedTypeLabel } from '@/lib/client-utils'
 
 interface RoomsIndexProps {
   rooms: Room[]
   className?: string
+  locale?: 'es' | 'en'
 }
 
 // Mock RoomCard component for testing
@@ -17,15 +20,22 @@ const RoomCard = ({
   room,
   viewMode,
   className,
+  locale = 'es',
 }: {
   room: any
   viewMode: string
   className: string
+  locale?: 'es' | 'en'
 }) => (
   <div className={`p-4 border rounded-lg ${className}`}>
     <h3 className='font-semibold'>{room.title}</h3>
     <p className='text-gray-600'>{room.description}</p>
     <p className='text-lg font-bold'>${room.price}</p>
+    {room.bedType && (
+      <p className='text-sm text-gray-500'>
+        {getBedTypeLabel(room.bedType, locale)}
+      </p>
+    )}
   </div>
 )
 
@@ -41,7 +51,7 @@ const RoomCard = ({
  * - Breakpoint-based responsive rendering
  * - Efficient pagination and virtual scrolling ready
  */
-const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '' }) => {
+const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '', locale = 'es' }) => {
   // UI State
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
@@ -129,13 +139,13 @@ const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '' }) => {
   // Sort options for dropdown
   const sortOptions: { value: RoomSortOption; label: string }[] = useMemo(
     () => [
-      { value: 'name', label: 'Nombre (A-Z)' },
-      { value: 'price-asc', label: 'Precio (menor a mayor)' },
-      { value: 'price-desc', label: 'Precio (mayor a menor)' },
-      { value: 'capacity', label: 'Capacidad' },
-      { value: 'size', label: 'Tamaño' },
+      { value: 'name', label: t(locale, 'rooms.sort.name') },
+      { value: 'price-asc', label: t(locale, 'rooms.sort.priceAsc') },
+      { value: 'price-desc', label: t(locale, 'rooms.sort.priceDesc') },
+      { value: 'capacity', label: t(locale, 'rooms.sort.capacity') },
+      { value: 'size', label: t(locale, 'rooms.sort.size') },
     ],
-    [],
+    [locale],
   )
 
   // Grid columns based on screen size
@@ -175,17 +185,17 @@ const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '' }) => {
         <div>
           <h2 className='text-2xl font-bold text-gray-900'>
             {filterStats.isFiltered
-              ? 'Habitaciones Filtradas'
-              : 'Todas las Habitaciones'}
+              ? t(locale, 'rooms.filtered')
+              : t(locale, 'rooms.all')}
           </h2>
           <p className='text-gray-600 mt-1'>
             {filterStats.isFiltered ? (
               <>
-                {filterStats.matchingRooms} de {filterStats.totalRooms}{' '}
-                habitaciones encontradas
+                {filterStats.matchingRooms} {t(locale, 'rooms.of')} {filterStats.totalRooms}{' '}
+                {t(locale, 'rooms.results.foundPlural')}
               </>
             ) : (
-              `${filterStats.totalRooms} habitaciones disponibles`
+              `${filterStats.totalRooms} ${t(locale, 'rooms.available')}`
             )}
           </p>
         </div>
@@ -242,17 +252,17 @@ const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '' }) => {
         <div className='text-center py-12'>
           <div className='text-gray-400 text-6xl mb-4'>🏨</div>
           <h3 className='text-xl font-semibold text-gray-900 mb-2'>
-            No se encontraron habitaciones
+            {t(locale, 'rooms.noResults')}
           </h3>
           <p className='text-gray-600 mb-4'>
-            Intenta ajustar los filtros o buscar con otros términos.
+            {t(locale, 'rooms.tryAdjustingFilters')}
           </p>
           {filterStats.hasActiveFilters && (
             <button
               onClick={clearAllFilters}
               className='px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200'
             >
-              Limpiar todos los filtros
+              {t(locale, 'rooms.clearAllFilters')}
             </button>
           )}
         </div>
@@ -271,6 +281,7 @@ const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '' }) => {
               room={room}
               viewMode={viewMode}
               className='h-full'
+              locale={locale}
             />
           ))}
         </div>
@@ -280,7 +291,7 @@ const RoomsIndex = memo<RoomsIndexProps>(({ rooms, className = '' }) => {
       {filteredRooms.length > pageSize && (
         <div className='mt-8 text-center'>
           <button className='px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200'>
-            Cargar más habitaciones
+            {t(locale, 'rooms.loadMore')}
           </button>
         </div>
       )}
