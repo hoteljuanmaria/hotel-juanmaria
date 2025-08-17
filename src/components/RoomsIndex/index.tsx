@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation' 
 import {
   Search,
   Filter,
@@ -42,6 +43,8 @@ const formatPrice = (price: number): string => {
     minimumFractionDigits: 0,
   }).format(price)
 }
+
+type Locale = 'es' | 'en' | 'all'
 
 // Helper functions for Payload CMS data
 const getImagePath = (imageObj: any): string => {
@@ -119,7 +122,8 @@ const getAmenityIcon = (amenity: any) => {
 type ViewMode = 'grid' | 'list' | 'comparison'
 type SortOption = 'price-asc' | 'price-desc' | 'capacity' | 'size' | 'name'
 
-const RoomsPage = () => {
+const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo locale
+  const sp = useSearchParams()                                 
   const [rooms, setRooms] = useState<Room[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
@@ -148,24 +152,20 @@ const RoomsPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const roomsResult = await getAllRooms()
-
+        const res = await fetch(`/api/rooms?locale=${locale}`, { cache: 'no-store' })
+        if (!res.ok) throw new Error('Failed to fetch rooms')
+        const { rooms: roomsResult } = await res.json()
         setRooms(roomsResult)
 
-        // Extract unique amenities from rooms
+        // amenities únicas (igual que ya hacías)
         const amenitiesSet = new Set<string>()
         roomsResult.forEach((room: Room) => {
           room.amenities?.forEach((amenity: any) => {
-            if (amenity.amenity) {
-              amenitiesSet.add(amenity.amenity)
-            }
-            if (amenity.customAmenity) {
-              amenitiesSet.add(amenity.customAmenity)
-            }
+            if (amenity.amenity) amenitiesSet.add(amenity.amenity)
+            if (amenity.customAmenity) amenitiesSet.add(amenity.customAmenity)
           })
         })
         setAllAmenities(Array.from(amenitiesSet))
-
         setLoading(false)
         setIsLoaded(true)
       } catch (error) {
@@ -173,11 +173,8 @@ const RoomsPage = () => {
         setLoading(false)
       }
     }
-
     loadData()
-
-    // No-op: mouse orbs handled outside React
-  }, [])
+  }, [locale])
 
   // Advanced filtering - memoized predicates and sorting
   const searchPredicate = useMemo(

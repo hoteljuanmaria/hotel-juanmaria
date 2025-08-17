@@ -97,28 +97,24 @@ const convertPayloadRoom = (room: Room): BookingRoom => {
     slug: room.slug || undefined,
   }
 }
+type LocaleCode = 'es' | 'en' | 'all'
 
-export async function getPayloadRooms(): Promise<BookingRoom[]> {
-  try {
-    const payload = await getPayload({ config: configPromise })
+export async function getPayloadRooms(
+  opts: { locale?: LocaleCode } = {}
+): Promise<BookingRoom[]> {
+  const { locale = 'es' } = opts
 
-    const { docs: rooms } = await payload.find({
-      collection: 'rooms',
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
-      sort: 'price',
-      limit: 50,
-      depth: 2,
-    })
-
-    return rooms.map(convertPayloadRoom)
-  } catch (error) {
-    console.error('Error fetching rooms from Payload:', error)
-    return []
-  }
+  const payload = await getPayload({ config: configPromise })
+  const { docs: rooms } = await payload.find({
+    collection: 'rooms',
+    where: { _status: { equals: 'published' } },
+    sort: 'price',
+    limit: 50,
+    depth: 2,
+    locale,               // <- ahora coincide con el tipo esperado
+    // fallbackLocale: null,
+  })
+  return rooms.map(convertPayloadRoom)
 }
 
 export async function getPayloadRoomById(
