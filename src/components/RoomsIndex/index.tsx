@@ -37,7 +37,6 @@ import { useBreakpoint } from '@/hooks/useBreakpoint'
 import MouseOrbs from '@/components/Effects/MouseOrbs'
 import { t, tPlural, type Locale as LocaleType } from '@/lib/translations'
 import { getBedTypeLabel, getImagePath, renderDescription, getAmenityText } from '@/lib/client-utils'
-import BedTypeTest from '../BedTypeTest'
 
 const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('es-CO', {
@@ -691,10 +690,10 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
 
             {/* Sort */}
             <CustomSortSelect
-              value={sortBy}
-              onChange={(value) => setSortBy(value as SortOption)}
-              className=''
-            />
+            value={sortBy}
+            onChange={(v) => setSortBy(v)}
+            locale={getValidLocale(locale)}
+          />
           </div>
 
           {/* Advanced Filters */}
@@ -890,13 +889,6 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             >
               {t(getValidLocale(locale), 'rooms.filters.clearFilters')}
             </button>
-          </div>
-        )}
-
-        {/* Debug Component - Remove in production */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className='mt-8'>
-            <BedTypeTest locale={getValidLocale(locale)} />
           </div>
         )}
       </div>

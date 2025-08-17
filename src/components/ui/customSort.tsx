@@ -1,85 +1,91 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronDown } from 'lucide-react'
 
+type Locale = 'es' | 'en'
+
 interface SortOption {
-  value: string
+  value: 'price-asc' | 'price-desc' | 'capacity' | 'size' | 'name'
   label: string
   description?: string
 }
 
 interface CustomSortSelectProps {
-  value: string
-  onChange: (value: string) => void
+  value: SortOption['value']
+  onChange: (value: SortOption['value']) => void
   className?: string
+  locale?: Locale // 👈 nuevo
 }
+
+// Diccionario mínimo
+const STR = {
+  es: {
+    priceAsc: { label: 'Precio: Menor a Mayor', desc: 'Ordenar por precio ascendente' },
+    priceDesc:{ label: 'Precio: Mayor a Menor', desc: 'Ordenar por precio descendente' },
+    capacity: { label: 'Capacidad', desc: 'Ordenar por número de huéspedes' },
+    size:     { label: 'Tamaño', desc: 'Ordenar por área o superficie' },
+    name:     { label: 'Nombre', desc: 'Ordenar alfabéticamente' },
+    select:   'Seleccionar...',
+  },
+  en: {
+    priceAsc: { label: 'Price: Low to High', desc: 'Sort by ascending price' },
+    priceDesc:{ label: 'Price: High to Low', desc: 'Sort by descending price' },
+    capacity: { label: 'Capacity', desc: 'Sort by number of guests' },
+    size:     { label: 'Size', desc: 'Sort by area/square meters' },
+    name:     { label: 'Name', desc: 'Sort alphabetically' },
+    select:   'Select...',
+  },
+} as const
 
 const CustomSortSelect: React.FC<CustomSortSelectProps> = ({
   value,
   onChange,
   className = '',
+  locale = 'es',
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const sortOptions: SortOption[] = [
-    {
-      value: 'price-asc',
-      label: 'Precio: Menor a Mayor',
-      description: 'Ordenar por precio ascendente',
-    },
-    {
-      value: 'price-desc',
-      label: 'Precio: Mayor a Menor',
-      description: 'Ordenar por precio descendente',
-    },
-    {
-      value: 'capacity',
-      label: 'Capacidad',
-      description: 'Ordenar por número de huéspedes',
-    },
-    {
-      value: 'size',
-      label: 'Tamaño',
-      description: 'Ordenar por área o superficie',
-    },
-    { value: 'name', label: 'Nombre', description: 'Ordenar alfabéticamente' },
-  ]
+  // Opciones según el locale (memoizadas)
+  const sortOptions: SortOption[] = useMemo(() => {
+    const T = STR[locale]
+    return [
+      { value: 'price-asc',  label: T.priceAsc.label,  description: T.priceAsc.desc },
+      { value: 'price-desc', label: T.priceDesc.label, description: T.priceDesc.desc },
+      { value: 'capacity',   label: T.capacity.label,  description: T.capacity.desc },
+      { value: 'size',       label: T.size.label,      description: T.size.desc },
+      { value: 'name',       label: T.name.label,      description: T.name.desc },
+    ]
+  }, [locale])
 
   const selectedOption = sortOptions.find((opt) => opt.value === value)
 
   useEffect(() => {
     const updatePosition = () => {
       if (isOpen && buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect()
-        setButtonRect(rect)
+        setButtonRect(buttonRef.current.getBoundingClientRect())
       }
     }
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen) {
-        const target = event.target as Element
-        // Cerrar si el click es fuera del botón y del dropdown
-        if (
-          buttonRef.current &&
-          !buttonRef.current.contains(target) &&
-          !target.closest('[data-dropdown-content]')
-        ) {
-          setIsOpen(false)
-        }
+      if (!isOpen) return
+      const target = event.target as Element
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(target) &&
+        !target.closest('[data-dropdown-content]')
+      ) {
+        setIsOpen(false)
       }
     }
 
     const handleScroll = () => {
       updatePosition()
-      // Cerrar dropdown al hacer scroll para evitar que se quede flotando
       setIsOpen(false)
     }
 
-    const handleResize = () => {
-      updatePosition()
-    }
+    const handleResize = () => updatePosition()
 
     document.addEventListener('mousedown', handleClickOutside)
     document.addEventListener('click', handleClickOutside)
@@ -99,10 +105,9 @@ const CustomSortSelect: React.FC<CustomSortSelectProps> = ({
 
   const handleToggle = () => {
     if (!isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect()
-      setButtonRect(rect)
+      setButtonRect(buttonRef.current.getBoundingClientRect())
     }
-    setIsOpen(!isOpen)
+    setIsOpen((v) => !v)
   }
 
   const handleSelect = (option: SortOption) => {
@@ -111,18 +116,17 @@ const CustomSortSelect: React.FC<CustomSortSelectProps> = ({
   }
 
   const dropdownStyle = buttonRect
-    ? {
-        position: 'fixed' as const,
+    ? ({
+        position: 'fixed',
         top: buttonRect.bottom + 4,
         left: buttonRect.left,
         width: buttonRect.width,
         zIndex: 1000,
-      }
+      } as const)
     : {}
 
   return (
     <>
-      {/* Select Button */}
       <div className={`relative ${className}`}>
         <button
           ref={buttonRef}
@@ -130,9 +134,7 @@ const CustomSortSelect: React.FC<CustomSortSelectProps> = ({
           onClick={handleToggle}
           className='w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-gray-500 transition-colors duration-200 text-left flex items-center justify-between'
         >
-          <span>
-            {selectedOption ? selectedOption.label : 'Seleccionar...'}
-          </span>
+          <span>{selectedOption ? selectedOption.label : STR[locale].select}</span>
           <ChevronDown
             className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${
               isOpen ? 'rotate-180' : ''
@@ -141,7 +143,6 @@ const CustomSortSelect: React.FC<CustomSortSelectProps> = ({
         </button>
       </div>
 
-      {/* Dropdown Menu - Renderizado como Portal */}
       {isOpen &&
         buttonRect &&
         createPortal(
@@ -170,7 +171,6 @@ const CustomSortSelect: React.FC<CustomSortSelectProps> = ({
                         </div>
                       )}
                     </div>
-
                     {selectedOption?.value === option.value && (
                       <div className='w-2 h-2 bg-gray-600 rounded-full flex-shrink-0 ml-2' />
                     )}
