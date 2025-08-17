@@ -455,7 +455,7 @@ const ImageStoryCard: React.FC<{
           <h3 className='font-serif text-2xl lg:text-3xl font-bold text-gray-900 mb-6'>
             {title}
           </h3>
-          <p className='font-sans font-light text-base lg:text-lg text-gray-700 leading-relaxed mb-8'>
+          <p className='font-sans font-light text-base lg:text-lg text-gray-700 leading-relaxed mb-8 text-justify'>
             {description}
           </p>
           <div>{children}</div>
@@ -610,7 +610,7 @@ export default function AboutPage(): JSX.Element {
                     .map((highlight, index) => (
                       <div key={index} className='flex items-start gap-3'>
                         <div className='w-2 h-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full mt-2' />
-                        <p className='font-sans font-light text-sm text-gray-700'>
+                        <p className='font-sans font-light text-sm text-gray-700 text-justify'>
                           {highlight}
                         </p>
                       </div>
@@ -673,7 +673,7 @@ export default function AboutPage(): JSX.Element {
                 </div>
 
                 <div className='prose prose-lg max-w-none'>
-                  <p className='font-sans text-xl text-gray-700 leading-relaxed font-light'>
+                  <p className='font-sans text-xl text-gray-700 leading-relaxed font-light text-justify'>
                     {aboutData.heritage.content}
                   </p>
                 </div>
@@ -859,7 +859,7 @@ export default function AboutPage(): JSX.Element {
                     {value.title}
                   </h3>
 
-                  <p className='font-sans font-light text-sm text-gray-600 leading-relaxed'>
+                  <p className='font-sans font-light text-sm text-gray-600 leading-relaxed text-justify'>
                     {value.description}
                   </p>
                 </div>
