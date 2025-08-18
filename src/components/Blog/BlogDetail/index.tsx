@@ -13,6 +13,8 @@ import {
   ChevronRight,
   ArrowRight,
 } from 'lucide-react'
+
+// Usa TU renderer con converters y prose
 import RichText from '@/components/RichText'
 
 interface BlogCategory {
@@ -32,7 +34,7 @@ export type BlogPost = {
   category?: string
   author?: { name?: string; role?: string; avatar?: any }
   tags?: string[]
-  content?: any
+  content?: any // Lexical JSON o stringificado
 }
 
 interface BlogDetailProps {
@@ -40,207 +42,6 @@ interface BlogDetailProps {
   post: BlogPost
   relatedPosts: BlogPost[]
   categories: BlogCategory[]
-}
-
-// Convert basic Markdown string to a Lexical state so we can always render with <RichText />
-const markdownToLexical = (markdown: string) => {
-  type TextNode = {
-    type: 'text'
-    text: string
-    format: number // 1 bold, 2 italic
-    detail: number
-    mode: 'normal'
-    style: string
-    version: 1
-  }
-
-  const makeTextNodes = (text: string): TextNode[] => {
-    const nodes: TextNode[] = []
-    let i = 0
-    while (i < text.length) {
-      if (text.startsWith('**', i)) {
-        const end = text.indexOf('**', i + 2)
-        if (end > i + 2) {
-          nodes.push({
-            type: 'text',
-            text: text.slice(i + 2, end),
-            format: 1,
-            detail: 0,
-            mode: 'normal',
-            style: '',
-            version: 1,
-          })
-          i = end + 2
-          continue
-        }
-      }
-      if (text[i] === '*' && text[i + 1] !== '*') {
-        const end = text.indexOf('*', i + 1)
-        if (end > i + 1) {
-          nodes.push({
-            type: 'text',
-            text: text.slice(i + 1, end),
-            format: 2,
-            detail: 0,
-            mode: 'normal',
-            style: '',
-            version: 1,
-          })
-          i = end + 1
-          continue
-        }
-      }
-      const nextStar = text.indexOf('*', i)
-      const chunkEnd = nextStar === -1 ? text.length : nextStar
-      const chunk = text.slice(i, chunkEnd)
-      if (chunk) {
-        nodes.push({
-          type: 'text',
-          text: chunk,
-          format: 0,
-          detail: 0,
-          mode: 'normal',
-          style: '',
-          version: 1,
-        })
-      }
-      i = chunkEnd
-    }
-    return nodes
-  }
-
-  const makeParagraph = (text: string) => ({
-    type: 'paragraph' as const,
-    format: 'left',
-    indent: 0,
-    version: 1 as const,
-    children: makeTextNodes(text),
-  })
-
-  const lines = markdown.replace(/\r\n?/g, '\n').split('\n')
-  const children: any[] = []
-  let i = 0
-  while (i < lines.length) {
-    const trimmed = lines[i].trim()
-    if (trimmed === '') {
-      i++
-      continue
-    }
-    const h = /^(#{1,4})\s+(.*)$/.exec(trimmed)
-    if (h) {
-      const lvl = h[1].length
-      const tag = (
-        lvl === 1 ? 'h1' : lvl === 2 ? 'h2' : lvl === 3 ? 'h3' : 'h4'
-      ) as 'h1' | 'h2' | 'h3' | 'h4'
-      children.push({
-        type: 'heading',
-        tag,
-        format: 'left',
-        indent: 0,
-        version: 1,
-        children: makeTextNodes(h[2]),
-      })
-      i++
-      continue
-    }
-    if (trimmed.startsWith('> ')) {
-      children.push({
-        type: 'quote',
-        format: 'left',
-        indent: 0,
-        version: 1,
-        children: [makeParagraph(trimmed.slice(2))],
-      })
-      i++
-      continue
-    }
-    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      const items: string[] = []
-      while (
-        i < lines.length &&
-        (lines[i].trim().startsWith('- ') || lines[i].trim().startsWith('* '))
-      ) {
-        items.push(lines[i].trim().slice(2))
-        i++
-      }
-      children.push({
-        type: 'list',
-        listType: 'bullet',
-        start: 1,
-        format: 'left',
-        indent: 0,
-        version: 1,
-        children: items.map((t) => ({
-          type: 'listitem',
-          version: 1,
-          value: 1,
-          children: [makeParagraph(t)],
-        })),
-      })
-      continue
-    }
-    const om = /^(\d+)\.\s+(.*)$/.exec(trimmed)
-    if (om) {
-      const items: string[] = [om[2]]
-      i++
-      while (i < lines.length) {
-        const m = /^(\d+)\.\s+(.*)$/.exec(lines[i].trim())
-        if (!m) break
-        items.push(m[2])
-        i++
-      }
-      children.push({
-        type: 'list',
-        listType: 'number',
-        start: parseInt(om[1], 10) || 1,
-        format: 'left',
-        indent: 0,
-        version: 1,
-        children: items.map((t) => ({
-          type: 'listitem',
-          version: 1,
-          value: 1,
-          children: [makeParagraph(t)],
-        })),
-      })
-      continue
-    }
-    if (trimmed === '---' || trimmed === '***') {
-      children.push({ type: 'horizontalrule', version: 1 })
-      i++
-      continue
-    }
-    // paragraph fallback
-    const para: string[] = [trimmed]
-    i++
-    while (i < lines.length && lines[i].trim() !== '') {
-      const t = lines[i].trim()
-      if (
-        /^(#{1,4})\s+/.test(t) ||
-        t.startsWith('> ') ||
-        t.startsWith('- ') ||
-        t.startsWith('* ') ||
-        /^\d+\.\s+/.test(t) ||
-        t === '---' ||
-        t === '***'
-      )
-        break
-      para.push(t)
-      i++
-    }
-    children.push(makeParagraph(para.join(' ')))
-  }
-
-  return {
-    root: {
-      type: 'root',
-      direction: null as null,
-      format: 'left',
-      indent: 0,
-      version: 1 as const,
-      children,
-    },
-  }
 }
 
 export default function BlogDetail({
@@ -260,7 +61,6 @@ export default function BlogDetail({
   const [shareMenuOpen, setShareMenuOpen] = useState(false)
 
   useEffect(() => {
-    // If server-provided props change (navigations), hydrate state
     setPost(initialPost || null)
     setRelatedPosts(initialRelated || [])
     setCategories(initialCategories || [])
@@ -275,6 +75,9 @@ export default function BlogDetail({
     })
   }
 
+
+
+
   const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
   const shareTitle = post?.title || ''
 
@@ -285,11 +88,8 @@ export default function BlogDetail({
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       shareUrl,
     )}&text=${encodeURIComponent(shareTitle)}`,
-    instagram: '#', // Instagram no permite sharing directo por URL
+    instagram: '#',
   }
-
-  // Always prefer rendering via <RichText /> like the posts route.
-  // If content is a string, convert to a basic Lexical state on the client.
 
   if (loading) {
     return (
@@ -338,6 +138,14 @@ export default function BlogDetail({
     return fallback
   }
 
+  const contentData =
+  typeof post.content === 'string'
+    ? (() => { try { return JSON.parse(post.content) } catch { return null } })()
+    : post.content
+  
+  const hasLexical =
+  contentData && typeof contentData === 'object' && 'root' in contentData
+
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100'>
       {/* Hero Section */}
@@ -363,7 +171,6 @@ export default function BlogDetail({
         {/* Content overlay */}
         <div className='absolute inset-0 flex items-center'>
           <div className='max-w-4xl mx-auto px-6 w-full pt-20'>
-            {/* Breadcrumb */}
             <nav className='flex items-center gap-2 text-white/70 text-sm mb-6'>
               <Link
                 href='/'
@@ -382,7 +189,6 @@ export default function BlogDetail({
               <span className='text-white'>{post.title}</span>
             </nav>
 
-            {/* Category badge */}
             <div className='mb-6'>
               <span
                 className='px-4 py-2 rounded-lg text-sm font-medium text-white backdrop-blur-xl'
@@ -396,17 +202,14 @@ export default function BlogDetail({
               </span>
             </div>
 
-            {/* Title */}
             <h1 className='font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight'>
               {post.title}
             </h1>
 
-            {/* Excerpt */}
             <p className='font-sans text-white/90 text-lg md:text-xl mb-8 max-w-3xl leading-relaxed'>
               {post.excerpt}
             </p>
 
-            {/* Meta información */}
             <div className='flex flex-wrap items-center gap-6 text-white/80'>
               <div className='flex items-center gap-3'>
                 <Image
@@ -459,7 +262,6 @@ export default function BlogDetail({
               <Share2 className='w-5 h-5' />
             </button>
 
-            {/* Share dropdown */}
             {shareMenuOpen && (
               <div className='absolute top-full right-0 mt-2 w-48 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/30 overflow-hidden transition-all duration-500'>
                 <div className='py-2'>
@@ -498,24 +300,23 @@ export default function BlogDetail({
       {/* Content Section */}
       <section className='py-16'>
         <div className='max-w-4xl mx-auto px-6'>
-          {/* Article content */}
           <article className='relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 p-8 md:p-12 mb-12 text-gray-800'>
-            <div className='max-w-none'>
-              {post.content ? (
-                <RichText
-                  className='max-w-[48rem] mx-auto prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900'
-                  data={
-                    typeof post.content === 'string'
-                      ? (markdownToLexical(post.content) as any)
-                      : (post.content as any)
-                  }
-                  enableGutter={false}
-                  invertInDark={true}
-                />
-              ) : null}
-            </div>
+          {hasLexical ? (
+  <RichText
+    data={contentData}
+    enableGutter={false}
+    enableProse
+    className="prose md:prose-lg max-w-[48rem] mx-auto
+               prose-headings:font-serif prose-headings:text-gray-900
+               prose-p:text-gray-700 prose-strong:text-gray-900
+               prose-a:underline hover:prose-a:no-underline
+               prose-li:marker:text-gray-400"
+  />
+) : (
+  <p className="text-gray-500">[Sin contenido]</p>
+)}
 
-            {/* Tags */}
+
             {post.tags && post.tags.length > 0 && (
               <div className='mt-12 pt-8 border-t border-gray-200'>
                 <h4 className='font-serif text-lg font-bold text-gray-900 mb-4'>
@@ -534,7 +335,6 @@ export default function BlogDetail({
               </div>
             )}
 
-            {/* Floating highlight */}
             <div className='absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 hover:opacity-100 transition-opacity duration-700 rounded-xl' />
           </article>
 
@@ -558,7 +358,6 @@ export default function BlogDetail({
               </div>
             </div>
 
-            {/* Floating highlight */}
             <div className='absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 hover:opacity-100 transition-opacity duration-700 rounded-xl' />
           </div>
         </div>

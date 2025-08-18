@@ -346,19 +346,28 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
                   {/* Controles del carrusel - Mejorados para móvil */}
                   {featuredPosts.length > 1 && (
                     <>
-                      <button
-                        onClick={prevSlide}
-                        className='absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-xl rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 z-10'
-                      >
-                        <ChevronLeft className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6' />
-                      </button>
+                <button
+  onClick={prevSlide}
+  className='absolute left-2 sm:left-4 top-[34%] md:top-[30%] lg:top-[28%] 
+             w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12
+             bg-white/20 backdrop-blur-xl rounded-full border border-white/30 
+             flex items-center justify-center text-white hover:bg-white/30 
+             transition-all duration-300 z-10'
+>
+  <ChevronLeft className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6' />
+</button>
 
-                      <button
-                        onClick={nextSlide}
-                        className='absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-xl rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 z-10'
-                      >
-                        <ChevronRight className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6' />
-                      </button>
+<button
+  onClick={nextSlide}
+  className='absolute right-2 sm:right-4 top-[34%] md:top-[30%] lg:top-[28%] 
+             w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12
+             bg-white/20 backdrop-blur-xl rounded-full border border-white/30 
+             flex items-center justify-center text-white hover:bg-white/30 
+             transition-all duration-300 z-10'
+>
+  <ChevronRight className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6' />
+</button>
+
 
                       <div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10'>
                         {featuredPosts.map((_, index) => (
@@ -390,6 +399,7 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
             <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-4xl mx-auto'>
               {categories.map((category, index) => (
                 <button
+                
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
                   className={`relative font-semibold rounded-lg overflow-hidden transition-all duration-700 group px-3 py-3 text-sm h-12 ${
@@ -399,20 +409,19 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
                   }`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <span className='relative z-10 flex items-center justify-center h-full'>
-                    <span className='truncate max-w-[80%]'>
-                      {category.name}
-                    </span>
-                    <div
-                      className='ml-1 w-1.5 h-1.5 rounded-full transition-colors duration-300 flex-shrink-0'
-                      style={{
-                        backgroundColor:
-                          selectedCategory === category.id
-                            ? 'rgba(255,255,255,0.7)'
-                            : category.color,
-                      }}
-                    />
-                  </span>
+                  <span className='relative z-10 flex items-center justify-center h-full gap-2'>
+  <span className='whitespace-nowrap'>{category.name}</span>
+  <div
+    className='w-2 h-2 rounded-full flex-shrink-0'
+    style={{
+      backgroundColor:
+        selectedCategory === category.id
+          ? 'rgba(255,255,255,0.7)'
+          : category.color,
+    }}
+  />
+</span>
+
 
                   {selectedCategory === category.id && (
                     <>

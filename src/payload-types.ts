@@ -1014,7 +1014,7 @@ export interface Blog {
     };
     [k: string]: unknown;
   };
-  category?: (string | null) | Category;
+  category: string | Category;
   /**
    * Estimated reading time in minutes
    */

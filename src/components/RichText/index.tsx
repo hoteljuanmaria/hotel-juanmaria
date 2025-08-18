@@ -1,73 +1,43 @@
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
-import {
-  DefaultNodeTypes,
-  SerializedBlockNode,
-  SerializedLinkNode,
-  type DefaultTypedEditorState,
-} from '@payloadcms/richtext-lexical'
-import {
-  JSXConvertersFunction,
-  LinkJSXConverter,
-  RichText as ConvertRichText,
-} from '@payloadcms/richtext-lexical/react'
+'use client'
 
-import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
-
-import type {
-  BannerBlock as BannerBlockProps,
-  CallToActionBlock as CTABlockProps,
-  MediaBlock as MediaBlockProps,
-} from '@/payload-types'
-import { BannerBlock } from '@/blocks/Banner/Component'
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import React from 'react'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
+import { RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
+import { jsxConverter } from '@/components/RichText/converters'
 import { cn } from '@/utilities/ui'
 
-type NodeTypes =
-  | DefaultNodeTypes
-  | SerializedBlockNode<
-      CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps
-    >
-
-const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
-  const { value, relationTo } = linkNode.fields.doc!
-  if (typeof value !== 'object') {
-    throw new Error('Expected value to be an object')
-  }
-  const slug = value.slug
-  return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
-}
-
-const jsxConverters: JSXConvertersFunction<NodeTypes> = ({
-  defaultConverters,
-}) => ({
-  ...defaultConverters,
-  ...LinkJSXConverter({ internalDocToHref }),
-  blocks: {
-    banner: ({ node }) => (
-      <BannerBlock className='col-start-2 mb-4' {...node.fields} />
-    ),
-    mediaBlock: ({ node }) => (
-      <MediaBlock
-        className='col-start-1 col-span-3'
-        imgClassName='m-0'
-        {...node.fields}
-        captionClassName='mx-auto max-w-[48rem]'
-        enableGutter={false}
-        disableInnerContainer={true}
-      />
-    ),
-    code: ({ node }) => <CodeBlock className='col-start-2' {...node.fields} />,
-    cta: ({ node }) => <CallToActionBlock {...node.fields} />,
-  },
-})
+type EditorState = SerializedEditorState | DefaultTypedEditorState | null | undefined
 
 type Props = {
-  data: DefaultTypedEditorState
+  data: EditorState | string
   enableGutter?: boolean
   enableProse?: boolean
-  // When true, applies dark:prose-invert in dark mode. Default: true
   invertInDark?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
+
+/** Fallback muy simple para evitar crashes del renderer */
+function SafeRenderer({
+  data,
+  converters,
+}: {
+  data: Exclude<EditorState, string>
+  converters: any
+}) {
+  try {
+    return <PayloadRichText data={data as any} converters={converters} />
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.error('[RichText] render error:', err, { data })
+    }
+    return (
+      <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-3">
+        No se pudo renderizar el contenido.
+      </div>
+    )
+  }
+}
 
 export default function RichText(props: Props) {
   const {
@@ -78,23 +48,36 @@ export default function RichText(props: Props) {
     data,
     ...rest
   } = props
-  // Wrap the rendered rich text with a container so typography (prose) styles apply
+
+  // 1) Parseo seguro si viene stringificado
+  const parsed: EditorState =
+    typeof data === 'string'
+      ? (() => {
+          try {
+            return JSON.parse(data)
+          } catch {
+            return null
+          }
+        })()
+      : data
+
+  // 2) Validar forma mínima esperada por Lexical
+  const isLexical = parsed && typeof parsed === 'object' && 'root' in (parsed as any)
+
+  if (!isLexical) return null
+
   return (
     <div
       className={cn(
         'payload-richtext',
-        {
-          container: enableGutter,
-          'max-w-none': !enableGutter,
-          // Use Tailwind Typography preset sizes; optionally invert colors only in dark if requested
-          'mx-auto prose sm:prose-base md:prose-lg': enableProse,
-        },
-        invertInDark && enableProse ? 'dark:prose-invert' : undefined,
+        enableGutter ? 'container' : 'max-w-none',
+        enableProse && 'mx-auto prose sm:prose-base md:prose-lg',
+        invertInDark && enableProse && 'dark:prose-invert',
         className,
       )}
       {...rest}
     >
-      <ConvertRichText converters={jsxConverters} data={data} />
+      <SafeRenderer data={parsed as any} converters={jsxConverter} />
     </div>
   )
 }

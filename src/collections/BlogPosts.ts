@@ -162,6 +162,7 @@ export const BlogPosts: CollectionConfig = {
           fields: [
             {
               name: 'category',
+              required: true,
               type: 'relationship',
               relationTo: 'categories',
             },
