@@ -410,18 +410,17 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <span className='relative z-10 flex items-center justify-center h-full gap-2'>
-  <span className='whitespace-nowrap'>{category.name}</span>
-  <div
-    className='w-2 h-2 rounded-full flex-shrink-0'
-    style={{
-      backgroundColor:
-        selectedCategory === category.id
-          ? 'rgba(255,255,255,0.7)'
-          : category.color,
-    }}
-  />
-</span>
-
+                    <span className='whitespace-nowrap'>{category.name}</span>
+                    <div
+                      className='w-2 h-2 rounded-full flex-shrink-0'
+                      style={{
+                        backgroundColor:
+                          selectedCategory === category.id
+                            ? 'rgba(255,255,255,0.7)'
+                            : category.color,
+                      }}
+                    />
+                  </span>
 
                   {selectedCategory === category.id && (
                     <>
@@ -603,18 +602,25 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
                 ¿Te gustaría recibir nuestras últimas historias?
               </h3>
               <p className='font-sans font-light text-gray-600 mb-6'>
-                Suscríbete a nuestro newsletter y mantente al día con las
+                Síguenos en instagram y mantente al tanto de las
                 experiencias exclusivas de Hotel Juan María.
               </p>
 
               <button className='relative font-semibold rounded-lg overflow-hidden transition-all duration-700 group px-8 py-3'>
-                <span className='relative z-10 flex items-center justify-center text-white'>
-                  Suscribirse al Newsletter
-                  <ArrowRight className='ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300' />
-                </span>
+                <a
+                  href="https://www.instagram.com/hoteljuanmaria/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative font-semibold rounded-lg overflow-hidden transition-all duration-700 group px-8 py-3 inline-block"
+                >
+                  <span className="relative z-10 flex items-center justify-center text-white">
+                    Seguir en Instagram
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </span>
 
-                <div className='absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black' />
-                <div className='absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700' />
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                </a>
 
                 <div className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700'>
                   <div className='absolute top-1 right-2 w-1 h-3 bg-gradient-to-b from-transparent via-white/30 to-transparent rotate-45 animate-pulse' />
