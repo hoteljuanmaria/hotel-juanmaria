@@ -118,50 +118,79 @@ export default async function ExperienceDetailPage({
           ))}
     </div>
   ) : null}
+{/* Related experiences - Liquid Luxury */}
+{related.length > 0 && (
+  <section className="max-w-6xl mx-auto mt-12">
+    <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+      También te puede interesar
+    </h2>
 
-        {/* Related experiences */}
-        {related.length > 0 && (
-          <section className='max-w-6xl mx-auto mt-12'>
-            <h2 className='font-serif text-2xl font-bold text-gray-900 mb-4'>
-              También te puede interesar
-            </h2>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-              {related.map((r: any) => {
-                const rImg = Array.isArray(r.gallery)
-                  ? (r.gallery[0] as any)?.image?.url ||
-                    (r.gallery[0] as any)?.url ||
-                    null
-                  : null
-                return (
-                  <a
-                    key={r.id}
-                    href={`/experiences/${r.slug}`}
-                    className='group rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-md transition-shadow'
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {rImg && (
-                      <img
-                        src={rImg}
-                        alt={r.title}
-                        className='w-full h-40 object-cover'
-                      />
-                    )}
-                    <div className='p-4'>
-                      <h3 className='font-serif text-lg font-semibold group-hover:underline'>
-                        {r.title}
-                      </h3>
-                      {r.shortDescription && (
-                        <p className='text-sm text-gray-600 mt-1 line-clamp-2'>
-                          {r.shortDescription}
-                        </p>
-                      )}
-                    </div>
-                  </a>
-                )
-              })}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {related.map((r: any, index: number) => {
+        const rImg = Array.isArray(r.gallery)
+          ? (r.gallery[0] as any)?.image?.url ||
+            (r.gallery[0] as any)?.url ||
+            null
+          : null
+
+        return (
+          <a
+            key={r.id}
+            href={`/experiences/${r.slug}`}
+            className="group block focus:outline-none"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            {/* Card base - Glassmorphism Premium */}
+            <div className="relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 overflow-hidden transition-all duration-700 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-3xl">
+
+              {/* Media */}
+              <div className="relative w-full h-48">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {rImg ? (
+                  <img
+                    src={rImg}
+                    alt={r.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
+                )}
+
+                {/* Sutil overlay para lectura y brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                {/* Orbe sutil (floating) */}
+                <div className="pointer-events-none absolute -bottom-8 -right-8 w-32 h-32 bg-white/5 rounded-full blur-3xl animate-pulse" />
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <h3 className="font-serif text-lg font-semibold text-gray-900 ">
+                  {r.title}
+                </h3>
+                {r.shortDescription && (
+                  <p className="mt-2 font-sans text-sm text-gray-600 font-light line-clamp-2">
+                    {r.shortDescription}
+                  </p>
+                )}
+              </div>
+
+              {/* Floating highlight (hover) */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+              {/* Shimmer effects (obligatorio en hover) */}
+              <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute top-4 right-6 w-1 h-6 bg-gradient-to-b from-transparent via-gray-300/50 to-transparent rotate-45 animate-pulse" />
+                <div className="absolute bottom-4 left-6 w-4 h-0.5 bg-gradient-to-r from-transparent via-gray-300/50 to-transparent animate-pulse" style={{ animationDelay: '0.5s' }} />
+              </div>
             </div>
-          </section>
-        )}
+          </a>
+        )
+      })}
+    </div>
+  </section>
+)}
       </div>
     </article>
   )
