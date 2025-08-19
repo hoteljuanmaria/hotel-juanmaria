@@ -562,7 +562,7 @@ export interface Experience {
    * Shown in the “Sobre Este Servicio” section of the detail page.
    */
   longDescription?: string | null;
-  content: {
+  content?: {
     root: {
       type: string;
       children: {
@@ -576,7 +576,7 @@ export interface Experience {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
   gallery?:
     | {
         image: string | Media;

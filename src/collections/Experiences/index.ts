@@ -196,7 +196,7 @@ export const Experiences: CollectionConfig = {
               name: 'content',
               type: 'richText',
               localized: true,
-              required: true,
+              required: false,
               label: { en: 'Detailed Content', es: 'Contenido Detallado' },
               editor: lexicalEditor({
                 features: ({ rootFeatures }) => [

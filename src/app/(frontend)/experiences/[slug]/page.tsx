@@ -81,44 +81,43 @@ export default async function ExperienceDetailPage({
           } as any
         }
       />
+{/* Gallery carousel, taxonomy, and detailed content */}
+<div className='container mx-auto px-6 -mt-2 lg:-mt-3'>
+  {exp.content && (
+    <RichText
+      className='max-w-[48rem] mx-auto mb-14 lg:mb-16'
+      data={exp.content as any}
+      enableGutter={false}
+    />
+  )}
 
-      {/* Gallery carousel, taxonomy, and detailed content */}
-      <div className='container mx-auto px-6 mt-8'>
-        {galleryImages.length > 0 && (
-          <div className='max-w-5xl mx-auto mb-8'>
-            <GalleryCarousel images={galleryImages as any} />
-          </div>
-        )}
+  {galleryImages.length > 0 && (
+    <div className='max-w-5xl mx-auto mb-8'>
+      <GalleryCarousel images={galleryImages as any} />
+    </div>
+  )}
 
-        {(exp as any).category || ((exp as any).tags || []).length > 0 ? (
-          <div className='max-w-[48rem] mx-auto mb-6 flex flex-wrap gap-2'>
-            {(exp as any).category && (
-              <span className='inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700'>
-                {(exp as any).category}
-              </span>
-            )}
-            {Array.isArray((exp as any).tags) &&
-              (exp as any).tags
-                .map((t: any) => t?.tag)
-                .filter(Boolean)
-                .map((tag: string, i: number) => (
-                  <span
-                    key={`${tag}-${i}`}
-                    className='inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-sm text-gray-600'
-                  >
-                    #{tag}
-                  </span>
-                ))}
-          </div>
-        ) : null}
-
-        {exp.content && (
-          <RichText
-            className='max-w-[48rem] mx-auto'
-            data={exp.content as any}
-            enableGutter={false}
-          />
-        )}
+  {(exp as any).category || ((exp as any).tags || []).length > 0 ? (
+    <div className='max-w-[48rem] mx-auto mb-6 flex flex-wrap gap-2'>
+      {(exp as any).category && (
+        <span className='inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700'>
+          {(exp as any).category}
+        </span>
+      )}
+      {Array.isArray((exp as any).tags) &&
+        (exp as any).tags
+          .map((t: any) => t?.tag)
+          .filter(Boolean)
+          .map((tag: string, i: number) => (
+            <span
+              key={`${tag}-${i}`}
+              className='inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-sm text-gray-600'
+            >
+              #{tag}
+            </span>
+          ))}
+    </div>
+  ) : null}
 
         {/* Related experiences */}
         {related.length > 0 && (
