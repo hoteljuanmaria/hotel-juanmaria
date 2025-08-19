@@ -260,31 +260,96 @@ const Footer: React.FC<FooterProps> = ({
               )}
             </div>
           </div>
+                      
+{/* Contacto section (oscuro y botones largos) */}
+<div className='mt-12 rounded-2xl p-8 relative overflow-hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black'>
+  <div className='relative z-10 text-center max-w-3xl mx-auto'>
+    <h3 className='text-3xl font-bold text-white tracking-tight mb-2'>Contáctanos</h3>
+    <p className='text-white/70 mb-8'>
+      ¿Tienes dudas o quieres reservar? Elige el canal que prefieras.
+    </p>
 
-          {/* Newsletter section */}
-          {newsletter?.enabled !== false && (
-            <div className='mt-12 bg-gradient-to-r from-gray-900 via-gray-800 to-black rounded-xl p-8 relative overflow-hidden'>
-              <div className='relative z-10 text-center max-w-2xl mx-auto'>
-                <h3 className='text-2xl font-bold text-white mb-4'>
-                  {newsletter?.title || 'Mantente Informado'}
-                </h3>
-                <p className='text-gray-300 mb-6'>
-                  {newsletter?.description ||
-                    'Recibe ofertas exclusivas y noticias sobre nuestros servicios'}
-                </p>
-                <div className='flex flex-col sm:flex-row gap-4 max-w-md mx-auto'>
-                  <input
-                    type='email'
-                    placeholder={newsletter?.placeholder || 'Tu email'}
-                    className='flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:border-white/40 transition-all duration-300'
-                  />
-                  <button className='px-6 py-3 bg-white/20 text-white border border-white/30 hover:bg-white/30 rounded-lg transition-all duration-300'>
-                    {newsletter?.buttonLabel || 'Suscribirse'}
-                  </button>
+    {(() => {
+      const phoneRaw = contactInfo?.phone?.main || ''
+      const phoneHref = phoneRaw ? `tel:${phoneRaw.replace(/[^+\d]/g, '')}` : null
+      const emailRaw =
+        contactInfo?.email?.reservations || contactInfo?.email?.marketing || ''
+      const emailHref = emailRaw ? `mailto:${emailRaw}` : null
+      const waRaw = contactInfo?.phone?.whatsapp || ''
+      const waHref = waRaw ? `https://wa.me/${waRaw.replace(/[^0-9]/g, '')}` : null
+
+      const Card: React.FC<{
+        href?: string | null
+        icon: React.ReactNode
+        title: string
+        subtitle?: string
+        external?: boolean
+      }> = ({ href, icon, title, subtitle, external }) => {
+        if (!href) return null
+        return (
+          <a
+            href={href}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            className='group rounded-xl border border-white/15 bg-white/10 
+                       hover:bg-white/20 transition-all duration-300 
+                       backdrop-blur-md p-5 text-left flex-1 min-w-[250px]'
+          >
+            <div className='flex items-center gap-4'>
+              <div className='flex h-11 w-11 items-center justify-center rounded-lg 
+                              bg-white/15 text-white border border-white/20
+                              group-hover:bg-white/25 transition-colors'>
+                {icon}
+              </div>
+              <div className='min-w-0'>
+                <div className='text-white font-semibold leading-tight'>
+                  {title}
                 </div>
+                {subtitle && (
+                  <div className='text-sm text-white/80 break-words'>{subtitle}</div>
+                )}
               </div>
             </div>
-          )}
+          </a>
+        )
+      }
+
+      return (
+        <div className='flex flex-col sm:flex-row gap-4 max-w-3xl mx-auto'>
+          <Card
+            href={phoneHref}
+            icon={<Phone className='w-5 h-5' />}
+            title='Llamar'
+            subtitle={phoneRaw || undefined}
+          />
+          <Card
+            href={emailHref}
+            icon={<Mail className='w-5 h-5' />}
+            title='Email'
+            subtitle={emailRaw || undefined}
+          />
+          <Card
+            href={waHref}
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                className="w-5 h-5"
+              >
+                <path d="M20.52 3.48A11.9 11.9 0 0012 .1C5.37.1.1 5.37.1 12c0 2.11.55 4.17 1.59 5.99L0 24l6.21-1.63A11.86 11.86 0 0012 23.9c6.63 0 11.9-5.27 11.9-11.9 0-3.18-1.24-6.18-3.38-8.52zM12 21.1a9.12 9.12 0 01-4.65-1.27l-.33-.2-3.68.97.99-3.59-.22-.36A9.12 9.12 0 012.9 12c0-5.02 4.08-9.1 9.1-9.1 2.43 0 4.72.95 6.43 2.67a9.04 9.04 0 012.67 6.43c0 5.02-4.08 9.1-9.1 9.1zm5.12-6.84c-.28-.14-1.65-.82-1.91-.91-.26-.1-.45-.14-.64.14s-.73.91-.9 1.09c-.16.18-.33.2-.61.07-.28-.14-1.19-.44-2.27-1.42-.84-.75-1.42-1.68-1.59-1.96-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.17.19-.28.28-.47.09-.18.05-.34-.02-.48-.07-.14-.64-1.55-.88-2.13-.23-.55-.47-.48-.64-.49h-.55c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29s.98 2.65 1.12 2.83c.14.18 1.94 2.97 4.7 4.17.66.28 1.18.45 1.58.58.66.21 1.26.18 1.74.11.53-.08 1.65-.67 1.88-1.32.23-.66.23-1.22.16-1.33-.07-.11-.25-.18-.53-.32z"/>
+              </svg>
+            }
+            title='WhatsApp'
+            subtitle={waRaw || undefined}
+            external
+          />
+        </div>
+      )
+    })()}
+  </div>
+</div>
+
+
 
           {/* Bottom bar */}
           <div className='mt-8 pt-6 border-t border-gray-200/50 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600'>
