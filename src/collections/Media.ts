@@ -17,29 +17,36 @@ const dirname = path.dirname(filename)
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
-    create: authenticated,
-    delete: authenticated,
     read: anyone,
+    create: authenticated,
     update: authenticated,
+    delete: authenticated,
+  },
+  admin: {
+    group: 'Website', 
+    useAsTitle: 'alt',
   },
   fields: [
     {
       name: 'alt',
+      label: 'Alt text',
       type: 'text',
-      //required: true,
+      required: false,
     },
     {
       name: 'caption',
+      label: 'Caption',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
-        },
+        features: ({ rootFeatures }) => [
+          ...rootFeatures,
+          FixedToolbarFeature(),
+          InlineToolbarFeature(),
+        ],
       }),
     },
   ],
   upload: {
-    // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
     staticDir: path.resolve(dirname, '../../public/media'),
     adminThumbnail: 'thumbnail',
     focalPoint: true,

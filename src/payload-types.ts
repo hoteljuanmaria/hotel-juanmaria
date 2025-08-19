@@ -111,12 +111,14 @@ export interface Config {
     footer: Footer;
     'experiences-page': ExperiencesPage;
     blogPage: BlogPage;
+    currentMenu: CurrentMenu;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'experiences-page': ExperiencesPageSelect<false> | ExperiencesPageSelect<true>;
     blogPage: BlogPageSelect<false> | BlogPageSelect<true>;
+    currentMenu: CurrentMenuSelect<false> | CurrentMenuSelect<true>;
   };
   locale: 'en' | 'es';
   user: User & {
@@ -2478,6 +2480,22 @@ export interface BlogPage {
   createdAt?: string | null;
 }
 /**
+ * PDF actual del menú del hotel (la URL /menu siempre redirige al último PDF).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "currentMenu".
+ */
+export interface CurrentMenu {
+  id: string;
+  /**
+   * Sube aquí el PDF vigente del menú.
+   */
+  pdf: string | Media;
+  note?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -2753,6 +2771,17 @@ export interface BlogPageSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "currentMenu_select".
+ */
+export interface CurrentMenuSelect<T extends boolean = true> {
+  pdf?: T;
+  note?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

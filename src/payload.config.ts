@@ -18,6 +18,8 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { ExperiencesPage } from './globals/ExperiencesPage'
 import { BlogPage } from './globals/BlogPage'
+import { CurrentMenu } from './globals/CurrentMenu'
+
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -81,7 +83,7 @@ export default buildConfig({
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, ExperiencesPage, BlogPage],
+  globals: [Header, Footer, ExperiencesPage, BlogPage, CurrentMenu],
   plugins: [...plugins],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
