@@ -206,44 +206,45 @@ const RoomCarousel = ({ locale = 'es' }: { locale?: Locale }) => {
 
       {/* Carousel Container */}
       <div className='relative'>
-        {/* Mobile Navigation - Fixed Position */}
-        {isMobile && (
-          <div className='flex justify-between items-center mb-4 px-4'>
-            <button
-              onClick={handlePrevClick}
-              disabled={isTransitioning}
-              className='p-3 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 text-gray-700 hover:text-gray-900 hover:bg-white/40 transition-all duration-300 shadow-lg disabled:opacity-50'
-              aria-label={t(locale, 'carousel.previous')}
-            >
-              <ChevronLeft className='w-5 h-5' />
-            </button>
+      {/* Mobile Navigation - Fixed Position */}
+{isMobile && (
+  <div className='relative z-40 flex justify-between items-center mb-10 px-4'>
+    <button
+      onClick={handlePrevClick}
+      disabled={isTransitioning}
+      className='pointer-events-auto p-3 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 text-gray-700 hover:text-gray-900 hover:bg-white/40 transition-all duration-300 shadow-lg disabled:opacity-50'
+      aria-label={t(locale, 'carousel.previous')}
+    >
+      <ChevronLeft className='w-5 h-5' />
+    </button>
 
-            <div className='flex gap-2'>
-              {rooms.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleCardClick(index)}
-                  disabled={isTransitioning}
-                  className={`transition-all duration-300 disabled:cursor-not-allowed ${
-                    index === currentIndex
-                      ? 'w-6 h-2 bg-gradient-to-r from-gray-900 via-gray-800 to-black rounded-full'
-                      : 'w-2 h-2 bg-gray-300/60 hover:bg-gray-400/80 rounded-full'
-                  }`}
-                  aria-label={`Ir a habitación ${index + 1}`}
-                />
-              ))}
-            </div>
+    <div className='flex gap-2'>
+      {rooms.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => handleCardClick(index)}
+          disabled={isTransitioning}
+          className={`transition-all duration-300 disabled:cursor-not-allowed ${
+            index === currentIndex
+              ? 'w-6 h-2 bg-gradient-to-r from-gray-900 via-gray-800 to-black rounded-full'
+              : 'w-2 h-2 bg-gray-300/60 hover:bg-gray-400/80 rounded-full'
+          }`}
+          aria-label={`Ir a habitación ${index + 1}`}
+        />
+      ))}
+    </div>
 
-            <button
-              onClick={handleNextClick}
-              disabled={isTransitioning}
-              className='p-3 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 text-gray-700 hover:text-gray-900 hover:bg-white/40 transition-all duration-300 shadow-lg disabled:opacity-50'
-              aria-label={t(locale, 'carousel.next')}
-            >
-              <ChevronRight className='w-5 h-5' />
-            </button>
-          </div>
-        )}
+    <button
+      onClick={handleNextClick}
+      disabled={isTransitioning}
+      className='pointer-events-auto p-3 bg-white/20 backdrop-blur-xl rounded-xl border border-white/30 text-gray-700 hover:text-gray-900 hover:bg-white/40 transition-all duration-300 shadow-lg disabled:opacity-50'
+      aria-label={t(locale, 'carousel.next')}
+    >
+      <ChevronRight className='w-5 h-5' />
+    </button>
+  </div>
+)}
+
 
         {/* Carousel Grid */}
         <div
@@ -574,16 +575,16 @@ const RoomCarousel = ({ locale = 'es' }: { locale?: Locale }) => {
           }`}
         >
           <div className='bg-white/40 backdrop-blur-xl rounded-2xl p-8 border border-white/30 shadow-lg relative overflow-hidden group'>
-            <h4 className='font-serif text-2xl font-bold text-gray-900 mb-3 h-16 flex items-center justify-center text-center leading-tight'>
-              {rooms[currentIndex].title}
-            </h4>
+            <h4 className='font-serif text-2xl font-bold text-gray-900 mb-3 text-center leading-tight break-words'>
+  {rooms[currentIndex].title}
+</h4>
 
-            {/* Room Details */}
-            <div
-              className={`flex items-center justify-center ${
-                isMobile ? 'flex-col gap-2' : 'gap-6'
-              } text-sm text-gray-600 mb-4 h-12`}
-            >
+<div
+  className={`flex items-center justify-center ${
+    isMobile ? 'flex-col gap-2' : 'flex-wrap gap-6'
+  } text-sm text-gray-600 mb-4`}
+>
+
               <span className='flex items-center'>
                 <strong className='mr-1'>{rooms[currentIndex].capacity}</strong>{' '}
                 huéspedes

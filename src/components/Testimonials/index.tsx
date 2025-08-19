@@ -65,17 +65,21 @@ export default function TestimonialsShowcase() {
   }, [])
 
   const quoteRef = useRef<HTMLQuoteElement>(null)
-  const fitQuote = useCallback(() => {
-    const el = quoteRef.current
-    if (!el) return
-    const max = isMobile ? 18 : 20
-    const min = 14
-    el.style.fontSize = `${max}px`
-    for (let size = max; size >= min; size--) {
-      el.style.fontSize = `${size}px`
-      if (el.scrollHeight <= el.clientHeight) break
-    }
-  }, [isMobile, currentSlide])
+ const fitQuote = useCallback(() => {
+  const el = quoteRef.current
+  if (!el) return
+  const max = isMobile ? 18 : 20
+  const min = 12
+  el.style.fontSize = `${max}px`
+
+  // Reducimos de a 0.5px hasta que el texto quepa en la altura fija del blockquote
+  let size = max
+  while (size > min && el.scrollHeight > el.clientHeight) {
+    size -= 0.5
+    el.style.fontSize = `${size}px`
+  }
+}, [isMobile, currentSlide])
+
 
   useEffect(() => { fitQuote() }, [fitQuote, currentSlide])
   useEffect(() => {
@@ -133,149 +137,205 @@ export default function TestimonialsShowcase() {
 
   return (
     <div className='min-h-screen'>
-      {/* HERO FULL HEIGHT */}
-      <section className='relative overflow-hidden' style={{ height: `calc(100dvh - ${navHeight}px)` }}>
-        <div className='absolute inset-0'>
-          <Image src={backgroundImage} alt='Hotel Juan María' fill className='object-cover' />
-          <div className='absolute inset-0 bg-gradient-to-br from-gray-900/45 via-gray-800/35 to-black/55' />
-          <div className='absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black/30 to-transparent' />
+  {/* HERO FULL HEIGHT (altura flexible en móvil, 100vh en desktop) */}
+<section
+  className="relative overflow-hidden"
+  style={{
+    height: isMobile ? 'auto' : `calc(100dvh - ${navHeight}px)`,
+  }}
+>
+  {/* Fondo */}
+  <div className="absolute inset-0">
+    <Image src={backgroundImage} alt="Hotel Juan María" fill className="object-cover" />
+    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/45 via-gray-800/35 to-black/55" />
+    <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black/30 to-transparent" />
+  </div>
+
+  {/* Contenido */}
+  <div className="relative z-10 w-full h-full">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      {/* Wrapper general */}
+      <div
+        className={`${
+          isMobile
+            ? 'py-10 flex flex-col gap-8'
+            : 'h-full grid grid-cols-12 gap-8 items-center'
+        }`}
+      >
+        {/* IZQUIERDA */}
+        <div className={`${isMobile ? '' : 'col-span-5'} flex flex-col gap-4 lg:gap-6`}>
+          <h1
+            className={`font-serif font-bold text-white leading-tight tracking-tight drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]
+            ${isMobile ? 'text-3xl' : 'text-4xl md:text-6xl lg:text-6xl'}`}
+          >
+            Experiencias
+            <span className="block bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+              Inolvidables
+            </span>
+          </h1>
+
+          <p
+            className={`font-sans text-white/95 drop-shadow-[0_6px_20px_rgba(0,0,0,0.7)] max-w-xl
+            ${isMobile ? 'text-sm' : 'text-base md:text-lg'}`}
+          >
+            Descubre lo que nuestros huéspedes dicen sobre su estadía en Hotel Juan María
+          </p>
+
+          {stats && (
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              {/* Card 1 */}
+              <div className={`relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 text-center ${isMobile ? 'p-4' : 'p-5'}`}>
+                <TrendingUp className={`${isMobile ? 'w-6 h-6' : 'w-7 h-7'} text-gray-700 mx-auto mb-2`} />
+                <div className={`font-serif font-bold text-gray-900 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
+                  {stats.averageRating}
+                </div>
+                <div className="text-sm text-gray-600">Rating Promedio</div>
+                <div className="flex justify-center mt-1">{renderStars(Math.round(stats.averageRating))}</div>
+              </div>
+
+              {/* Card 2 */}
+              <div className={`relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 text-center ${isMobile ? 'p-4' : 'p-5'}`}>
+                <Users className={`${isMobile ? 'w-6 h-6' : 'w-7 h-7'} text-gray-700 mx-auto mb-2`} />
+                <div className={`font-serif font-bold text-gray-900 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
+                  {stats.totalReviews}
+                </div>
+                <div className="text-sm text-gray-600">Reseñas Totales</div>
+              </div>
+
+              {/* Card 3 y 4 */}
+              {stats.averageScores && (
+                <>
+                  <div className={`relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 text-center ${isMobile ? 'p-4' : 'p-5'}`}>
+                    <Award className={`${isMobile ? 'w-6 h-6' : 'w-7 h-7'} text-gray-700 mx-auto mb-2`} />
+                    <div className={`font-serif font-bold text-gray-900 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
+                      {stats.averageScores.servicio}
+                    </div>
+                    <div className="text-sm text-gray-600">Servicio</div>
+                  </div>
+
+                  <div className={`relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 text-center ${isMobile ? 'p-4' : 'p-5'}`}>
+                    <MapPin className={`${isMobile ? 'w-6 h-6' : 'w-7 h-7'} text-gray-700 mx-auto mb-2`} />
+                    <div className={`font-serif font-bold text-gray-900 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
+                      {stats.averageScores.ubicacion}
+                    </div>
+                    <div className="text-sm text-gray-600">Ubicación</div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className='relative z-10 h-full flex items-center'>
-          <div className='pointer-events-none absolute inset-y-0 left-0 w-[min(52vw,680px)] bg-gradient-to-r from-black/35 via-black/20 to-transparent hidden lg:block' />
-          <div className='relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full'>
-            <div className='grid grid-cols-1 lg:grid-cols-12 lg:gap-8 items-center'>
-              {/* IZQUIERDA (subida ligeramente para alinear) */}
-              <div className='lg:col-span-5 flex flex-col gap-4 lg:gap-6 lg:-mt-6 xl:-mt-10'>
-                <h1 className='font-serif text-4xl md:text-6xl lg:text-6xl font-bold text-white leading-tight drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] tracking-tight'>
-                  Experiencias
-                  <span className='block bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent'>
-                    Inolvidables
-                  </span>
-                </h1>
-                <p className='font-sans text-base md:text-lg text-white/95 drop-shadow-[0_6px_20px_rgba(0,0,0,0.7)] max-w-xl'>
-                  Descubre lo que nuestros huéspedes dicen sobre su estadía en Hotel Juan María
-                </p>
+        {/* DERECHA */}
+        <div className={`${isMobile ? 'mt-2' : 'col-span-7 flex flex-col justify-center h-full'}`}>
+          <h2
+            className={`font-serif font-bold text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.85)] mb-4
+            ${isMobile ? 'text-xl' : 'text-2xl md:text-3xl mb-5'}`}
+          >
+            Testimonios Destacados
+          </h2>
 
-                {stats && (
-                  <div className='grid grid-cols-2 gap-4'>
-                    <div className='relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 p-5 text-center'>
-                      <TrendingUp className='w-7 h-7 text-gray-700 mx-auto mb-2' />
-                      <div className='font-serif text-3xl font-bold text-gray-900'>{stats.averageRating}</div>
-                      <div className='text-sm text-gray-600'>Rating Promedio</div>
-                      <div className='flex justify-center mt-1'>{renderStars(Math.round(stats.averageRating))}</div>
-                    </div>
-                    <div className='relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 p-5 text-center'>
-                      <Users className='w-7 h-7 text-gray-700 mx-auto mb-2' />
-                      <div className='font-serif text-3xl font-bold text-gray-900'>{stats.totalReviews}</div>
-                      <div className='text-sm text-gray-600'>Reseñas Totales</div>
-                    </div>
-                    {stats.averageScores && (
-                      <>
-                        <div className='relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 p-5 text-center'>
-                          <Award className='w-7 h-7 text-gray-700 mx-auto mb-2' />
-                          <div className='font-serif text-3xl font-bold text-gray-900'>{stats.averageScores.servicio}</div>
-                          <div className='text-sm text-gray-600'>Servicio</div>
-                        </div>
-                        <div className='relative bg-white/70 backdrop-blur-2xl rounded-xl shadow-2xl border border-white/20 p-5 text-center'>
-                          <MapPin className='w-7 h-7 text-gray-700 mx-auto mb-2' />
-                          <div className='font-serif text-3xl font-bold text-gray-900'>{stats.averageScores.ubicacion}</div>
-                          <div className='text-sm text-gray-600'>Ubicación</div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+          <div className="relative max-w-5xl mx-auto lg:mx-0">
+            {featuredTestimonials.length > 0 && (
+  <div
+    className={`relative bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden flex flex-col
+      ${isMobile ? 'p-5 h-[360px]' : 'p-8 h-[520px]'}`}  // ← ALTO FIJO POR DISPOSITIVO
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5" />
+    <Quote className={`${isMobile ? 'w-8 h-8 mb-3' : 'w-10 h-10 md:w-12 md:h-12 mb-4 md:mb-6'} text-white/40`} />
+    <div className="relative z-10 flex-grow flex flex-col justify-between">
+      <blockquote
+        ref={quoteRef}
+        className={`font-sans text-white/95 leading-relaxed overflow-hidden selection:bg-white/20
+          ${isMobile ? 'mb-4' : 'mb-6 md:mb-8'}`}
+        // ← ALTO FIJO DEL TEXTO (fitQuote ajusta la fuente para que quepa)
+        style={{ height: isMobile ? 150 : 260 }}
+      >
+        &ldquo;{featuredTestimonials[currentSlide]?.comment}&rdquo;
+      </blockquote>
 
-              {/* DERECHA */}
-              <div className='lg:col-span-7 relative lg:-mt-1'>
-                <h2 className='font-serif text-2xl md:text-3xl font-bold text-white mb-5 drop-shadow-[0_10px_30px_rgba(0,0,0,0.85)]'>
-                  Testimonios Destacados
-                </h2>
-
-                <div className='relative max-w-5xl mx-auto lg:mx-0'>
-                  {featuredTestimonials.length > 0 && (
-                    <div className='relative bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden p-6 md:p-10 h-[360px] md:h-[420px] lg:h-[460px] xl:h-[480px] flex flex-col'>
-                      <div className='absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5' />
-                      <Quote className='w-10 h-10 md:w-12 md:h-12 text-white/40 mb-4 md:mb-6' />
-                      <div className='relative z-10 flex-grow flex flex-col justify-between'>
-                        <blockquote
-                          ref={quoteRef}
-                          className='font-sans text-white/95 leading-relaxed mb-6 md:mb-8 h-[140px] md:h-[170px] lg:h-[200px] overflow-hidden selection:bg-white/20'
-                        >
-                          " &ldquo;{featuredTestimonials[currentSlide]?.comment}&rdquo;"
-                        </blockquote>
-
-                        <div className={`flex ${isMobile ? 'flex-col gap-4' : 'items-center justify-between'}`}>
-                          <div className='flex items-center space-x-4'>
-                            <div className='w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 overflow-hidden'>
-                              {featuredTestimonials[currentSlide]?.avatar?.trim() ? (
-                                <Image src={featuredTestimonials[currentSlide].avatar} alt={featuredTestimonials[currentSlide].name} width={64} height={64} className='w-full h-full object-cover' />
-                              ) : (
-                                <span className='text-white font-semibold text-lg'>
-                                  {featuredTestimonials[currentSlide]?.name?.charAt(0)}
-                                </span>
-                              )}
-                            </div>
-                            <div>
-                              <div className='font-semibold text-white'>{featuredTestimonials[currentSlide]?.name}</div>
-                              <div className='text-white/80 text-sm flex items-center'><MapPin className='w-4 h-4 mr-1' />{featuredTestimonials[currentSlide]?.location}</div>
-                              <div className='text-white/70 text-sm flex items-center mt-1'><Calendar className='w-4 h-4 mr-1' />{formatDate(featuredTestimonials[currentSlide]?.date)}</div>
-                            </div>
-                          </div>
-                          <div className={`${isMobile ? 'flex justify-between items-center' : 'text-right'}`}>
-                            <div className='flex items-center mb-2'>{renderStars(featuredTestimonials[currentSlide]?.rating)}</div>
-                            {featuredTestimonials[currentSlide]?.platform && (
-                              <div className='text-sm text-white/80 bg-white/10 backdrop-blur-xl px-2 py-1 rounded-lg border border-white/20 inline-block'>
-                                {featuredTestimonials[currentSlide]?.platform}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* BARRA DE CONTROL, más abajo para que respire */}
-                  {canSlide && (
-                    <div className='mt-8 md:mt-10 lg:mt-12 flex items-center justify-center gap-3 sm:gap-4'>
-                      <button
-                        onClick={prevSlide}
-                        disabled={atStart}
-                        aria-label='Anterior'
-                        className='w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/25 backdrop-blur-xl border border-white/30 text-white shadow-2xl transition active:scale-95 disabled:opacity-40'
-                      >
-                        <ChevronLeft className='w-5 h-5 mx-auto' />
-                      </button>
-
-                      <div className='flex gap-2'>
-                        {featuredTestimonials.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={() => setCurrentSlide(i)}
-                            className={`h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-white w-6' : 'bg-white/60 w-2'}`}
-                            aria-label={`Ir al slide ${i + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      <button
-                        onClick={nextSlide}
-                        disabled={atEnd}
-                        aria-label='Siguiente'
-                        className='w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/25 backdrop-blur-xl border border-white/30 text-white shadow-2xl transition active:scale-95 disabled:opacity-40'
-                      >
-                        <ChevronRight className='w-5 h-5 mx-auto' />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
+      <div className={`${isMobile ? 'flex flex-col gap-4' : 'flex items-center justify-between'}`}>
+        <div className="flex items-center space-x-4">
+          <div className={`${isMobile ? 'w-12 h-12' : 'w-12 h-12 md:w-16 md:h-16'} bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 overflow-hidden`}>
+            {featuredTestimonials[currentSlide]?.avatar?.trim() ? (
+              <Image
+                src={featuredTestimonials[currentSlide].avatar}
+                alt={featuredTestimonials[currentSlide].name}
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-white font-semibold text-lg">
+                {featuredTestimonials[currentSlide]?.name?.charAt(0)}
+              </span>
+            )}
+          </div>
+          <div>
+            <div className="font-semibold text-white">{featuredTestimonials[currentSlide]?.name}</div>
+            <div className="text-white/80 text-sm flex items-center">
+              <MapPin className="w-4 h-4 mr-1" />
+              {featuredTestimonials[currentSlide]?.location}
+            </div>
+            <div className="text-white/70 text-sm flex items-center mt-1">
+              <Calendar className="w-4 h-4 mr-1" />
+              {formatDate(featuredTestimonials[currentSlide]?.date)}
             </div>
           </div>
         </div>
-      </section>
+        <div className={`${isMobile ? 'flex justify-between items-center' : 'text-right'}`}>
+          <div className="flex items-center mb-2">{renderStars(featuredTestimonials[currentSlide]?.rating)}</div>
+          {featuredTestimonials[currentSlide]?.platform && (
+            <div className="text-sm text-white/80 bg-white/10 backdrop-blur-xl px-2 py-1 rounded-lg border border-white/20 inline-block">
+              {featuredTestimonials[currentSlide]?.platform}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+            {/* Controles */}
+            {canSlide && (
+              <div className={`${isMobile ? 'mt-6' : 'mt-8 md:mt-10 lg:mt-12'} flex items-center justify-center gap-3 sm:gap-4`}>
+                <button
+                  onClick={prevSlide}
+                  disabled={atStart}
+                  aria-label="Anterior"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/25 backdrop-blur-xl border border-white/30 text-white shadow-2xl transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-5 h-5 mx-auto" />
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {featuredTestimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentSlide(i)}
+                      className={`h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-white w-6' : 'bg-white/60 w-2'}`}
+                      aria-label={`Ir al slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={nextSlide}
+                  disabled={atEnd}
+                  aria-label="Siguiente"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/25 backdrop-blur-xl border border-white/30 text-white shadow-2xl transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-5 h-5 mx-auto" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* SEGUNDA SECCIÓN */}
       <div className='bg-gradient-to-br from-gray-50 via-white to-gray-100 py-16'>
