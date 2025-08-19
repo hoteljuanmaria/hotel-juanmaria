@@ -17,39 +17,34 @@ const dirname = path.dirname(filename)
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
-    read: anyone,
     create: authenticated,
-    update: authenticated,
     delete: authenticated,
-  },
-  admin: {
-    group: 'Website', 
-    useAsTitle: 'alt',
+    read: anyone,
+    update: authenticated,
   },
   fields: [
     {
       name: 'alt',
-      label: 'Alt text',
       type: 'text',
-      required: false,
+      //required: true,
     },
     {
       name: 'caption',
-      label: 'Caption',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ rootFeatures }) => [
-          ...rootFeatures,
-          FixedToolbarFeature(),
-          InlineToolbarFeature(),
-        ],
+        features: ({ rootFeatures }) => {
+          return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
+        },
       }),
     },
   ],
   upload: {
+    // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
     staticDir: path.resolve(dirname, '../../public/media'),
     adminThumbnail: 'thumbnail',
     focalPoint: true,
+    // 👇 Solo este cambio: permitir imágenes y PDF
+    mimeTypes: ['image/*', 'application/pdf'],
     imageSizes: [
       {
         name: 'thumbnail',
