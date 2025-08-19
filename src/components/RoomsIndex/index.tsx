@@ -307,42 +307,56 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
     )
   }, [])
 
-  const RoomCard = React.memo(({ room }: { room: Room; index: number }) => {
+/* ========= RoomCard (sin debug) ========= */
+const RoomCard = React.memo(
+  ({ room, index }: { room: Room; index: number }) => {
     return (
-      <div className='bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden'>
-        {/* Image */}
-        <div className='h-48 overflow-hidden relative'>
+      <div className='bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-full'>
+        {/* Imagen */}
+        <div className='relative w-full aspect-[4/3] sm:aspect-[16/9]'>
           <Image
             src={getImagePath(room.images?.[0])}
             alt={room.title}
             fill
+            sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
             className='object-cover'
+            priority={index < 3}
           />
+          {room.featured && (
+            <span className='absolute top-3 left-3 bg-gray-900/90 text-white px-2 py-1 rounded text-xs font-medium'>
+              <Star className='w-3 h-3 inline mr-1' />
+              {t(getValidLocale(locale), 'rooms.featured')}
+            </span>
+          )}
         </div>
 
-        {/* Content */}
-        <div className='p-6'>
-          <h3 className='font-serif text-xl font-bold text-gray-900 mb-3'>
+        {/* Contenido */}
+        <div className='p-4 sm:p-6 flex flex-col flex-1'>
+          <h3 className='font-serif font-bold text-gray-900 leading-snug mb-2 sm:mb-3 text-[clamp(18px,4.8vw,22px)] sm:text-xl'>
             {room.title}
           </h3>
 
-          <p className='font-sans font-light text-sm text-gray-600 leading-relaxed mb-4'>
+          <p className='font-sans text-gray-600 leading-relaxed mb-3 sm:mb-4 text-sm sm:text-base line-clamp-3 sm:line-clamp-2'>
             {renderDescription(room.description)}
           </p>
 
-          <div className='mb-4'>
-            <span className='font-sans text-2xl font-bold text-gray-900'>
+          {/* Precio */}
+          <div className='mb-4 sm:mb-5 flex items-baseline gap-2'>
+            <span className='font-sans font-bold text-gray-900 text-[clamp(20px,6vw,28px)] sm:text-2xl'>
               {formatPrice(room.price)}
             </span>
-            <span className='font-sans text-sm text-gray-600 ml-1'>
+            <span className='font-sans text-xs sm:text-sm text-gray-600'>
               {t(getValidLocale(locale), 'rooms.room.perNight')}
             </span>
           </div>
 
-          <div className='flex items-center gap-4 text-sm text-gray-600 mb-4'>
+          {/* Detalles rápidos */}
+          <div className='flex flex-wrap gap-x-4 gap-y-2 text-gray-600 text-xs sm:text-sm mb-4'>
             <div className='flex items-center gap-1'>
               <Users className='w-4 h-4' />
-              <span>{room.capacity} {t(getValidLocale(locale), 'rooms.room.guests')}</span>
+              <span>
+                {room.capacity} {t(getValidLocale(locale), 'rooms.room.guests')}
+              </span>
             </div>
             <div className='flex items-center gap-1'>
               <Square className='w-4 h-4' />
@@ -350,49 +364,46 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
             </div>
             <div className='flex items-center gap-1'>
               <Bed className='w-4 h-4' />
-              <span>
-                {getBedTypeLabel(room.bedType, getValidLocale(locale))}
-                {/* Debug info - remove in production */}
-                {process.env.NODE_ENV === 'development' && (
-                  <span className='text-xs text-gray-400 ml-1'>
-                    ({room.bedType})
-                  </span>
-                )}
-              </span>
+              <span>{getBedTypeLabel(room.bedType, getValidLocale(locale))}</span>
             </div>
           </div>
 
           {/* Amenities */}
-          <div className='flex flex-wrap gap-2 mb-6'>
-            {(room.amenities || []).slice(0, 3).map((amenity, idx) => (
-              <div
-                key={idx}
-                className='flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'
-              >
-                {getAmenityIcon(amenity)}
-                <span>{getAmenityText(amenity)}</span>
-              </div>
-            ))}
-            {(room.amenities || []).length > 3 && (
-              <div className='px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'>
-                +{(room.amenities || []).length - 3} {t(getValidLocale(locale), 'rooms.room.moreAmenities')}
-              </div>
-            )}
+          <div className='-mx-2 px-2 overflow-x-auto sm:overflow-visible mb-5'>
+            <div className='flex gap-2 min-w-max sm:min-w-0 sm:flex-wrap'>
+              {(room.amenities || []).slice(0, 5).map((amenity, idx) => (
+                <div
+                  key={idx}
+                  className='flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'
+                >
+                  {getAmenityIcon(amenity)}
+                  <span className='hidden xs:inline'>
+                    {getAmenityText(amenity)}
+                  </span>
+                </div>
+              ))}
+              {(room.amenities || []).length > 5 && (
+                <div className='px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'>
+                  +{(room.amenities || []).length - 5}{' '}
+                  {t(getValidLocale(locale), 'rooms.room.moreAmenities')}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className='flex gap-3'>
+          {/* CTA */}
+          <div className='mt-auto flex flex-col sm:flex-row gap-2 sm:gap-3'>
             <a
               href={`/rooms/${room.slug || room.id}`}
-              className='flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-4 text-center'
+              className='w-full sm:flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-4 sm:px-6 text-center transition-colors duration-200'
+              aria-label={t(getValidLocale(locale), 'rooms.room.viewDetails')}
             >
               {t(getValidLocale(locale), 'rooms.room.viewDetails')}
             </a>
 
             <button
-              onClick={() =>
-                (window.location.href = `/booking?room=${room.id}`)
-              }
-              className='border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-lg font-semibold text-sm'
+              onClick={() => (window.location.href = `/booking?room=${room.id}`)}
+              className='w-full sm:w-auto border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-colors duration-200'
             >
               {t(getValidLocale(locale), 'rooms.room.book')}
             </button>
@@ -400,185 +411,175 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
         </div>
       </div>
     )
-  })
-  RoomCard.displayName = 'RoomCard'
+  }
+)
+RoomCard.displayName = 'RoomCard'
 
-  const RoomListItem = React.memo(
-    ({ room, index }: { room: Room; index: number }) => {
-      return (
-        <div
-          className='bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300'
-          style={{
-            animationDelay: `${index * 50}ms`,
-          }}
-        >
-          {/* Mobile-first responsive layout */}
-          <div className='flex flex-col sm:flex-row gap-0 sm:gap-6'>
-            {/* Image - Full width on mobile, fixed width on desktop */}
-            <div className='relative w-full h-48 sm:w-64 sm:h-40 sm:rounded-lg sm:m-6 sm:mt-6 sm:mb-6 flex-shrink-0 overflow-hidden'>
-              <Image
-                src={getImagePath(room.images?.[0])}
-                alt={room.title}
-                fill
-                className='object-cover'
-              />
 
-              {/* Badges */}
-              <div className='absolute top-3 left-3 flex flex-col gap-1'>
-                {room.featured && (
-                  <div className='bg-gray-900 text-white px-2 py-1 rounded text-xs font-medium'>
-                    <Star className='w-3 h-3 inline mr-1' />
-                    {t(getValidLocale(locale), 'rooms.featured')}
-                  </div>
-                )}
+
+
+/* ========= RoomListItem (sin debug) ========= */
+const RoomListItem = React.memo(
+  ({ room, index }: { room: Room; index: number }) => {
+    return (
+      <div
+        className='bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300'
+        style={{ animationDelay: `${index * 50}ms` }}
+      >
+        <div className='flex flex-col sm:flex-row gap-0 sm:gap-6'>
+          {/* Imagen */}
+          <div className='relative w-full h-48 sm:w-64 sm:h-40 sm:rounded-lg sm:m-6 sm:mt-6 sm:mb-6 flex-shrink-0 overflow-hidden'>
+            <Image
+              src={getImagePath(room.images?.[0])}
+              alt={room.title}
+              fill
+              className='object-cover'
+            />
+
+            {room.featured && (
+              <div className='absolute top-3 left-3 bg-gray-900 text-white px-2 py-1 rounded text-xs font-medium'>
+                <Star className='w-3 h-3 inline mr-1' />
+                {t(getValidLocale(locale), 'rooms.featured')}
               </div>
+            )}
 
-              {/* Favorite button - Always visible on mobile */}
-              <div className='absolute top-3 right-3'>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    toggleFavorite(room.id)
-                  }}
-                  className={`p-2 rounded transition-colors duration-200 ${
-                    favoriteRooms.includes(room.id)
-                      ? 'bg-red-500 text-white'
-                      : 'bg-white/80 text-gray-700 hover:bg-white'
-                  }`}
-                >
-                  <Heart className='w-3 h-3 sm:w-4 sm:h-4' />
-                </button>
-              </div>
+            <div className='absolute top-3 right-3'>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleFavorite(room.id)
+                }}
+                className={`p-2 rounded transition-colors duration-200 ${
+                  favoriteRooms.includes(room.id)
+                    ? 'bg-red-500 text-white'
+                    : 'bg-white/80 text-gray-700 hover:bg-white'
+                }`}
+              >
+                <Heart className='w-3 h-3 sm:w-4 sm:h-4' />
+              </button>
             </div>
+          </div>
 
-            {/* Content */}
-            <div className='flex-1 p-4 sm:p-6 sm:pl-0'>
-              <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3'>
-                <div className='flex-1'>
-                  <h3 className='font-serif text-lg sm:text-xl font-bold text-gray-900 mb-2'>
-                    {room.title}
-                  </h3>
+          {/* Contenido */}
+          <div className='flex-1 p-4 sm:p-6 sm:pl-0'>
+            <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3'>
+              <div className='flex-1'>
+                <h3 className='font-serif text-lg sm:text-xl font-bold text-gray-900 mb-2'>
+                  {room.title}
+                </h3>
 
-                  {/* Price - Show prominently on mobile */}
-                  <div className='sm:hidden mb-3'>
-                    <div className='font-sans text-xl font-bold text-gray-900'>
-                      {formatPrice(room.price)}
-                    </div>
-                    <div className='font-sans text-sm text-gray-600'>
-                      por noche
-                    </div>
-                  </div>
-
-                  {/* Room details */}
-                  <div className='flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3'>
-                    <div className='flex items-center gap-1'>
-                      <Users className='w-3 h-3 sm:w-4 sm:h-4' />
-                      <span>
-                        {room.capacity} huésped{room.capacity > 1 ? 'es' : ''}
-                      </span>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <Square className='w-3 h-3 sm:w-4 sm:h-4' />
-                      <span>{room.size}</span>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <Bed className='w-3 h-3 sm:w-4 sm:h-4' />
-                      <span>
-                        {getBedTypeLabel(room.bedType, getValidLocale(locale))}
-                        {/* Debug info - remove in production */}
-                        {process.env.NODE_ENV === 'development' && (
-                          <span className='text-xs text-gray-400 ml-1'>
-                            ({room.bedType})
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Price - Show on desktop */}
-                <div className='hidden sm:block text-right ml-4'>
-                  <div className='font-sans text-2xl font-bold text-gray-900'>
+                {/* Precio (mobile) */}
+                <div className='sm:hidden mb-3'>
+                  <div className='font-sans text-xl font-bold text-gray-900'>
                     {formatPrice(room.price)}
                   </div>
                   <div className='font-sans text-sm text-gray-600'>
                     {t(getValidLocale(locale), 'rooms.room.perNight')}
                   </div>
                 </div>
-              </div>
 
-              <p className='font-sans font-light text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2 sm:line-clamp-none'>
-                {renderDescription(room.description)}
-              </p>
-
-              {/* Amenities - Fewer on mobile */}
-              <div className='flex flex-wrap gap-2 mb-4'>
-                {(room.amenities || [])
-                  .slice(0, isLg ? 6 : 3)
-                  .map((amenity, idx) => (
-                    <div
-                      key={idx}
-                      className='flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'
-                    >
-                      {getAmenityIcon(amenity)}
-                      <span className='hidden sm:inline'>
-                        {getAmenityText(amenity)}
-                      </span>
-                    </div>
-                  ))}
-                {(room.amenities || []).length > (isLg ? 6 : 3) && (
-                  <div className='px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'>
-                    +{(room.amenities || []).length - (isLg ? 6 : 3)} {t(getValidLocale(locale), 'rooms.room.moreAmenities')}
+                {/* Detalles */}
+                <div className='flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3'>
+                  <div className='flex items-center gap-1'>
+                    <Users className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <span>
+                      {room.capacity} huésped{room.capacity > 1 ? 'es' : ''}
+                    </span>
                   </div>
-                )}
+                  <div className='flex items-center gap-1'>
+                    <Square className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <span>{room.size}</span>
+                  </div>
+                  <div className='flex items-center gap-1'>
+                    <Bed className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <span>{getBedTypeLabel(room.bedType, getValidLocale(locale))}</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Action buttons - Stack on mobile */}
-              <div className='flex flex-col sm:flex-row gap-2 sm:gap-3'>
-                <a
-                  href={`/rooms/${room.slug || room.id}`}
-                  className='bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-4 sm:px-6 transition-colors duration-200 text-center'
-                >
-                  <span className='flex items-center justify-center'>
-                    {t(getValidLocale(locale), 'rooms.room.viewDetails')}
-                    <ArrowRight className='w-4 h-4 ml-2' />
-                  </span>
-                </a>
+              {/* Precio (desktop) */}
+              <div className='hidden sm:block text-right ml-4'>
+                <div className='font-sans text-2xl font-bold text-gray-900'>
+                  {formatPrice(room.price)}
+                </div>
+                <div className='font-sans text-sm text-gray-600'>
+                  {t(getValidLocale(locale), 'rooms.room.perNight')}
+                </div>
+              </div>
+            </div>
 
-                <button
-                  onClick={() =>
-                    (window.location.href = `/booking?room=${room.id}`)
-                  }
-                  className='border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-colors duration-200'
-                >
-                  {t(getValidLocale(locale), 'rooms.room.book')}
-                </button>
+            <p className='font-sans font-light text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2 sm:line-clamp-none'>
+              {renderDescription(room.description)}
+            </p>
 
-                {viewMode === 'comparison' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleRoomSelection(room.id)
-                    }}
-                    className={`px-4 py-3 rounded-lg font-semibold transition-colors duration-200 ${
-                      selectedRooms.includes(room.id)
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
+            {/* Amenities */}
+            <div className='flex flex-wrap gap-2 mb-4'>
+              {(room.amenities || [])
+                .slice(0, isLg ? 6 : 3)
+                .map((amenity, idx) => (
+                  <div
+                    key={idx}
+                    className='flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'
                   >
-                    {selectedRooms.includes(room.id)
-                      ? t(getValidLocale(locale), 'rooms.room.selected')
-                      : t(getValidLocale(locale), 'rooms.room.compare')}
-                  </button>
-                )}
-              </div>
+                    {getAmenityIcon(amenity)}
+                    <span className='hidden sm:inline'>
+                      {getAmenityText(amenity)}
+                    </span>
+                  </div>
+                ))}
+              {(room.amenities || []).length > (isLg ? 6 : 3) && (
+                <div className='px-2 py-1 bg-gray-100 rounded text-xs text-gray-600'>
+                  +{(room.amenities || []).length - (isLg ? 6 : 3)}{' '}
+                  {t(getValidLocale(locale), 'rooms.room.moreAmenities')}
+                </div>
+              )}
+            </div>
+
+            {/* Acciones */}
+            <div className='flex flex-col sm:flex-row gap-2 sm:gap-3'>
+              <a
+                href={`/rooms/${room.slug || room.id}`}
+                className='bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg py-3 px-4 sm:px-6 transition-colors duration-200 text-center'
+              >
+                <span className='flex items-center justify-center'>
+                  {t(getValidLocale(locale), 'rooms.room.viewDetails')}
+                  <ArrowRight className='w-4 h-4 ml-2' />
+                </span>
+              </a>
+
+              <button
+                onClick={() => (window.location.href = `/booking?room=${room.id}`)}
+                className='border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-colors duration-200'
+              >
+                {t(getValidLocale(locale), 'rooms.room.book')}
+              </button>
+
+              {viewMode === 'comparison' && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleRoomSelection(room.id)
+                  }}
+                  className={`px-4 py-3 rounded-lg font-semibold transition-colors duration-200 ${
+                    selectedRooms.includes(room.id)
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {selectedRooms.includes(room.id)
+                    ? t(getValidLocale(locale), 'rooms.room.selected')
+                    : t(getValidLocale(locale), 'rooms.room.compare')}
+                </button>
+              )}
             </div>
           </div>
         </div>
-      )
-    },
-  )
-  RoomListItem.displayName = 'RoomListItem'
+      </div>
+    )
+  }
+)
+RoomListItem.displayName = 'RoomListItem'
+
 
   if (loading) {
     return (
@@ -831,28 +832,29 @@ const RoomsPage = ({ locale }: { locale: Locale }) => {     // 👈 acepta solo 
 
         </div>
 
-        {/* Rooms Grid/List - Only grid on mobile */}
-        <div
-          id='rooms-list'
-          className={`transform transition-all duration-1000 ${
-            isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}
-          style={{ animationDelay: '0.8s' }}
-        >
-          {viewMode === 'grid' || !isLg ? (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-              {filteredRooms.map((room, index) => (
-                <RoomCard key={room.id} room={room} index={index} />
-              ))}
-            </div>
-          ) : (
-            <div className='space-y-6'>
-              {filteredRooms.map((room, index) => (
-                <RoomListItem key={room.id} room={room} index={index} />
-              ))}
-            </div>
-          )}
-        </div>
+     {/* Rooms Grid/List */}
+<div
+  id='rooms-list'
+  className={`transform transition-all duration-1000 ${
+    isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+  }`}
+  style={{ animationDelay: '0.8s' }}
+>
+  {viewMode === 'grid' || !isLg ? (
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8'>
+      {filteredRooms.map((room, index) => (
+        <RoomCard key={room.id} room={room} index={index} />
+      ))}
+    </div>
+  ) : (
+    <div className='space-y-6'>
+      {filteredRooms.map((room, index) => (
+        <RoomListItem key={room.id} room={room} index={index} />
+      ))}
+    </div>
+  )}
+</div>
+
 
         {/* No Results */}
         {filteredRooms.length === 0 && (
