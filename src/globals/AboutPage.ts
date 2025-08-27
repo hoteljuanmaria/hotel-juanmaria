@@ -416,19 +416,7 @@ export const AboutPage: GlobalConfig = {
                     { label: { en: 'Medium', es: 'Medio' }, value: 'medio' },
                     { label: { en: 'Low', es: 'Bajo' }, value: 'bajo' },
                   ],
-                },
-                {
-                  name: 'icon',
-                  type: 'text',
-                  required: true,
-                  label: { en: 'Icon', es: 'Icono' },
-                  admin: {
-                    description: {
-                      en: 'Lucide icon name (e.g., "calendar", "building", "award")',
-                      es: 'Nombre del icono de Lucide (ej: "calendar", "building", "award")',
-                    },
-                  },
-                },
+                }
               ],
             },
             {
