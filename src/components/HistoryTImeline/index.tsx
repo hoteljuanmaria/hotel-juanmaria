@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { getTimeline, getHistoryStats } from '@/lib/data'
+import React, { useState, useEffect, useRef } from 'react'
+import type { AboutPage as AboutPageType } from '@/payload-types'
 
 interface TimelineEvent {
-  id: number
+  id?: string | number
   year: number
   date?: string
   yearRange?: string
@@ -30,6 +30,11 @@ interface HistoryStats {
   operationalAnniversary: number
 }
 
+interface HistoryTimelineProps {
+  timelineEvents?: AboutPageType['timelineEvents']
+  historyStats: AboutPageType['historyStats']
+}
+
 const typeLabels = {
   legal: 'Legal',
   hito: 'Hito',
@@ -40,7 +45,7 @@ const typeLabels = {
   actual: 'Actual',
 }
 
-export default function HistoryTimeline() {
+export default function HistoryTimeline({ timelineEvents, historyStats }: HistoryTimelineProps) {
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
   const [stats, setStats] = useState<HistoryStats | null>(null)
   const [loading, setLoading] = useState(true)
@@ -62,33 +67,54 @@ export default function HistoryTimeline() {
   }, [])
 
   useEffect(() => {
-    const loadData = async () => {
+    const processPayloadData = () => {
       try {
         setLoading(true)
         setError(null)
 
-        const [timelineData, statsData] = await Promise.all([
-          getTimeline(),
-          getHistoryStats(),
-        ])
+        // Convert Payload timeline events to our format
+        if (timelineEvents && Array.isArray(timelineEvents)) {
+          const processedTimeline: TimelineEvent[] = timelineEvents.map((event, index) => ({
+            id: event.id || index + 1,
+            year: event.year || 0,
+            date: event.date || undefined,
+            yearRange: event.yearRange || undefined,
+            title: event.title || '',
+            description: event.description || '',
+            type: event.type || 'hito',
+            importance: event.importance || 'medio',
+            icon: event.icon || 'calendar',
+          }))
 
-        if (!timelineData || !Array.isArray(timelineData) || !statsData) {
-          setError('Error al cargar los datos')
+          setTimeline(processedTimeline.sort((a, b) => a.year - b.year))
+        }
+
+        // Convert Payload history stats to our format
+        const processedStats: HistoryStats = {
+          foundedYear: historyStats.foundedYear || 1975,
+          openedYear: historyStats.openedYear || 1977,
+          yearsInService: historyStats.yearsInService || 47,
+          legalAnniversary: historyStats.legalAnniversary || 49,
+          operationalAnniversary: historyStats.operationalAnniversary || 47,
+        }
+
+        setStats(processedStats)
+
+        if (!timelineEvents || timelineEvents.length === 0) {
+          setError('No se encontraron eventos en la línea de tiempo')
           return
         }
 
-        setTimeline(timelineData)
-        setStats(statsData)
       } catch (error) {
-        console.error('Error loading data:', error)
-        setError('Error al cargar la información')
+        console.error('Error processing Payload data:', error)
+        setError('Error al procesar la información')
       } finally {
         setLoading(false)
       }
     }
 
-    loadData()
-  }, [])
+    processPayloadData()
+  }, [timelineEvents, historyStats])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -118,10 +144,13 @@ export default function HistoryTimeline() {
       if (rect.top <= 0 && rect.bottom > windowHeight) {
         const scrolledIntoView = Math.abs(rect.top)
         const totalScrollableHeight = container.offsetHeight - windowHeight
-        const progress = Math.min(
+        let progress = Math.min(
           1,
           Math.max(0, scrolledIntoView / totalScrollableHeight),
         )
+
+        // Smooth the progress to avoid jerky transitions
+        progress = Math.pow(progress, 0.8)
 
         setScrollProgress(progress)
       }
@@ -152,9 +181,11 @@ export default function HistoryTimeline() {
 
     const container = containerRef.current
     const totalScrollableHeight = container.offsetHeight - window.innerHeight
-    const targetProgress = eventIndex / Math.max(timeline.length - 1, 1)
-    const targetScroll =
-      container.offsetTop + totalScrollableHeight * targetProgress
+    const targetProgress = Math.max(timeline.length - 1, 1) > 0 ? eventIndex / Math.max(timeline.length - 1, 1) : 0
+    
+    // Reverse the progress smoothing for accurate jumping
+    const adjustedProgress = Math.pow(targetProgress, 1.25)
+    const targetScroll = container.offsetTop + totalScrollableHeight * adjustedProgress
 
     window.scrollTo({
       top: targetScroll,
@@ -218,15 +249,17 @@ export default function HistoryTimeline() {
 
   const totalEvents = timeline.length
   const exactProgress = scrollProgress * (totalEvents - 1)
-  const activeIndex = Math.min(Math.floor(exactProgress), totalEvents - 1)
+  const activeIndex = Math.min(Math.round(exactProgress), totalEvents - 1)
   const activeEvent = timeline[activeIndex] || timeline[0]
+
+  // Active event tracking for better user experience
 
   return (
     <div
       ref={containerRef}
       className='relative'
       style={{
-        height: `${Math.max(timeline.length * (isMobile ? 50 : 120), 200)}vh`,
+        height: `${Math.max(timeline.length * (isMobile ? 100 : 200), 500)}vh`,
         marginTop: isMobile ? '80px' : '0',
       }}
     >
@@ -356,21 +389,21 @@ export default function HistoryTimeline() {
             />
 
             {/* Timeline dots - clickable and responsive */}
-            <div className='flex justify-between items-center relative'>
+            <div className='flex justify-between items-center relative px-2' style={{ minWidth: '100%', width: '100%' }}>
               {timeline.map((event, index) => {
                 const dotProgress = exactProgress
                 const isActive = Math.abs(dotProgress - index) < 0.5
-                const isPassed = dotProgress > index + 0.5
+                const isPassed = dotProgress > index
                 const isTransitioning = Math.abs(dotProgress - index) < 1
 
                 let scale = 1
                 if (isActive) {
-                  scale = isMobile ? 1.3 : 1.4
+                  scale = isMobile ? 1.4 : 1.6
                 } else if (isPassed) {
-                  scale = isMobile ? 1.15 : 1.2
+                  scale = isMobile ? 1.2 : 1.3
                 } else if (isTransitioning) {
                   const distance = Math.abs(dotProgress - index)
-                  scale = 1 + (1 - distance) * (isMobile ? 0.15 : 0.2)
+                  scale = 1 + (1 - distance) * (isMobile ? 0.2 : 0.3)
                 }
 
                 return (
@@ -378,30 +411,32 @@ export default function HistoryTimeline() {
                     key={event.id}
                     onClick={() => jumpToEvent(index)}
                     className={`relative rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400/50 ${
-                      isMobile ? 'w-4 h-4' : 'w-4 h-4'
+                      isMobile ? 'w-4 h-4' : 'w-5 h-5'
                     } ${
                       isActive
                         ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-lg'
                         : isPassed
                           ? 'bg-gray-600'
                           : 'bg-gray-300'
-                    }`}
+                    } hover:bg-gray-700 flex-shrink-0`}
                     style={{
                       transform: `scale(${scale}) translateY(${
-                        Math.sin(dotProgress * 0.5 + index) * 2
+                        Math.sin(dotProgress * 0.5 + index) * 1.5
                       }px)`,
                       zIndex: isActive ? 10 : isPassed ? 5 : 1,
+                      transition: 'transform 0.3s ease-out, background-color 0.3s ease-out',
                     }}
+                    title={`${event.year} - ${event.title}`}
                   >
                     {isActive && (
                       <div className='absolute inset-0 rounded-full border-2 border-gray-400/50 animate-ping' />
                     )}
 
-                    {isTransitioning && !isPassed && (
+                    {isTransitioning && (
                       <div
                         className='absolute inset-0 rounded-full border-2 border-gray-600'
                         style={{
-                          opacity: 1 - Math.abs(dotProgress - index),
+                          opacity: Math.max(0, 1 - Math.abs(dotProgress - index)),
                           transform: `scale(${
                             1.2 + Math.abs(dotProgress - index) * 0.3
                           })`,

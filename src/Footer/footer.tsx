@@ -76,7 +76,7 @@ const Footer: React.FC<FooterProps> = ({
   privacy,
   terms,
   options,
-  newsletter,
+  newsletter: _newsletter,
 }) => {
   const [showScrollTop, setShowScrollTop] = useState(false)
   const threshold = options?.scrollTopThreshold ?? 400

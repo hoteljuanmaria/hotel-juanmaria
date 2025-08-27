@@ -109,7 +109,7 @@ function transformRoom(room: Room): BookingRoom {
     })),
     amenities:
       room.amenities?.map((amenity) => ({
-        amenity: amenity.amenity,
+        amenity: amenity.amenity || undefined,
         customAmenity: amenity.customAmenity || undefined,
       })) || [],
     meta: room.meta

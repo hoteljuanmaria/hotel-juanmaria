@@ -64,7 +64,7 @@ export default function Navbar({ items }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isIOS, setIsIOS] = useState(false)
+  const [_isIOS, setIsIOS] = useState(false)
 
   useEffect(() => {
     const iphone = isIphone()
@@ -179,9 +179,11 @@ export default function Navbar({ items }: NavbarProps) {
                   />
 
                   {/* Logo para Móvil - OCULTO en desktop */}
-                  <img
+                  <Image
                     src='/GrayIcon.jpg'
                     alt='Hotel'
+                    width={56}
+                    height={56}
                     className='block md:hidden w-14 h-14 relative z-10 transition-all duration-500 group-hover:rotate-3 group-hover:scale-105 drop-shadow-lg'
                     style={{
                       imageRendering: 'crisp-edges',

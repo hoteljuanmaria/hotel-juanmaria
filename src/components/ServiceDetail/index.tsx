@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Clock, MapPin, Phone, X, Star, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
 // No simulated data imports here; this component only renders props from Payload
 
 type ExperienceData = {
@@ -288,19 +289,25 @@ const ServiceDetail = ({ experienceData }: Props) => {
                       <MapPin className='w-4 h-4 flex-shrink-0' />
                       <span>
                         {((selectedService as any).serviceInfo
-                          ?.locationText as any) || 'Hotel Juan María, Cali'}
+                          ?.locationText as any) || 'Hotel Juan María, Tulua'}
                       </span>
                     </div>
                     <div className='flex items-center gap-2 text-gray-600'>
                       <Phone className='w-4 h-4 flex-shrink-0' />
                       <span>
                         {((selectedService as any).serviceInfo
-                          ?.phoneText as any) || '+57 (2) 123-4567'}
+                          ?.phoneText as any) || '+57 3154902239'}
                       </span>
                     </div>
                   </div>
                   <p className='text-xs text-gray-500 mt-3 text-center'>
-                    ¿Necesita ayuda? Contacte a recepción
+                    ¿Necesita ayuda?{' '}
+                    <Link 
+                      href='/contact' 
+                      className='text-blue-600 hover:text-blue-800 underline transition-colors'
+                    >
+                      Contáctanos
+                    </Link>
                   </p>
                 </div>
               </div>

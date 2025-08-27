@@ -69,7 +69,7 @@ export function useAdvancedFilter<T>(config: FilterConfig<T>) {
         if (parsed.pagination) setRawPagination(parsed.pagination)
       }
     } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [storageKey])
 
   // Keep predicates in sync when callers provide new ones, but avoid update loops
@@ -199,7 +199,7 @@ export function useAdvancedFilter<T>(config: FilterConfig<T>) {
   useEffect(() => {
     if (!isFiltering) return
     setIsFiltering(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [debouncedVersion, isFiltering])
 
   // Setters

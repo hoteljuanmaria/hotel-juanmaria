@@ -12,6 +12,29 @@ interface ButtonProps {
   showIndicator?: boolean // Nueva prop para el círculo
 }
 
+// Helper function to safely render children
+const renderChildren = (children: React.ReactNode): React.ReactNode => {
+  if (
+    typeof children === 'object' &&
+    children !== null &&
+    !React.isValidElement(children)
+  ) {
+    // Check if it's a localized object with language keys
+    const obj = children as any
+    if (obj.en || obj.es) {
+      // Return the Spanish version by default, fallback to English
+      return obj.es || obj.en || ''
+    }
+    // If it's some other object, try to stringify it safely
+    try {
+      return JSON.stringify(children)
+    } catch {
+      return ''
+    }
+  }
+  return children
+}
+
 export const NiceButton: React.FC<ButtonProps> = ({
   children,
   href,
@@ -58,7 +81,7 @@ export const NiceButton: React.FC<ButtonProps> = ({
   const content = (
     <>
       <span className='relative z-10 flex items-center justify-center'>
-        {children}
+        {renderChildren(children)}
         {/* Solo mostrar el círculo si showIndicator es true y es variant primary */}
         {variant === 'primary' && showIndicator && (
           <div className='ml-2 w-2 h-2 bg-white/70 rounded-full group-hover:bg-white transition-colors duration-300'></div>
@@ -119,7 +142,9 @@ export const NavLink: React.FC<NavLinkProps> = ({
         hover:text-gray-900 ${active ? 'text-gray-900' : ''} ${className}
       `}
     >
-      <span className='relative z-20 flex items-center'>{children}</span>
+      <span className='relative z-20 flex items-center'>
+        {renderChildren(children)}
+      </span>
 
       {/* Morphing background effect */}
       <div className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700'>

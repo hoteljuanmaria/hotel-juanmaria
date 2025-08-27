@@ -12,7 +12,11 @@ interface DateRange {
   to?: Date
 }
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  homePageData?: any
+}
+
+const HeroSection = ({ homePageData }: HeroSectionProps) => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
   const [dateRange, setDateRange] = useState<DateRange>({})
@@ -66,7 +70,7 @@ const HeroSection = () => {
       <div
         className='absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-[10000ms] ease-out'
         style={{
-          backgroundImage: "url('/HotelBackground.jpeg')",
+          backgroundImage: `url('${homePageData?.heroBackgroundImage?.url || `/api/media/file/${homePageData?.heroBackgroundImage?.filename}` || '/HotelBackground.jpeg'}')`,
         }}
       />
 
@@ -92,10 +96,7 @@ const HeroSection = () => {
             }`}
             style={{ animationDelay: '0.2s' }}
           >
-            Bienvenido al{' '}
-            <span className='bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent block sm:inline'>
-              Hotel Juan María
-            </span>
+{homePageData?.heroTitle || 'Bienvenido al Hotel Juan María'}
           </h1>
 
           <p
@@ -104,7 +105,7 @@ const HeroSection = () => {
             }`}
             style={{ animationDelay: '0.6s' }}
           >
-            Descubre el confort y elegancia en el mejor hotel de Tuluá
+{homePageData?.heroSubtitle || 'Descubre el confort y elegancia en el mejor hotel de Tuluá'}
           </p>
         </div>
 
@@ -124,7 +125,7 @@ const HeroSection = () => {
               className='bg-white/15 hover:bg-white/25 backdrop-blur-2xl border border-white/30 text-white font-medium rounded-lg shadow-2xl text-sm px-6 py-3 transition-all duration-300 hover:scale-105'
             >
               <Search className='w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300' />
-              Pre-reservar
+              {homePageData?.mobileButtonText || 'Pre-reservar'}
             </NiceButton>
           </div>
 
@@ -183,7 +184,7 @@ const HeroSection = () => {
               className='w-full sm:w-auto mx-auto block shadow-2xl text-base px-8 py-3'
             >
               <Search className='w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300' />
-              Pre-reservar
+              {homePageData?.desktopButtonText || 'Pre-reservar'}
             </NiceButton>
           </div>
         </div>

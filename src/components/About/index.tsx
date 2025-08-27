@@ -1,132 +1,20 @@
 'use client'
 
-import React, { useState, useEffect, useRef, JSX } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Shield, Heart, Users, TrendingUp, Calendar, Award } from 'lucide-react'
-import { getAboutInfo } from '@/lib/data'
 import HistoryTimeline from '../HistoryTImeline'
 import Image from 'next/image'
+import type { AboutPage as AboutPageType } from '@/payload-types'
 
-// Tipos para TypeScript
-interface Value {
-  title: string
-  description: string
-  icon: string
+// Props interface for the component
+interface AboutPageProps {
+  aboutData: AboutPageType
 }
 
-interface TeamMember {
-  name: string
-  position: string
-  bio: string
-  image: string
-}
-
-interface Stats {
-  yearsOfExperience: number
-  satisfiedGuests: number
-  teamMembers: number
-  foundedYear: number
-}
-
-interface AboutData {
-  hero: {
-    title: string
-    subtitle: string
-    backgroundImage: string
-  }
-  story: {
-    title: string
-    content: string
-    highlights: string[]
-  }
-  heritage: {
-    title: string
-    content: string
-  }
-  mission: {
-    title: string
-    content: string
-  }
-  vision: {
-    title: string
-    content: string
-  }
-  values: Value[]
-  qualityPolicy: {
-    title: string
-    content: string
-  }
-  team: TeamMember[]
-  stats: Stats
-  panoramic: string
-  images: string[]
-}
-
-// Hook optimizado para mobile - sin efectos complejos
-const useSimpleScrollReveal = () => {
-  const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set())
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    // Detectar si es móvil
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleElements((prev) => new Set([...prev, entry.target.id]))
-          }
-        })
-      },
-      {
-        threshold: isMobile ? 0.1 : 0.3,
-        rootMargin: isMobile ? '10px' : '50px',
-      },
-    )
-
-    const elements = document.querySelectorAll('[data-reveal]')
-    elements.forEach((el) => observer.observe(el))
-
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', checkMobile)
-    }
-  }, [])
-
-  return { visibleElements, isMobile }
-}
-
-// Hook simplificado para contadores
-const useCounterAnimation = (endValue: number, duration: number = 1500) => {
-  const [count, setCount] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    if (!isVisible) return
-
-    let startTime: number
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime
-      const progress = Math.min((currentTime - startTime) / duration, 1)
-
-      // Easing más simple para mobile
-      const easeOut = 1 - Math.pow(1 - progress, 2)
-      setCount(Math.floor(easeOut * endValue))
-
-      if (progress < 1) {
-        requestAnimationFrame(animate)
-      }
-    }
-
-    requestAnimationFrame(animate)
-  }, [isVisible, endValue, duration])
-
-  return { count, setIsVisible }
+// Simple mobile detection
+const isMobileDevice = () => {
+  if (typeof window === 'undefined') return false
+  return window.innerWidth < 768
 }
 
 // Estilos CSS optimizados para mobile
@@ -280,37 +168,17 @@ const IconComponent: React.FC<{ iconName: string; className?: string }> = ({
   return <Icon className={className} />
 }
 
-// Componente de contador optimizado
-const AnimatedCounter: React.FC<{
-  endValue: number
+// Simple display counter component
+const DisplayCounter: React.FC<{
+  value: number
   suffix?: string
   prefix?: string
   className?: string
-}> = ({ endValue, suffix = '', prefix = '', className = '' }) => {
-  const { count, setIsVisible } = useCounterAnimation(endValue)
-  const elementRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.5 },
-    )
-
-    if (elementRef.current) {
-      observer.observe(elementRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [setIsVisible])
-
+}> = ({ value, suffix = '', prefix = '', className = '' }) => {
   return (
-    <div ref={elementRef} className={`counter ${className}`}>
+    <div className={`counter ${className}`}>
       {prefix}
-      {count.toLocaleString()}
+      {value.toLocaleString()}
       {suffix}
     </div>
   )
@@ -356,7 +224,7 @@ const PremiumButton: React.FC<{
   )
 }
 
-// Componente de imagen simplificado
+// Simplified image story card component
 const ImageStoryCard: React.FC<{
   src: string
   title: string
@@ -374,30 +242,9 @@ const ImageStoryCard: React.FC<{
   className = '',
   imagePosition = 'left',
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting)
-      },
-      { threshold: 0.2 },
-    )
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
     <div
-      ref={cardRef}
-      className={`liquid-card rounded-2xl p-6 md:p-8 ${className} ${
-        isVisible ? 'animate-fadeIn' : 'opacity-0'
-      }`}
+      className={`liquid-card rounded-2xl p-6 md:p-8 ${className} animate-fadeIn`}
       data-reveal
     >
       <div
@@ -424,7 +271,7 @@ const ImageStoryCard: React.FC<{
               className='relative w-full h-64 md:h-96 lg:h-[500px] object-cover rounded-xl shadow-lg md:group-hover:scale-105 transition-transform duration-300'
             />
 
-            {/* Stats overlay si se proporcionan */}
+            {/* Stats overlay if provided */}
             {stats && (
               <div className='absolute bottom-4 left-4 right-4'>
                 <div className='bg-white/90 rounded-lg p-3 border border-white/30'>
@@ -465,36 +312,17 @@ const ImageStoryCard: React.FC<{
   )
 }
 
-export default function AboutPage(): JSX.Element {
-  const [aboutData, setAboutData] = useState<AboutData | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+export default function AboutPage({ aboutData }: AboutPageProps) {
+  const isMobile = isMobileDevice()
   const [imageLoaded, setImageLoaded] = useState(false)
-  const { isMobile } = useSimpleScrollReveal()
 
   useEffect(() => {
-    const loadAboutData = async () => {
-      try {
-        const data = await getAboutInfo()
-        setAboutData(data)
-      } catch (error) {
-        console.error('Error loading about data:', error)
-      } finally {
-        setLoading(false)
-      }
+    if (aboutData?.panoramicImage) {
+      const img = document.createElement('img')
+      img.onload = () => setImageLoaded(true)
+      img.src = getImageUrl(aboutData.panoramicImage)
     }
-
-    loadAboutData()
-  }, [])
-
-  if (loading) {
-    return (
-      <div className='min-h-screen bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-black/80 flex items-center justify-center'>
-        <div className='relative'>
-          <div className='w-20 h-20 bg-gradient-to-r from-white/20 via-white/10 to-white/5 rounded-full animate-spin border-2 border-white/30 border-t-white/60' />
-        </div>
-      </div>
-    )
-  }
+  }, [aboutData?.panoramicImage])
 
   if (!aboutData) {
     return (
@@ -504,6 +332,15 @@ export default function AboutPage(): JSX.Element {
         </p>
       </div>
     )
+  }
+
+  // Helper function to get image URL from media object
+  const getImageUrl = (media: unknown) => {
+    if (typeof media === 'string') return media
+    if (media && typeof media === 'object' && 'url' in media) {
+      return (media as { url: string }).url
+    }
+    return ''
   }
 
   return (
@@ -522,7 +359,7 @@ export default function AboutPage(): JSX.Element {
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
             style={{
-              backgroundImage: `url(${aboutData.panoramic})`,
+              backgroundImage: `url(${getImageUrl(aboutData.panoramicImage)})`,
             }}
           />
 
@@ -531,14 +368,6 @@ export default function AboutPage(): JSX.Element {
             className={`absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-black/80 transition-opacity duration-1000 ease-out ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
-          />
-
-          {/* Imagen para precargar */}
-          <img
-            src={aboutData.panoramic}
-            alt='Preload'
-            style={{ display: 'none' }}
-            onLoad={() => setImageLoaded(true)}
           />
 
           {/* Orbes flotantes solo en desktop */}
@@ -552,10 +381,10 @@ export default function AboutPage(): JSX.Element {
           {/* Contenido principal */}
           <div className='relative z-10 text-center max-w-4xl mx-auto px-6'>
             <h1 className='font-serif text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white animate-fadeIn'>
-              {aboutData.hero.title}
+              {aboutData.heroTitle}
             </h1>
             <p className='font-sans font-light text-lg md:text-xl text-white/90 mb-8 animate-slideUp'>
-              {aboutData.hero.subtitle}
+              {aboutData.heroSubtitle}
             </p>
 
             <div className='animate-scaleIn'>
@@ -595,9 +424,9 @@ export default function AboutPage(): JSX.Element {
           <div className='max-w-7xl mx-auto'>
             <div className='mb-16'>
               <ImageStoryCard
-                src={aboutData.images[0]}
-                title={aboutData.story.title}
-                description={aboutData.story.content}
+                src={getImageUrl(aboutData.storyImage) || '/FachadaDia.jpg'}
+                title={aboutData.storyTitle}
+                description={aboutData.storyContent}
                 stats={[
                   { label: 'Años de Historia', value: '47+' },
                   { label: 'Huéspedes Felices', value: '75K+' },
@@ -605,13 +434,13 @@ export default function AboutPage(): JSX.Element {
                 imagePosition='left'
               >
                 <div className='space-y-4 mb-8'>
-                  {aboutData.story.highlights
-                    .slice(0, 3)
-                    .map((highlight, index) => (
+                  {aboutData.storyHighlights
+                    ?.slice(0, 3)
+                    ?.map((highlight, index) => (
                       <div key={index} className='flex items-start gap-3'>
                         <div className='w-2 h-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full mt-2' />
                         <p className='font-sans font-light text-sm text-gray-700 text-justify'>
-                          {highlight}
+                          {highlight.text}
                         </p>
                       </div>
                     ))}
@@ -665,7 +494,7 @@ export default function AboutPage(): JSX.Element {
 
                   {/* Título */}
                   <h2 className='font-serif text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight'>
-                    {aboutData.heritage.title}
+                    {aboutData.heritageTitle}
                   </h2>
 
                   {/* Línea decorativa */}
@@ -674,7 +503,7 @@ export default function AboutPage(): JSX.Element {
 
                 <div className='prose prose-lg max-w-none'>
                   <p className='font-sans text-xl text-gray-700 leading-relaxed font-light text-justify'>
-                    {aboutData.heritage.content}
+                    {aboutData.heritageContent}
                   </p>
                 </div>
 
@@ -706,7 +535,7 @@ export default function AboutPage(): JSX.Element {
                     <div
                       className='aspect-[4/5] bg-cover bg-center'
                       style={{
-                        backgroundImage: `url(${aboutData.images[3]})`,
+                        backgroundImage: `url(${getImageUrl(aboutData.heritageImage) || '/FachadaDia.jpg'})`,
                       }}
                     />
 
@@ -763,11 +592,11 @@ export default function AboutPage(): JSX.Element {
                       <Heart className='w-6 h-6 text-white' />
                     </div>
                     <h3 className='font-serif text-2xl font-bold text-gray-900'>
-                      {aboutData.mission.title}
+                      {aboutData.missionTitle}
                     </h3>
                   </div>
                   <p className='font-sans font-light text-gray-700 leading-relaxed'>
-                    {aboutData.mission.content}
+                    {aboutData.missionContent}
                   </p>
                 </div>
 
@@ -777,11 +606,11 @@ export default function AboutPage(): JSX.Element {
                       <TrendingUp className='w-6 h-6 text-white' />
                     </div>
                     <h3 className='font-serif text-2xl font-bold text-gray-900'>
-                      {aboutData.vision.title}
+                      {aboutData.visionTitle}
                     </h3>
                   </div>
                   <p className='font-sans font-light text-gray-700 leading-relaxed'>
-                    {aboutData.vision.content}
+                    {aboutData.visionContent}
                   </p>
                 </div>
               </div>
@@ -796,7 +625,10 @@ export default function AboutPage(): JSX.Element {
                   >
                     <div className='relative'>
                       <Image
-                        src={aboutData.images[2]}
+                        src={
+                          getImageUrl(aboutData.galleryImages?.[2]?.image) ||
+                          '/FachadaNoche.jpg'
+                        }
                         alt='Hotel de noche'
                         width={1200}
                         height={400}
@@ -841,7 +673,7 @@ export default function AboutPage(): JSX.Element {
             </div>
 
             <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-8'>
-              {aboutData.values.map((value, index) => (
+              {aboutData.values?.map((value, index) => (
                 <div
                   key={index}
                   className='liquid-card rounded-2xl p-8 text-center group'
@@ -873,9 +705,11 @@ export default function AboutPage(): JSX.Element {
           <div className='max-w-7xl mx-auto'>
             <div>
               <ImageStoryCard
-                src={aboutData.images[1]}
-                title={aboutData.qualityPolicy.title}
-                description={aboutData.qualityPolicy.content}
+                src={
+                  getImageUrl(aboutData.qualityPolicyImage) || '/FachadaDia.jpg'
+                }
+                title={aboutData.qualityPolicyTitle}
+                description={aboutData.qualityPolicyContent}
                 imagePosition='right'
                 className='lg:min-h-96'
               >
@@ -900,7 +734,7 @@ export default function AboutPage(): JSX.Element {
             </div>
 
             <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-8'>
-              {aboutData.team.map((member, index) => (
+              {aboutData.team?.map((member, index) => (
                 <div
                   key={index}
                   className='liquid-card rounded-2xl p-6 text-center cursor-pointer group h-full flex flex-col'
@@ -908,7 +742,7 @@ export default function AboutPage(): JSX.Element {
                   <div className='mb-6'>
                     <div className='w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden transform md:group-hover:scale-110 transition-all duration-300 shadow-lg'>
                       <Image
-                        src={member.image}
+                        src={getImageUrl(member.image)}
                         alt={member.name}
                         width={200}
                         height={200}
@@ -935,7 +769,10 @@ export default function AboutPage(): JSX.Element {
         </section>
 
         <div id='timeline-section'>
-          <HistoryTimeline />
+          <HistoryTimeline 
+            timelineEvents={aboutData.timelineEvents}
+            historyStats={aboutData.historyStats}
+          />
         </div>
 
         {/* Estadísticas con contadores simplificados */}
@@ -943,8 +780,8 @@ export default function AboutPage(): JSX.Element {
           <div className='max-w-7xl mx-auto'>
             <div className='grid md:grid-cols-4 gap-8'>
               <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <AnimatedCounter
-                  endValue={aboutData.stats.yearsOfExperience}
+                <DisplayCounter
+                  value={aboutData.yearsOfExperience}
                   suffix='+'
                   className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
                 />
@@ -954,8 +791,8 @@ export default function AboutPage(): JSX.Element {
               </div>
 
               <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <AnimatedCounter
-                  endValue={aboutData.stats.satisfiedGuests}
+                <DisplayCounter
+                  value={aboutData.satisfiedGuests}
                   suffix='+'
                   className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
                 />
@@ -965,8 +802,8 @@ export default function AboutPage(): JSX.Element {
               </div>
 
               <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <AnimatedCounter
-                  endValue={aboutData.stats.teamMembers}
+                <DisplayCounter
+                  value={aboutData.teamMembers}
                   suffix='+'
                   className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
                 />
@@ -976,8 +813,8 @@ export default function AboutPage(): JSX.Element {
               </div>
 
               <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <AnimatedCounter
-                  endValue={aboutData.stats.foundedYear}
+                <DisplayCounter
+                  value={aboutData.foundedYear}
                   className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
                 />
                 <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>

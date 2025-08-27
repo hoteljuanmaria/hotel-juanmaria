@@ -145,7 +145,7 @@ export default async function ExperienceDetailPage({
 
               {/* Media */}
               <div className="relative w-full h-48">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                { }
                 {rImg ? (
                   <img
                     src={rImg}

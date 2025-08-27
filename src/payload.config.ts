@@ -13,12 +13,17 @@ import { Experiences } from './collections/Experiences'
 import { BlogPosts } from './collections/BlogPosts'
 import { Posts } from './collections/Posts'
 import { Rooms } from './collections/Rooms'
+import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { ExperiencesPage } from './globals/ExperiencesPage'
 import { BlogPage } from './globals/BlogPage'
 import { CurrentMenu } from './globals/CurrentMenu'
+import { AboutPage } from './globals/AboutPage'
+import { HomePage } from './globals/HomePage'
+import { PrivacyPolicyPage } from './globals/PrivacyPolicyPage'
+import { FAQsPage } from './globals/FAQsPage'
 
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
@@ -79,11 +84,12 @@ export default buildConfig({
     Media,
     Categories,
     Rooms,
+    Testimonials,
     Experiences,
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, ExperiencesPage, BlogPage, CurrentMenu],
+  globals: [Header, Footer, HomePage, ExperiencesPage, BlogPage, CurrentMenu, AboutPage, PrivacyPolicyPage, FAQsPage],
   plugins: [...plugins],
   secret: process.env.PAYLOAD_SECRET,
   sharp,

@@ -1,0 +1,279 @@
+import type { Payload } from 'payload'
+import type { FaqsPage } from '@/payload-types'
+
+// Seed data structure for FAQsPage global (text-only fields, images are optional)
+export const seedFAQsPageData = {
+  title: 'Preguntas Frecuentes',
+  subtitle:
+    'Encuentre respuestas rápidas a las preguntas más comunes sobre nuestros servicios y políticas.',
+
+  // FAQ Categories with questions organized by topic
+  categories: [
+    {
+      categoryTitle: 'Reservas y Políticas',
+      categoryDescription:
+        'Todo lo que necesita saber sobre nuestras políticas de reserva, cancelación y check-in/check-out.',
+      categoryIcon: 'clock',
+      questions: [
+        {
+          question: '¿Cuáles son los horarios de check-in y check-out?',
+          answer:
+            'El check-in es a las 3:00 PM y el check-out a las 1:00 PM. Ofrecemos check-in temprano y check-out tardío sujeto a disponibilidad con posibles cargos adicionales.',
+          questionIcon: 'clock',
+          featured: true,
+        },
+        {
+          question: '¿Puedo cancelar mi reserva?',
+          answer:
+            'Las cancelaciones gratuitas deben realizarse hasta 24 horas antes del check-in. Las tarifas no reembolsables no permiten cancelaciones.',
+          questionIcon: 'x',
+          featured: true,
+        },
+        {
+          question: '¿Qué métodos de pago aceptan?',
+          answer:
+            'Aceptamos todas las tarjetas de crédito principales (Visa, MasterCard, American Express), efectivo en pesos colombianos y transferencias bancarias.',
+          questionIcon: 'credit-card',
+          featured: false,
+        },
+      ],
+    },
+    {
+      categoryTitle: 'Servicios del Hotel',
+      categoryDescription:
+        'Información sobre los servicios disponibles durante su estadía con nosotros.',
+      categoryIcon: 'utensils',
+      questions: [
+        {
+          question: '¿Incluye desayuno la tarifa de la habitación?',
+          answer:
+            'Algunas tarifas incluyen desayuno buffet. Durante el proceso de reserva se especifica qué está incluido en cada tarifa.',
+          questionIcon: 'utensils',
+          featured: true,
+        },
+        {
+          question: '¿Qué servicios incluye el spa?',
+          answer:
+            'Nuestro spa ofrece masajes, tratamientos faciales, sauna, baño turco y paquetes de relajación. Consulte horarios y precios en recepción.',
+          questionIcon: 'heart',
+          featured: false,
+        },
+        {
+          question: '¿Tienen servicio de transporte al aeropuerto?',
+          answer:
+            'Sí, ofrecemos servicio de transporte VIP al aeropuerto. Debe reservarse con anticipación y tiene costo adicional.',
+          questionIcon: 'plane',
+          featured: false,
+        },
+      ],
+    },
+    {
+      categoryTitle: 'Instalaciones',
+      categoryDescription:
+        'Detalles sobre las instalaciones y comodidades disponibles en nuestro hotel.',
+      categoryIcon: 'car',
+      questions: [
+        {
+          question: '¿Tienen estacionamiento disponible?',
+          answer:
+            'Sí, ofrecemos estacionamiento gratuito y seguro para nuestros huéspedes las 24 horas.',
+          questionIcon: 'car',
+          featured: true,
+        },
+        {
+          question: '¿El WiFi es gratuito?',
+          answer:
+            'Sí, ofrecemos WiFi gratuito de alta velocidad en todas las áreas del hotel y habitaciones.',
+          questionIcon: 'wifi',
+          featured: true,
+        },
+        {
+          question: '¿Tienen habitaciones para no fumadores?',
+          answer:
+            'Todo el hotel es 100% libre de humo conforme a la Ley 1335 de 2009. Todas nuestras habitaciones y áreas comunes son para no fumadores.',
+          questionIcon: 'shield',
+          featured: false,
+        },
+      ],
+    },
+    {
+      categoryTitle: 'Políticas Especiales',
+      categoryDescription:
+        'Información sobre nuestras políticas especiales y compromisos sociales.',
+      categoryIcon: 'shield',
+      questions: [
+        {
+          question: '¿Aceptan mascotas?',
+          answer:
+            'No permitimos mascotas, excepto animales de servicio debidamente certificados conforme a la legislación vigente.',
+          questionIcon: 'shield',
+          featured: false,
+        },
+        {
+          question: '¿Qué compromisos tienen con la sostenibilidad?',
+          answer:
+            'Estamos certificados en sostenibilidad turística NTS-TS 002. Implementamos prácticas de ahorro de agua y energía, manejo de residuos, protección del patrimonio cultural y prevención de la ESCNNA.',
+          questionIcon: 'leaf',
+          featured: true,
+        },
+        {
+          question: '¿Cómo puedo ejercer mis derechos sobre datos personales?',
+          answer:
+            'Puede ejercer sus derechos de acceso, rectificación, actualización o supresión de datos contactándonos en datos@hoteljuanmaria.com o llamando al (2) 224-4562 en horario de atención.',
+          questionIcon: 'database',
+          featured: false,
+        },
+      ],
+    },
+    {
+      categoryTitle: 'General',
+      categoryDescription:
+        'Otras preguntas comunes que pueden ser de su interés.',
+      categoryIcon: 'help-circle',
+      questions: [
+        {
+          question: '¿Dónde están ubicados?',
+          answer:
+            'Estamos ubicados en el centro de Tuluá, Valle del Cauca, cerca de los principales atractivos turísticos y comerciales de la ciudad.',
+          questionIcon: 'help-circle',
+          featured: false,
+        },
+        {
+          question: '¿Tienen salones para eventos?',
+          answer:
+            'Sí, contamos con salones completamente equipados para eventos corporativos, sociales y familiares. Consulte disponibilidad y cotizaciones en recepción.',
+          questionIcon: 'help-circle',
+          featured: false,
+        },
+      ],
+    },
+  ],
+
+  // Support Section
+  supportTitle: '¿No encontró su respuesta?',
+  supportDescription:
+    'Nuestro equipo de atención al cliente está disponible para ayudarle con cualquier consulta adicional.',
+  contactButtonText: 'Contactar Soporte',
+  contactButtonLink: '/contacto',
+  backToTopText: 'Volver al inicio',
+
+  // Settings
+  showStats: true,
+  enableSearch: false,
+  animationsEnabled: true,
+
+  // Publication info
+  publishedAt: new Date().toISOString(),
+  _status: 'published' as const,
+}
+
+/**
+ * Seeds the FAQsPage global with comprehensive FAQ data (text-only)
+ * @param payload - Payload CMS instance
+ */
+export async function seedFAQsPage(payload: Payload): Promise<FaqsPage> {
+  try {
+    console.log('📝 Seeding FAQsPage global with FAQ data...')
+
+    // Use only text data, no images
+    const faqsPage = await payload.updateGlobal({
+      slug: 'faqs-page',
+      data: seedFAQsPageData,
+    })
+
+    console.log('✅ FAQsPage global seeded successfully!')
+    console.log(
+      `📊 Categories: ${seedFAQsPageData.categories.length}`,
+    )
+    console.log(
+      `❓ Total questions: ${seedFAQsPageData.categories.reduce((total, cat) => total + cat.questions.length, 0)}`,
+    )
+    console.log(
+      '📝 Note: Background image can be uploaded later through the admin interface at /admin',
+    )
+
+    return faqsPage
+  } catch (error) {
+    console.error('❌ Error seeding FAQsPage:', error)
+
+    // Provide more helpful error information
+    if (error instanceof Error && 'data' in error) {
+      const validationError = error as any
+      if (validationError.data?.errors) {
+        console.log('\n📋 Validation errors details:')
+        validationError.data.errors.forEach((err: any, index: number) => {
+          console.log(`  ${index + 1}. ${err.field}: ${err.message}`)
+        })
+        console.log('\n💡 Tips:')
+        console.log(
+          '  - Check that all required fields are properly configured',
+        )
+        console.log(
+          '  - You can upload images through the admin interface at /admin',
+        )
+        console.log('  - Make sure your database is running and accessible')
+      }
+    }
+
+    throw error
+  }
+}
+
+// Make this script executable
+async function main() {
+  // Check if this module is being run directly
+  const isMainModule = import.meta.url === `file://${process.argv[1]}`
+
+  if (isMainModule) {
+    console.log('🌱 Starting FAQsPage seeding process...')
+
+    try {
+      // Load environment variables if not already loaded
+      if (!process.env.PAYLOAD_SECRET) {
+        const dotenv = await import('dotenv')
+        dotenv.config()
+
+        if (!process.env.PAYLOAD_SECRET) {
+          console.error('❌ PAYLOAD_SECRET environment variable is required')
+          console.log(
+            '💡 Make sure you have a .env file with PAYLOAD_SECRET set',
+          )
+          process.exit(1)
+        }
+      }
+
+      // Import Payload and configuration
+      const { getPayload } = await import('payload')
+      const config = await import('@payload-config')
+
+      // Initialize Payload
+      console.log('🔧 Initializing Payload CMS...')
+      const payload = await getPayload({ config: config.default })
+
+      // Run the seed function
+      console.log('📋 Seeding FAQsPage global...')
+      await seedFAQsPage(payload)
+
+      console.log('🎉 FAQsPage seeding completed successfully!')
+      process.exit(0)
+    } catch (error) {
+      console.error('💥 Failed to seed FAQsPage:', error)
+      console.log('\n🔍 Troubleshooting tips:')
+      console.log(
+        '  - Make sure you have a .env file with proper environment variables',
+      )
+      console.log('  - Ensure PAYLOAD_SECRET is set in your environment')
+      console.log('  - Check that your database is running and accessible')
+      console.log(
+        '  - Run `pnpm dev` first to ensure the application starts correctly',
+      )
+      process.exit(1)
+    }
+  }
+}
+
+// Execute if this file is run directly
+main().catch((error) => {
+  console.error('💥 Unexpected error:', error)
+  process.exit(1)
+})

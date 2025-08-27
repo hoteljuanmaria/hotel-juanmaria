@@ -93,7 +93,6 @@ export const translations = {
       title: 'Our Rooms',
       subtitle: 'Discover unique spaces designed to create memorable experiences. Each room combines elegance, comfort and attention to detail.',
       searchPlaceholder: 'Search rooms...',
-      filters: 'Filters',
       clearFilters: 'Clear filters',
       results: {
         found: 'room found',

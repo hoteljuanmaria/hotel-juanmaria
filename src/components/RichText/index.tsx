@@ -28,7 +28,7 @@ function SafeRenderer({
     return <PayloadRichText data={data as any} converters={converters} />
   } catch (err) {
     if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
+       
       console.error('[RichText] render error:', err, { data })
     }
     return (

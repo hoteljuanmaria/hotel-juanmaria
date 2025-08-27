@@ -142,7 +142,7 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
   }, [isPreviewOpen, selectedRoom])
 
   const getAmenityIcon = (amenity: {
-    amenity?: string
+    amenity?: string | null
     customAmenity?: string | null
   }) => {
     const amenityText = amenity.amenity || amenity.customAmenity || ''
@@ -200,7 +200,10 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
     return '/placeholder-room.jpg' // fallback
   }
 
-  const getAmenityText = (amenity: any): string => {
+  const getAmenityText = (amenity: {
+    amenity?: string | null
+    customAmenity?: string | null
+  }): string => {
     if (typeof amenity === 'string') {
       return amenity
     }
