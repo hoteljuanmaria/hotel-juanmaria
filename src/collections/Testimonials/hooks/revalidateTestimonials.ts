@@ -2,7 +2,10 @@ import type { CollectionAfterChangeHook } from 'payload'
 
 import { revalidatePath, revalidateTag } from 'next/cache'
 
-export const revalidateTestimonials: CollectionAfterChangeHook = ({ doc, req: { payload } }) => {
+export const revalidateTestimonials: CollectionAfterChangeHook = ({
+  doc,
+  req: { payload },
+}) => {
   // Skip revalidation during seeding or when not in Next.js context
   if (process.env.SEEDING === 'true' || typeof window === 'undefined') {
     payload.logger.info(`Skipping revalidation during seeding`)

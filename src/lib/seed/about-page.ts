@@ -295,30 +295,30 @@ async function main() {
       // Load environment variables
       const dotenv = await import('dotenv')
       dotenv.config()
-      
+
       // Establecer flag de seeding
       process.env.SEEDING = 'true'
-      
+
       // Verificar variables de entorno requeridas
       if (!process.env.DATABASE_URI) {
         console.error('❌ DATABASE_URI environment variable is required')
         console.log('💡 Make sure you have a .env file with DATABASE_URI set')
         process.exit(1)
       }
-      
+
       if (!process.env.PAYLOAD_SECRET) {
         console.error('❌ PAYLOAD_SECRET environment variable is required')
         console.log('💡 Make sure you have a .env file with PAYLOAD_SECRET set')
         process.exit(1)
       }
-      
+
       // Verificar variables de entorno requeridas
       if (!process.env.DATABASE_URI) {
         console.error('❌ DATABASE_URI environment variable is required')
         console.log('💡 Make sure you have a .env file with DATABASE_URI set')
         process.exit(1)
       }
-      
+
       if (!process.env.PAYLOAD_SECRET) {
         console.error('❌ PAYLOAD_SECRET environment variable is required')
         console.log('💡 Make sure you have a .env file with PAYLOAD_SECRET set')
