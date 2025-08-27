@@ -2760,10 +2760,6 @@ export interface AboutPage {
         description: string;
         type: 'legal' | 'hito' | 'crecimiento' | 'modernizacion' | 'cultural' | 'aniversario' | 'actual';
         importance: 'alto' | 'medio' | 'bajo';
-        /**
-         * Lucide icon name (e.g., "calendar", "building", "award")
-         */
-        icon: string;
         id?: string | null;
       }[]
     | null;
@@ -3353,7 +3349,6 @@ export interface AboutPageSelect<T extends boolean = true> {
         description?: T;
         type?: T;
         importance?: T;
-        icon?: T;
         id?: T;
       };
   historyStats?:

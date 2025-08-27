@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { Plus, Minus } from 'lucide-react'
 import {
   Calendar,
   Users,
@@ -334,22 +335,23 @@ const BookingPage = () => {
                   Fechas y huéspedes
                 </h2>
 
-                <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-                  {/* Date Selection */}
-                  <div className='lg:col-span-2'>
-                    <label className='block text-sm font-semibold text-gray-800 mb-3'>
+                {/* 1 fila en desktop: 6/3/3 */}
+                <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+                  {/* Fecha (6 col) */}
+                  <div className='lg:col-span-6'>
+                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
                       Fechas de estadía
                     </label>
                     <button
                       type='button'
                       onClick={() => setShowCalendar(true)}
-                      className={`w-full px-6 py-4 border-2 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 hover:border-gray-400 bg-white/90 backdrop-blur-sm ${
+                      className={`w-full px-5 py-4 min-h-[88px] border-2 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 hover:border-gray-400 bg-white/90 backdrop-blur-sm ${
                         errors.checkIn || errors.checkOut
                           ? 'border-red-400 bg-red-50/90'
                           : 'border-gray-300'
                       }`}
                     >
-                      <div className='flex items-center justify-between'>
+                      <div className='flex items-center justify-between h-full'>
                         <div className='flex-1'>
                           {formData.checkIn && formData.checkOut ? (
                             <div>
@@ -395,90 +397,78 @@ const BookingPage = () => {
                     )}
                   </div>
 
-                  {/* Guests and Rooms */}
-                  <div className='space-y-4'>
-                    {/* Guests */}
-                    <div>
-                      <label className='block text-sm font-semibold text-gray-800 mb-3'>
-                        Huéspedes
-                      </label>
-                      <div className='flex items-center border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm overflow-hidden'>
-                        <button
-                          type='button'
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              guests: Math.max(1, prev.guests - 1),
-                            }))
-                          }
-                          className='p-4 hover:bg-gray-50 text-gray-700 font-semibold text-lg disabled:opacity-50 transition-colors'
-                          disabled={formData.guests <= 1}
-                        >
-                          −
-                        </button>
-                        <div className='flex-1 text-center py-4'>
-                          <div className='text-lg font-bold text-gray-900'>
-                            {formData.guests}
-                          </div>
-                          <div className='text-xs text-gray-600'>
-                            huésped{formData.guests !== 1 ? 'es' : ''}
-                          </div>
-                        </div>
-                        <button
-                          type='button'
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              guests: prev.guests + 1,
-                            }))
-                          }
-                          className='p-4 hover:bg-gray-50 text-gray-700 font-semibold text-lg transition-colors'
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
+                  {/* Huéspedes (3 col) */}
+                  <div className='lg:col-span-3 flex flex-col justify-end'>
+                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
+                      Huéspedes
+                    </label>
+                    <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({
+                            ...p,
+                            guests: Math.max(1, p.guests - 1),
+                          }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
+                        disabled={formData.guests <= 1}
+                        aria-label='Disminuir huéspedes'
+                      >
+                        <Minus className='w-5 h-5' />
+                      </button>
 
-                    {/* Rooms */}
-                    <div>
-                      <label className='block text-sm font-semibold text-gray-800 mb-3'>
-                        Habitaciones
-                      </label>
-                      <div className='flex items-center border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm overflow-hidden'>
-                        <button
-                          type='button'
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              rooms: Math.max(1, prev.rooms - 1),
-                            }))
-                          }
-                          className='p-4 hover:bg-gray-50 text-gray-700 font-semibold text-lg disabled:opacity-50 transition-colors'
-                          disabled={formData.rooms <= 1}
-                        >
-                          −
-                        </button>
-                        <div className='flex-1 text-center py-4'>
-                          <div className='text-lg font-bold text-gray-900'>
-                            {formData.rooms}
-                          </div>
-                          <div className='text-xs text-gray-600'>
-                            habitación{formData.rooms !== 1 ? 'es' : ''}
-                          </div>
-                        </div>
-                        <button
-                          type='button'
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              rooms: prev.rooms + 1,
-                            }))
-                          }
-                          className='p-4 hover:bg-gray-50 text-gray-700 font-semibold text-lg transition-colors'
-                        >
-                          +
-                        </button>
+                      <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
+                        {formData.guests}
                       </div>
+
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({ ...p, guests: p.guests + 1 }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
+                        aria-label='Aumentar huéspedes'
+                      >
+                        <Plus className='w-5 h-5' />
+                      </button>
+                    </div>
+                  </div>
+                  {/* Habitaciones (3 col) */}
+                  <div className='lg:col-span-3 flex flex-col justify-end'>
+                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
+                      Habitaciones
+                    </label>
+                    <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({
+                            ...p,
+                            rooms: Math.max(1, p.rooms - 1),
+                          }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
+                        disabled={formData.rooms <= 1}
+                        aria-label='Disminuir habitaciones'
+                      >
+                        <Minus className='w-5 h-5' />
+                      </button>
+
+                      <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
+                        {formData.rooms}
+                      </div>
+
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({ ...p, rooms: p.rooms + 1 }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
+                        aria-label='Aumentar habitaciones'
+                      >
+                        <Plus className='w-5 h-5' />
+                      </button>
                     </div>
                   </div>
                 </div>
