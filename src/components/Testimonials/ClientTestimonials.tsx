@@ -303,7 +303,7 @@ export default function ClientTestimonials({
                         {stats.totalReviews}
                       </div>
                       <div className='text-sm text-gray-600'>
-                        Reseñas Totales
+                        Reseñas Destacadas
                       </div>
                     </div>
 
