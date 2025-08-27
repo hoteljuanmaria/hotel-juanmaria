@@ -6,7 +6,7 @@ import { Plus, Minus } from 'lucide-react'
 import {
   Calendar,
   Users,
-  Home,
+Home,
   ChevronRight,
   Check,
   X,
