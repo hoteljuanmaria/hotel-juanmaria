@@ -416,7 +416,7 @@ export const AboutPage: GlobalConfig = {
                     { label: { en: 'Medium', es: 'Medio' }, value: 'medio' },
                     { label: { en: 'Low', es: 'Bajo' }, value: 'bajo' },
                   ],
-                }
+                },
               ],
             },
             {

@@ -335,110 +335,145 @@ const BookingPage = () => {
       Fechas y huéspedes
     </h2>
 
-{/* 1 fila en desktop: 6/3/3 */}
-<div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+                {/* 1 fila en desktop: 6/3/3 */}
+                <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+                  {/* Fecha (6 col) */}
+                  <div className='lg:col-span-6'>
+                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
+                      Fechas de estadía
+                    </label>
+                    <button
+                      type='button'
+                      onClick={() => setShowCalendar(true)}
+                      className={`w-full px-5 py-4 min-h-[88px] border-2 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 hover:border-gray-400 bg-white/90 backdrop-blur-sm ${
+                        errors.checkIn || errors.checkOut
+                          ? 'border-red-400 bg-red-50/90'
+                          : 'border-gray-300'
+                      }`}
+                    >
+                      <div className='flex items-center justify-between h-full'>
+                        <div className='flex-1'>
+                          {formData.checkIn && formData.checkOut ? (
+                            <div>
+                              <div className='text-sm text-gray-600 mb-1'>
+                                Fechas seleccionadas
+                              </div>
+                              <div className='font-semibold text-gray-900'>
+                                {formatDate(formData.checkIn)} -{' '}
+                                {formatDate(formData.checkOut)}
+                              </div>
+                              <div className='text-sm text-gray-800 mt-1'>
+                                {calculateNights(
+                                  formData.checkIn,
+                                  formData.checkOut,
+                                )}{' '}
+                                noche
+                                {calculateNights(
+                                  formData.checkIn,
+                                  formData.checkOut,
+                                ) !== 1
+                                  ? 's'
+                                  : ''}
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div className='text-sm text-gray-600 mb-1'>
+                                Seleccionar fechas
+                              </div>
+                              <div className='text-gray-800'>
+                                Elige tu fecha de entrada y salida
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <Calendar className='w-6 h-6 text-gray-400 ml-3' />
+                      </div>
+                    </button>
+                    {(errors.checkIn || errors.checkOut) && (
+                      <p className='text-red-500 text-sm mt-2'>
+                        {errors.checkIn || errors.checkOut}
+                      </p>
+                    )}
+                  </div>
 
-{/* Fecha (6 col) */}
-<div className='lg:col-span-6'>
-  <label className='block text-sm font-semibold text-gray-800 mb-2'>
-    Fechas de estadía
-  </label>
-  <button
-    type='button'
-    onClick={() => setShowCalendar(true)}
-    className={`w-full px-5 py-4 min-h-[88px] border-2 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 hover:border-gray-400 bg-white/90 backdrop-blur-sm ${
-      errors.checkIn || errors.checkOut ? 'border-red-400 bg-red-50/90' : 'border-gray-300'
-    }`}
-  >
-    <div className='flex items-center justify-between h-full'>
-      <div className='flex-1'>
-        {formData.checkIn && formData.checkOut ? (
-          <div>
-            <div className='text-sm text-gray-600 mb-1'>Fechas seleccionadas</div>
-            <div className='font-semibold text-gray-900'>
-              {formatDate(formData.checkIn)} - {formatDate(formData.checkOut)}
-            </div>
-            <div className='text-sm text-gray-800 mt-1'>
-              {calculateNights(formData.checkIn, formData.checkOut)} noche
-              {calculateNights(formData.checkIn, formData.checkOut) !== 1 ? 's' : ''}
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className='text-sm text-gray-600 mb-1'>Seleccionar fechas</div>
-            <div className='text-gray-800'>Elige tu fecha de entrada y salida</div>
-          </div>
-        )}
-      </div>
-      <Calendar className='w-6 h-6 text-gray-400 ml-3' />
-    </div>
-  </button>
-  {(errors.checkIn || errors.checkOut) && (
-    <p className='text-red-500 text-sm mt-2'>{errors.checkIn || errors.checkOut}</p>
-  )}
-</div>
+                  {/* Huéspedes (3 col) */}
+                  <div className='lg:col-span-3 flex flex-col justify-end'>
+                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
+                      Huéspedes
+                    </label>
+                    <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({
+                            ...p,
+                            guests: Math.max(1, p.guests - 1),
+                          }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
+                        disabled={formData.guests <= 1}
+                        aria-label='Disminuir huéspedes'
+                      >
+                        <Minus className='w-5 h-5' />
+                      </button>
 
-{/* Huéspedes (3 col) */}
-<div className='lg:col-span-3 flex flex-col justify-end'>
-  <label className='block text-sm font-semibold text-gray-800 mb-2'>Huéspedes</label>
-  <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
-    <button
-      type='button'
-      onClick={() => setFormData(p => ({ ...p, guests: Math.max(1, p.guests - 1) }))}
-      className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
-      disabled={formData.guests <= 1}
-      aria-label='Disminuir huéspedes'
-    >
-      <Minus className='w-5 h-5' />
-    </button>
+                      <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
+                        {formData.guests}
+                      </div>
 
-    <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
-      {formData.guests}
-    </div>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({ ...p, guests: p.guests + 1 }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
+                        aria-label='Aumentar huéspedes'
+                      >
+                        <Plus className='w-5 h-5' />
+                      </button>
+                    </div>
+                  </div>
+                  {/* Habitaciones (3 col) */}
+                  <div className='lg:col-span-3 flex flex-col justify-end'>
+                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
+                      Habitaciones
+                    </label>
+                    <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({
+                            ...p,
+                            rooms: Math.max(1, p.rooms - 1),
+                          }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
+                        disabled={formData.rooms <= 1}
+                        aria-label='Disminuir habitaciones'
+                      >
+                        <Minus className='w-5 h-5' />
+                      </button>
 
-    <button
-      type='button'
-      onClick={() => setFormData(p => ({ ...p, guests: p.guests + 1 }))}
-      className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
-      aria-label='Aumentar huéspedes'
-    >
-      <Plus className='w-5 h-5' />
-    </button>
-  </div>
-</div>
-{/* Habitaciones (3 col) */}
-<div className='lg:col-span-3 flex flex-col justify-end'>
-  <label className='block text-sm font-semibold text-gray-800 mb-2'>Habitaciones</label>
-  <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
-    <button
-      type='button'
-      onClick={() => setFormData(p => ({ ...p, rooms: Math.max(1, p.rooms - 1) }))}
-      className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
-      disabled={formData.rooms <= 1}
-      aria-label='Disminuir habitaciones'
-    >
-      <Minus className='w-5 h-5' />
-    </button>
+                      <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
+                        {formData.rooms}
+                      </div>
 
-    <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
-      {formData.rooms}
-    </div>
-
-    <button
-      type='button'
-      onClick={() => setFormData(p => ({ ...p, rooms: p.rooms + 1 }))}
-      className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
-      aria-label='Aumentar habitaciones'
-    >
-      <Plus className='w-5 h-5' />
-    </button>
-  </div>
-</div>
-
-    </div>
-  </div>
-)}
-
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setFormData((p) => ({ ...p, rooms: p.rooms + 1 }))
+                        }
+                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
+                        aria-label='Aumentar habitaciones'
+                      >
+                        <Plus className='w-5 h-5' />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Step 2: Room Selection */}
             {currentStep === 2 && (
