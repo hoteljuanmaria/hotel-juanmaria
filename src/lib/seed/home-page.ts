@@ -24,6 +24,7 @@ export const seedHomePage = async (payload: Payload): Promise<void> => {
         heroTitle: 'Bienvenido al Hotel Juan María',
         heroSubtitle:
           'Descubre el confort y elegancia en el mejor hotel de Tuluá',
+        // heroBackgroundImage: null, // Will be uploaded separately via admin
         mobileButtonText: 'Pre-reservar',
         desktopButtonText: 'Pre-reservar',
 
@@ -37,6 +38,7 @@ export const seedHomePage = async (payload: Payload): Promise<void> => {
         testimonialsTitle: 'Experiencias Inolvidables',
         testimonialsSubtitle:
           'Descubre lo que nuestros huéspedes dicen sobre su estadía en Hotel Juan María',
+        // testimonialsBackgroundImage: null, // Will be uploaded separately via admin
 
         // SEO Meta
         meta: {
@@ -79,9 +81,16 @@ async function main() {
     process.exit(0)
   } catch (error) {
     console.error('❌ Error running home page seed:', error)
-    if (error instanceof Error && error.message.includes('environment variable')) {
-      console.error('💡 Make sure you have a .env.local file with the required environment variables.')
-      console.error('💡 Copy .env.example to .env.local and fill in the values.')
+    if (
+      error instanceof Error &&
+      error.message.includes('environment variable')
+    ) {
+      console.error(
+        '💡 Make sure you have a .env.local file with the required environment variables.',
+      )
+      console.error(
+        '💡 Copy .env.example to .env.local and fill in the values.',
+      )
     }
     process.exit(1)
   }

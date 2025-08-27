@@ -82,10 +82,6 @@ export const HomePage: GlobalConfig = {
               type: 'text',
               localized: true,
               required: true,
-              defaultValue: {
-                en: 'Pre-book',
-                es: 'Pre-reservar',
-              },
               label: { en: 'Mobile Button Text', es: 'Texto del Botón Móvil' },
               admin: {
                 description: {
@@ -99,10 +95,6 @@ export const HomePage: GlobalConfig = {
               type: 'text',
               localized: true,
               required: true,
-              defaultValue: {
-                en: 'Pre-book',
-                es: 'Pre-reservar',
-              },
               label: { en: 'Desktop Button Text', es: 'Texto del Botón Escritorio' },
               admin: {
                 description: {
