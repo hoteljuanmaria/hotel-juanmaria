@@ -93,13 +93,41 @@ body {
   background: hsl(var(--background)) !important;
   font-family: 'Inter', sans-serif;
 }
-/* Forzar alto contraste solo en copy, sin romper botones */
-.booking-page { color: rgb(31 41 55); }
-.booking-page :is(p, li, span, small, strong, em, h1, h2, h3, h4, h5, h6) { color: inherit; }
 
-/* No tocar el color de elementos interactivos */
-.booking-page :is(button, [role="button"], a, .btn, input, select, textarea) { color: unset; }
+/* --- BOOKING PAGE: alto contraste sin romper botones --- */
 
+/* 1) Color por defecto SOLO para tipografía */
+.booking-page { color: rgb(31 41 55); } /* gray-800 */
+.booking-page :where(p, li, span, small, strong, em, h1, h2, h3, h4, h5, h6) {
+  color: inherit;
+}
+
+/* 2) NO tocar elementos interactivos (dejan su propio color/tema) */
+.booking-page :where(button, [role="button"], a, input, select, textarea) {
+  color: unset; /* no sobreescribir text-white de los botones */
+}
+
+/* 3) Botones con gradiente: asegura texto blanco en cualquier caso */
+.booking-page :where(a, button)[class*="gradient"],
+.booking-page :where(a, button)[class*="NiceButton"],
+.booking-page :where(a, button)[class*="nice-button"] {
+  color: #fff !important;
+}
+
+/* 4) Estado disabled de botones en booking:
+      no bajes la opacidad total (que vuelve ilegible el texto);
+      atenúa el botón con filtros, manteniendo contraste del texto */
+.booking-page :where(button:disabled, a[aria-disabled="true"]) {
+  opacity: 1 !important;
+  filter: saturate(0.7) brightness(0.95);
+  cursor: not-allowed;
+}
+
+/* 5) Accesibilidad: foco visible también en <a> estilizados como botón */
+.booking-page :where(a[class*="inline-flex"], button):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
 
 
 /* Container utility fallback (Tailwind v4 removes container plugin by default) */
