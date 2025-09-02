@@ -318,10 +318,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
                     {/* Action Buttons - Only Ver Detalles */}
                     <div className='flex flex-col gap-2'>
                       <NiceButton
-                        variant='primary'
                         size='sm'
                         href={`/habitaciones/${rooms[currentIndex].id}`}
-                        className='w-full font-medium'
+                        className='w-full font-bold'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -370,10 +369,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
 
                       {/* Action Button - Only Ver Detalles */}
                       <NiceButton
-                        variant='primary'
                         size='sm'
                         href={`/habitaciones/${rooms[(currentIndex - 1 + rooms.length) % rooms.length].id}`}
-                        className='w-full font-medium text-xs'
+                        className='w-full font-bold text-xs'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -409,10 +407,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
 
                       {/* Action Button - Only Ver Detalles */}
                       <NiceButton
-                        variant='primary'
                         size='sm'
                         href={`/habitaciones/${rooms[currentIndex].id}`}
-                        className='w-full font-medium'
+                        className='w-full font-bold'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -456,10 +453,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
 
                       {/* Action Button - Only Ver Detalles */}
                       <NiceButton
-                        variant='primary'
                         size='sm'
                         href={`/habitaciones/${rooms[(currentIndex + 1) % rooms.length].id}`}
-                        className='w-full font-medium text-xs'
+                        className='w-full font-bold text-xs'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -551,15 +547,12 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
               } gap-4 justify-center`}
             >
               <NiceButton
-                variant='primary'
                 href={`/booking?room=${rooms[currentIndex].id}`}
-                showIndicator={true}
                 className={isMobile ? 'w-full' : ''}
               >
                 Reservar Ahora
               </NiceButton>
               <NiceButton
-                variant='secondary'
                 href={`/habitaciones/${rooms[currentIndex].id}`}
                 className={isMobile ? 'w-full' : ''}
               >

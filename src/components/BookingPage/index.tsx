@@ -831,7 +831,6 @@ const BookingPage = () => {
               <div className='flex justify-between mt-8 pt-6 border-t'>
                 <NiceButton
                   onClick={prevStep}
-                  variant='secondary'
                   disabled={currentStep === 1}
                 >
                   Anterior

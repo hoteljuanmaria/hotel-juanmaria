@@ -118,16 +118,17 @@ const HeroSection = ({ homePageData }: HeroSectionProps) => {
           }`}
           style={{ animationDelay: '1s' }}
         >
-          {/* Solo botón en mobile - navegación a /habitaciones */}
-          <div className='block sm:hidden'>
-            <NiceButton
-              onClick={() => (window.location.href = '/booking')}
-              className='bg-white/15 hover:bg-white/25 backdrop-blur-2xl border border-white/30 text-white font-medium rounded-lg shadow-2xl text-sm px-6 py-3 transition-all duration-300 hover:scale-105'
-            >
-              <Search className='w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300' />
-              {homePageData?.mobileButtonText || 'Pre-reservar'}
-            </NiceButton>
-          </div>
+
+          <div className="block sm:hidden">
+  <NiceButton
+    onClick={() => (window.location.href = '/booking')}
+    size="md"
+    className="px-6 py-3 shadow-2xl" // sin 'block', sin 'bg-white/15'
+  >
+    <Search className="w-4 h-4" />
+    {homePageData?.mobileButtonText || 'Pre-reservar'}
+  </NiceButton>
+</div>
 
           {/* Formulario completo en desktop */}
           <div className='hidden sm:block bg-white/10 backdrop-blur-2xl rounded-xl p-6 lg:p-8 border border-white/20 shadow-2xl max-w-5xl mx-auto'>
@@ -177,15 +178,16 @@ const HeroSection = ({ homePageData }: HeroSectionProps) => {
               </div>
             </div>
 
-            {/* Search Button */}
-            <NiceButton
-              onClick={handleSearch}
-              size='lg'
-              className='w-full sm:w-auto mx-auto block shadow-2xl text-base px-8 py-3'
-            >
-              <Search className='w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300' />
-              {homePageData?.desktopButtonText || 'Pre-reservar'}
-            </NiceButton>
+<div className="flex justify-center">
+  <NiceButton
+    onClick={handleSearch}
+    size="lg"
+    className="px-8 py-3 shadow-2xl text-base" // sin 'block', sin 'w-full'
+  >
+    <Search className="w-5 h-5" />
+    {homePageData?.desktopButtonText || 'Pre-reservar'}
+  </NiceButton>
+</div>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
+import { ThemeProvider } from 'next-themes'   // ← usamos next-themes aquí
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 import localFont from 'next/font/local'
@@ -26,20 +26,23 @@ export default async function RootLayout({
   return (
     <html
       className={cn(GeistSans.variable, GeistMono.variable)}
-      lang='en'
+      lang="en"
       suppressHydrationWarning
     >
       <head>
-        <InitTheme />
-        <link href='/favicon.ico' rel='icon' sizes='32x32' />
-        <link href='/favicon.svg' rel='icon' type='image/svg+xml' />
+        {/* InitTheme removido: con forcedTheme ya no hace falta */}
+        <link href="/favicon.ico" rel="icon" sizes="32x32" />
+        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
-        <Providers>
-          <Header />
-          {children}
-          <Footer />
-        </Providers>
+        {/* Forzar SIEMPRE claro, sin sistema */}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light">
+          <Providers>
+            <Header />
+            {children}
+            <Footer />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   )
