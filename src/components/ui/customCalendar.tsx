@@ -288,15 +288,17 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                 className={`
                   relative p-2 text-sm font-medium rounded-lg transition-all duration-200
                   ${
-                    past
-                      ? 'text-gray-300 cursor-not-allowed'
-                      : 'text-gray-700 hover:text-gray-900 cursor-pointer'
+                   past
+  ? 'text-gray-300 cursor-not-allowed'
+  : 'text-gray-700 cursor-pointer hover:text-current'
+
                   }
                   ${
-                    selected
-                      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white shadow-lg z-10'
-                      : ''
-                  }
+  selected
+    ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white hover:text-white shadow-lg z-10'
+    : ''
+}
+
                   ${inRange && !selected ? 'bg-gray-900/20 text-gray-900' : ''}
                   ${today && !selected ? 'ring-2 ring-gray-400/50' : ''}
                   ${!past && !selected && !inRange ? 'hover:bg-gray-100/60 hover:scale-105' : ''}

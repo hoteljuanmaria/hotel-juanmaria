@@ -268,622 +268,459 @@ const BookingPage = () => {
 
   return (
     <div className='booking-page min-h-screen relative'>
-      {/* Background Image */}
-      <div className='fixed inset-0 z-0'>
-        <Image
-          src='/FachadaDia.jpg'
-          alt='Hotel Juan María Fachada'
-          fill
-          className='object-cover'
-          priority
-        />
-        <div className='absolute inset-0 bg-white/80 backdrop-blur-[2px]'></div>
-      </div>
+   {/* Background */}
+<div className="fixed inset-0 z-0">
+  <Image
+    src="/FachadaDia.jpg"
+    alt="Hotel Juan María Fachada"
+    fill
+    className="object-cover"
+    priority
+  />
+  {/* Velo premium + blur sutil */}
+  <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]" />
+  {/* Orbes líquidos */}
+  <div className="absolute -top-16 -left-16 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse" />
+  <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-white/5 rounded-full blur-3xl animate-pulse" />
+</div>
 
-      {/* Content */}
-      <div className='relative z-10 pt-32 pb-16 px-4 sm:px-6 lg:px-8'>
-        <div className='max-w-4xl mx-auto'>
+{/* Content wrapper */}
+<div className="relative z-10 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+  <div className="max-w-5xl mx-auto">
+
           {/* Header */}
-          <div className='text-center mb-12'>
-            <h1 className='text-4xl md:text-5xl font-bold text-gray-900 mb-4 drop-shadow-sm'>
-              Pre-reserva tu estadía
-            </h1>
-            <p className='text-lg text-gray-700 max-w-2xl mx-auto drop-shadow-sm'>
-              Completa el formulario para solicitar tu reserva. Te contactaremos
-              pronto para confirmar disponibilidad.
-            </p>
-          </div>
+<div className="text-center mb-12">
+  <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+    Pre-reserva tu estadía
+  </h1>
+  <p className="font-sans text-lg md:text-xl font-light text-gray-700 max-w-2xl mx-auto">
+    Completa el formulario para solicitar tu reserva. Te contactaremos pronto para confirmar disponibilidad.
+  </p>
+</div>
 
-          {/* Progress Steps */}
-          <div className='mb-8'>
-            <div className='flex items-center justify-between'>
-              {steps.map((step, index) => (
-                <div key={step.id} className='flex items-center'>
-                  <div
-                    className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-                      currentStep === step.id
-                        ? 'bg-gray-900 text-white'
-                        : currentStep > step.id
-                          ? 'bg-green-500 text-white'
-                          : 'bg-gray-300 text-gray-600'
-                    }`}
-                  >
-                    {currentStep > step.id ? (
-                      <Check className='w-4 h-4' />
-                    ) : (
-                      step.id
-                    )}
-                  </div>
-                  <span
-                    className={`ml-2 text-sm ${currentStep >= step.id ? 'text-gray-900' : 'text-gray-700'}`}
-                  >
-                    {step.title}
-                  </span>
-                  {index < steps.length - 1 && (
-                    <ChevronRight className='w-4 h-4 text-gray-400 mx-4' />
-                  )}
-                </div>
-              ))}
+{/* Progress Steps (glass + shimmer) */}
+<div className="mb-8">
+  <div className="flex items-center justify-between">
+    {steps.map((step, index) => {
+      const isActive = currentStep === step.id
+const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
+      return (
+        <div key={step.id} className="flex items-center">
+          <div
+            className={[
+              "relative group/step w-9 h-9 rounded-lg flex items-center justify-center",
+              "bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl",
+              "transition-all duration-700 ease-out",
+              isActive ? "ring-2 ring-gray-800" : "",
+              isDone ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white" : "text-gray-800"
+            ].join(" ")}
+          >
+            {isDone ? <Check className="w-4 h-4" /> : <span className="text-sm font-medium">{step.id}</span>}
+            {/* Shimmer */}
+            <div className="pointer-events-none absolute inset-0 opacity-0 group-hover/step:opacity-100 transition-opacity duration-700">
+              <div className="absolute top-1 right-2 w-1 h-3 bg-gradient-to-b from-transparent via-white/40 to-transparent rotate-45 animate-pulse" />
             </div>
           </div>
 
+          <span className={`ml-2 font-sans text-sm ${currentStep >= step.id ? "text-gray-900" : "text-gray-700"}`}>
+            {step.title}
+          </span>
+
+          {index < steps.length - 1 && (
+            <div className="mx-4 h-[2px] w-10 sm:w-16 lg:w-24 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 rounded-full opacity-70" />
+          )}
+        </div>
+      )
+    })}
+  </div>
+</div>
+
           {/* Content */}
           <div className='bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 lg:p-10'>
-          {currentStep === 1 && (
-  <div className='space-y-8'>
-    <h2 className='text-2xl font-semibold mb-6 text-center'>
-      Fechas y huéspedes
-    </h2>
+        {currentStep === 1 && (
+  <div className="space-y-8">
+    <h2 className="font-serif text-2xl md:text-3xl font-bold text-center">Fechas y huéspedes</h2>
 
-                {/* 1 fila en desktop: 6/3/3 */}
-                <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
-                  {/* Fecha (6 col) */}
-                  <div className='lg:col-span-6'>
-                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
-                      Fechas de estadía
-                    </label>
-                    <button
-                      type='button'
-                      onClick={() => setShowCalendar(true)}
-                      className={`w-full px-5 py-4 min-h-[88px] border-2 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 hover:border-gray-400 bg-white/90 backdrop-blur-sm ${
-                        errors.checkIn || errors.checkOut
-                          ? 'border-red-400 bg-red-50/90'
-                          : 'border-gray-300'
-                      }`}
-                    >
-                      <div className='flex items-center justify-between h-full'>
-                        <div className='flex-1'>
-                          {formData.checkIn && formData.checkOut ? (
-                            <div>
-                              <div className='text-sm text-gray-600 mb-1'>
-                                Fechas seleccionadas
-                              </div>
-                              <div className='font-semibold text-gray-900'>
-                                {formatDate(formData.checkIn)} -{' '}
-                                {formatDate(formData.checkOut)}
-                              </div>
-                              <div className='text-sm text-gray-800 mt-1'>
-                                {calculateNights(
-                                  formData.checkIn,
-                                  formData.checkOut,
-                                )}{' '}
-                                noche
-                                {calculateNights(
-                                  formData.checkIn,
-                                  formData.checkOut,
-                                ) !== 1
-                                  ? 's'
-                                  : ''}
-                              </div>
-                            </div>
-                          ) : (
-                            <div>
-                              <div className='text-sm text-gray-600 mb-1'>
-                                Seleccionar fechas
-                              </div>
-                              <div className='text-gray-800'>
-                                Elige tu fecha de entrada y salida
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <Calendar className='w-6 h-6 text-gray-400 ml-3' />
-                      </div>
-                    </button>
-                    {(errors.checkIn || errors.checkOut) && (
-                      <p className='text-red-500 text-sm mt-2'>
-                        {errors.checkIn || errors.checkOut}
-                      </p>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Fechas de estadía (sin layout shift en error) */}
+<div className="lg:col-span-6">
+  <label className="block font-sans text-sm font-medium text-gray-800 mb-2">
+    Fechas de estadía
+  </label>
+
+  <button
+    type="button"
+    onClick={() => setShowCalendar(true)}
+    aria-invalid={Boolean(errors.checkIn || errors.checkOut)}
+    className={[
+      "group relative w-full min-h-[92px] px-5 py-4 text-left rounded-xl",
+      // vidrio + borde constante
+      "bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl",
+      "hover:bg-white/90 transition-all duration-700 ease-out focus:outline-none focus:ring-2 focus:ring-gray-500",
+      // error por ring (no mueve layout)
+      (errors.checkIn || errors.checkOut) ? "ring-2 ring-red-400" : ""
+    ].join(" ")}
+  >
+    <div className="flex items-center justify-between h-full">
+      <div className="flex-1">
+        {formData.checkIn && formData.checkOut ? (
+          <>
+            <div className="font-sans text-sm font-light text-gray-600 mb-1">Fechas seleccionadas</div>
+            <div className="font-sans font-medium text-gray-900">
+              {formatDate(formData.checkIn)} — {formatDate(formData.checkOut)}
+            </div>
+            <div className="font-sans text-sm font-light text-gray-800 mt-1">
+              {calculateNights(formData.checkIn, formData.checkOut)} noche{calculateNights(formData.checkIn, formData.checkOut) !== 1 ? 's' : ''}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="font-sans text-sm font-light text-gray-600 mb-1">Seleccionar fechas</div>
+            <div className="font-sans text-gray-800">Elige tu fecha de entrada y salida</div>
+          </>
+        )}
+      </div>
+      <Calendar className="w-6 h-6 text-gray-500 ml-3" />
+    </div>
+  </button>
+
+  {/* helper con altura fija: alineación perfecta */}
+  <p className="h-5 mt-2 font-sans text-sm">
+    {(errors.checkIn || errors.checkOut) ? <span className="text-red-500">{errors.checkIn || errors.checkOut}</span> : null}
+  </p>
+</div>
+
+<div className="lg:col-span-3 flex flex-col justify-end">
+  <label className="block font-sans text-sm font-medium text-gray-800 mb-2">Huéspedes</label>
+
+  <div className="flex items-center justify-between h-[92px] px-2 rounded-xl bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl">
+    <button
+      type="button"
+      onClick={() => setFormData(p => ({ ...p, guests: Math.max(1, p.guests - 1) }))}
+      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90 disabled:opacity-40"
+      disabled={formData.guests <= 1}
+      aria-label="Disminuir huéspedes"
+    >
+      <Minus className="w-5 h-5" />
+    </button>
+    <div className="font-sans text-2xl font-normal text-gray-900 select-none">{formData.guests}</div>
+    <button
+      type="button"
+      onClick={() => setFormData(p => ({ ...p, guests: p.guests + 1 }))}
+      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90"
+      aria-label="Aumentar huéspedes"
+    >
+      <Plus className="w-5 h-5" />
+    </button>
+  </div>
+
+  {/* helper vacío para mantener altura */}
+  <p className="h-5 mt-2 font-sans text-sm">&nbsp;</p>
+</div>
+
+<div className="lg:col-span-3 flex flex-col justify-end">
+  <label className="block font-sans text-sm font-medium text-gray-800 mb-2">Habitaciones</label>
+
+  <div className="flex items-center justify-between h-[92px] px-2 rounded-xl bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl">
+    <button
+      type="button"
+      onClick={() => setFormData(p => ({ ...p, rooms: Math.max(1, p.rooms - 1) }))}
+      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90 disabled:opacity-40"
+      disabled={formData.rooms <= 1}
+      aria-label="Disminuir habitaciones"
+    >
+      <Minus className="w-5 h-5" />
+    </button>
+    <div className="font-sans text-2xl font-normal text-gray-900 select-none">{formData.rooms}</div>
+    <button
+      type="button"
+      onClick={() => setFormData(p => ({ ...p, rooms: p.rooms + 1 }))}
+      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90"
+      aria-label="Aumentar habitaciones"
+    >
+      <Plus className="w-5 h-5" />
+    </button>
+  </div>
+
+  {/* helper vacío para mantener altura */}
+  <p className="h-5 mt-2 font-sans text-sm">&nbsp;</p>
+</div>
+
+    </div>
+  </div>
+)}
+
+          {currentStep === 2 && (
+  <div className="space-y-6">
+    <h2 className="font-serif text-2xl md:text-3xl font-bold">Selecciona tus habitaciones</h2>
+
+    {filteredRooms.length === 0 ? (
+      <div className="text-center py-10">
+        <p className="font-sans text-gray-800 font-medium">No hay habitaciones disponibles para los criterios seleccionados</p>
+      </div>
+    ) : (
+      <div className="space-y-6">
+        {filteredRooms.map(room => {
+          const selectedRoom = formData.selectedRooms.find(sr => sr.roomId === room.id)
+          const quantity = selectedRoom?.quantity || 0
+          const nights = calculateNights(formData.checkIn, formData.checkOut)
+
+          return (
+            <div
+              key={room.id}
+              className="group relative p-6 rounded-xl bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl transition-all duration-700 hover:scale-[1.01] hover:-translate-y-1"
+            >
+              {/* Card shimmer */}
+              <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <div className="absolute top-4 right-6 w-1 h-6 bg-gradient-to-b from-transparent via-gray-300/50 to-transparent rotate-45 animate-pulse" />
+                <div className="absolute bottom-4 left-6 w-4 h-0.5 bg-gradient-to-r from-transparent via-gray-300/50 to-transparent animate-pulse" style={{ animationDelay: '0.5s' }} />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Image */}
+                <div className="lg:col-span-1">
+                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+                    {room.featuredImage && (
+                      <Image
+                        src={room.featuredImage}
+                        alt={room.title}
+                        fill
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
                     )}
                   </div>
-
-                  {/* Huéspedes (3 col) */}
-                  <div className='lg:col-span-3 flex flex-col justify-end'>
-                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
-                      Huéspedes
-                    </label>
-                    <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
-                      <button
-                        type='button'
-                        onClick={() =>
-                          setFormData((p) => ({
-                            ...p,
-                            guests: Math.max(1, p.guests - 1),
-                          }))
-                        }
-                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
-                        disabled={formData.guests <= 1}
-                        aria-label='Disminuir huéspedes'
-                      >
-                        <Minus className='w-5 h-5' />
-                      </button>
-
-                      <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
-                        {formData.guests}
-                      </div>
-
-                      <button
-                        type='button'
-                        onClick={() =>
-                          setFormData((p) => ({ ...p, guests: p.guests + 1 }))
-                        }
-                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
-                        aria-label='Aumentar huéspedes'
-                      >
-                        <Plus className='w-5 h-5' />
-                      </button>
-                    </div>
-                  </div>
-                  {/* Habitaciones (3 col) */}
-                  <div className='lg:col-span-3 flex flex-col justify-end'>
-                    <label className='block text-sm font-semibold text-gray-800 mb-2'>
-                      Habitaciones
-                    </label>
-                    <div className='flex items-center justify-between h-[88px] border-2 border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm px-2'>
-                      <button
-                        type='button'
-                        onClick={() =>
-                          setFormData((p) => ({
-                            ...p,
-                            rooms: Math.max(1, p.rooms - 1),
-                          }))
-                        }
-                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors'
-                        disabled={formData.rooms <= 1}
-                        aria-label='Disminuir habitaciones'
-                      >
-                        <Minus className='w-5 h-5' />
-                      </button>
-
-                      <div className='text-2xl font-normal leading-none text-gray-900 select-none'>
-                        {formData.rooms}
-                      </div>
-
-                      <button
-                        type='button'
-                        onClick={() =>
-                          setFormData((p) => ({ ...p, rooms: p.rooms + 1 }))
-                        }
-                        className='w-12 h-12 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors'
-                        aria-label='Aumentar habitaciones'
-                      >
-                        <Plus className='w-5 h-5' />
-                      </button>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            )}
 
-            {/* Step 2: Room Selection */}
-            {currentStep === 2 && (
-              <div className='space-y-6'>
-                <h2 className='text-xl font-semibold mb-4'>
-                  Selecciona tus habitaciones
-                </h2>
-
-                {filteredRooms.length === 0 ? (
-                  <div className='text-center py-8'>
-                    <p className='text-gray-800 font-medium'>
-                      No hay habitaciones disponibles para los criterios
-                      seleccionados
+                {/* Details */}
+                <div className="lg:col-span-2 space-y-3">
+                  <div>
+                    <h3 className="font-serif text-xl md:text-2xl font-bold text-gray-900 mb-1">{room.title}</h3>
+                    <p className="font-sans text-sm font-light text-gray-700 leading-relaxed">
+                      {room.shortDescription || room.description}
                     </p>
                   </div>
-                ) : (
-                  <div className='space-y-6'>
-                    {filteredRooms.map((room) => {
-                      const selectedRoom = formData.selectedRooms.find(
-                        (sr) => sr.roomId === room.id,
-                      )
-                      const quantity = selectedRoom?.quantity || 0
-                      const nights = calculateNights(
-                        formData.checkIn,
-                        formData.checkOut,
-                      )
 
-                      return (
-                        <div
-                          key={room.id}
-                          className='border rounded-xl p-6 hover:shadow-lg transition-all duration-200 bg-white/90 backdrop-blur-sm'
-                        >
-                          <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
-                            {/* Room Image */}
-                            <div className='lg:col-span-1'>
-                              <div className='relative aspect-[4/3] rounded-lg overflow-hidden'>
-                                {room.featuredImage && (
-                                  <Image
-                                    src={room.featuredImage}
-                                    alt={room.title}
-                                    fill
-                                    className='object-cover'
-                                  />
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Room Details */}
-                            <div className='lg:col-span-2 space-y-3'>
-                              <div>
-                                <h3 className='text-xl font-bold text-gray-900 mb-1'>
-                                  {room.title}
-                                </h3>
-                                <p className='text-gray-600 text-sm leading-relaxed'>
-                                  {room.shortDescription || room.description}
-                                </p>
-                              </div>
-                              <div className='flex flex-wrap items-center gap-4 text-sm text-gray-800'>
-                                <span className='flex items-center gap-1'>
-                                  <Users className='w-4 h-4' />
-                                  Máx {room.capacity} huéspedes
-                                </span>
-                                <span className='flex items-center gap-1'>
-                                  <Home className='w-4 h-4' />
-                                  {room.size}
-                                </span>
-                                <span className='text-gray-700'>
-                                  {room.bedType}
-                                </span>
-                              </div>{' '}
-                              {/* Amenities */}
-                              {room.amenities && room.amenities.length > 0 && (
-                                <div className='flex flex-wrap gap-2'>
-                                  {room.amenities
-                                    .slice(0, 4)
-                                    .map((amenity, idx) => (
-                                      <span
-                                        key={idx}
-                                        className='inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full'
-                                      >
-                                        {amenity
-                                          .toLowerCase()
-                                          .includes('wifi') && (
-                                          <Wifi className='w-3 h-3' />
-                                        )}
-                                        {amenity
-                                          .toLowerCase()
-                                          .includes('parque') && (
-                                          <Car className='w-3 h-3' />
-                                        )}
-                                        {amenity
-                                          .toLowerCase()
-                                          .includes('minibar') && (
-                                          <Coffee className='w-3 h-3' />
-                                        )}
-                                        {amenity}
-                                      </span>
-                                    ))}
-                                  {room.amenities.length > 4 && (
-                                    <span className='text-xs text-gray-800 px-2 py-1'>
-                                      +{room.amenities.length - 4} más
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Pricing and Selection */}
-                            <div className='lg:col-span-1 flex flex-col justify-between'>
-                              <div className='text-right'>
-                                <div className='text-2xl font-bold text-gray-900'>
-                                  {formatPrice(room.price)}
-                                </div>
-                                <div className='text-sm text-gray-800'>
-                                  por noche
-                                </div>
-                                {quantity > 0 && (
-                                  <div className='mt-2 text-sm'>
-                                    <div className='text-gray-800'>
-                                      {nights} noche{nights !== 1 ? 's' : ''} ×{' '}
-                                      {quantity} hab.
-                                    </div>
-                                    <div className='font-semibold text-gray-900'>
-                                      Total:{' '}
-                                      {formatPrice(
-                                        room.price * quantity * nights,
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className='mt-4 space-y-3'>
-                                {/* Quantity Selector */}
-                                <div className='flex items-center justify-center border rounded-lg bg-white'>
-                                  <button
-                                    type='button'
-                                    onClick={() =>
-                                      handleRoomSelection(
-                                        room.id,
-                                        Math.max(0, quantity - 1),
-                                      )
-                                    }
-                                    className='p-3 hover:bg-gray-50 text-gray-600 disabled:opacity-50'
-                                    disabled={quantity === 0}
-                                  >
-                                    -
-                                  </button>
-                                  <span className='px-4 py-2 min-w-[60px] text-center font-medium'>
-                                    {quantity}
-                                  </span>
-                                  <button
-                                    type='button'
-                                    onClick={() =>
-                                      handleRoomSelection(room.id, quantity + 1)
-                                    }
-                                    className='p-3 hover:bg-gray-50 text-gray-600'
-                                  >
-                                    +
-                                  </button>
-                                </div>
-
-                                {room.featured && (
-                                  <div className='flex items-center justify-center gap-1 text-xs text-amber-600'>
-                                    <Star className='w-3 h-3 fill-current' />
-                                    Habitación destacada
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-
-                {errors.rooms && (
-                  <p className='text-red-500 text-sm text-center'>
-                    {errors.rooms}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Step 3: Personal Information */}
-            {currentStep === 3 && (
-              <div className='space-y-6'>
-                <h2 className='text-xl font-semibold mb-4'>
-                  Información personal
-                </h2>
-
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Nombre *
-                    </label>
-                    <input
-                      type='text'
-                      value={formData.personalInfo.firstName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          personalInfo: {
-                            ...prev.personalInfo,
-                            firstName: e.target.value,
-                          },
-                        }))
-                      }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                        errors.firstName ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder='Tu nombre'
-                    />
-                    {errors.firstName && (
-                      <p className='text-red-500 text-sm mt-1'>
-                        {errors.firstName}
-                      </p>
-                    )}
+                  <div className="flex flex-wrap items-center gap-4 font-sans text-sm font-light text-gray-700">
+                    <span className="inline-flex items-center gap-1"><Users className="w-4 h-4"/>{' '}Máx {room.capacity} huéspedes</span>
+                    <span className="inline-flex items-center gap-1"><Home className="w-4 h-4"/>{room.size}</span>
+                    <span>{room.bedType}</span>
                   </div>
 
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Apellido *
-                    </label>
-                    <input
-                      type='text'
-                      value={formData.personalInfo.lastName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          personalInfo: {
-                            ...prev.personalInfo,
-                            lastName: e.target.value,
-                          },
-                        }))
-                      }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                        errors.lastName ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder='Tu apellido'
-                    />
-                    {errors.lastName && (
-                      <p className='text-red-500 text-sm mt-1'>
-                        {errors.lastName}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Email *
-                    </label>
-                    <input
-                      type='email'
-                      value={formData.personalInfo.email}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          personalInfo: {
-                            ...prev.personalInfo,
-                            email: e.target.value,
-                          },
-                        }))
-                      }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder='tu@email.com'
-                    />
-                    {errors.email && (
-                      <p className='text-red-500 text-sm mt-1'>
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Teléfono *
-                    </label>
-                    <input
-                      type='tel'
-                      value={formData.personalInfo.phone}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          personalInfo: {
-                            ...prev.personalInfo,
-                            phone: e.target.value,
-                          },
-                        }))
-                      }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                        errors.phone ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder='+57 300 123 4567'
-                    />
-                    {errors.phone && (
-                      <p className='text-red-500 text-sm mt-1'>
-                        {errors.phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    Mensaje (opcional)
-                  </label>
-                  <textarea
-                    value={formData.personalInfo.message}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        personalInfo: {
-                          ...prev.personalInfo,
-                          message: e.target.value,
-                        },
-                      }))
-                    }
-                    rows={4}
-                    className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500'
-                    placeholder='Déjanos saber si tienes alguna solicitud especial...'
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Confirmation */}
-            {currentStep === 4 && (
-              <div className='text-center space-y-6'>
-                <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
-                  <Check className='w-8 h-8 text-green-600' />
-                </div>
-                <h2 className='text-2xl font-semibold text-gray-900'>
-                  ¡Pre-reserva enviada exitosamente!
-                </h2>
-                <p className='text-gray-600 max-w-md mx-auto'>
-                  Hemos recibido tu solicitud de reserva. Te contactaremos
-                  pronto para confirmar la disponibilidad y finalizar tu
-                  reserva.
-                </p>
-                <NiceButton
-                  onClick={() => (window.location.href = '/')}
-                  className='mt-6'
-                >
-                  Volver al inicio
-                </NiceButton>
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            {currentStep < 4 && (
-              <div className='flex justify-between mt-8 pt-6 border-t'>
-                <NiceButton
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
-                >
-                  Anterior
-                </NiceButton>
-
-                <div className='space-x-4'>
-                  {currentStep < 3 && (
-                    <NiceButton onClick={nextStep}>Siguiente</NiceButton>
-                  )}
-                  {currentStep === 3 && (
-                    <NiceButton onClick={handleSubmit} disabled={submitting}>
-                      {submitting ? 'Enviando...' : 'Enviar pre-reserva'}
-                    </NiceButton>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Price Summary */}
-            {currentStep > 1 &&
-              currentStep < 4 &&
-              formData.selectedRooms.length > 0 && (
-                <div className='mt-8 pt-6 border-t'>
-                  <div className='bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200/50 shadow-sm'>
-                    <h3 className='font-semibold mb-2'>
-                      Resumen de la reserva
-                    </h3>
-                    <div className='space-y-1 text-sm'>
-                      <div className='flex justify-between'>
-                        <span>Fechas:</span>
-                        <span>
-                          {formatDate(formData.checkIn)} -{' '}
-                          {formatDate(formData.checkOut)}
+                  {room.amenities?.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {room.amenities.slice(0,4).map((amenity, idx) => (
+                        <span key={idx} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs bg-white/70 backdrop-blur-xl border border-white/30 text-gray-700 hover:bg-white/90 transition-all duration-300">
+                          {amenity.toLowerCase().includes('wifi') && <Wifi className="w-3 h-3" />}
+                          {amenity.toLowerCase().includes('parque') && <Car className="w-3 h-3" />}
+                          {amenity.toLowerCase().includes('minibar') && <Coffee className="w-3 h-3" />}
+                          {amenity}
                         </span>
-                      </div>
-                      <div className='flex justify-between'>
-                        <span>Noches:</span>
-                        <span>
-                          {calculateNights(formData.checkIn, formData.checkOut)}
-                        </span>
-                      </div>
-                      <div className='flex justify-between'>
-                        <span>Huéspedes:</span>
-                        <span>{formData.guests}</span>
-                      </div>
-                      <div className='flex justify-between font-semibold text-lg pt-2 border-t'>
-                        <span>Total estimado:</span>
-                        <span>{formatPrice(getTotalPrice())}</span>
-                      </div>
+                      ))}
+                      {room.amenities.length > 4 && (
+                        <span className="font-sans text-xs text-gray-800 px-2 py-1">+{room.amenities.length - 4} más</span>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
+
+               {/* Pricing & Selection – CTA claro */}
+<div className="lg:col-span-1 flex flex-col justify-between">
+  <div className="text-right">
+    <div className="font-sans text-2xl font-bold text-gray-900">{formatPrice(room.price)}</div>
+    <div className="font-sans text-sm font-light text-gray-700">por noche</div>
+
+    {quantity > 0 && (
+      <div className="mt-2 font-sans text-sm">
+        <div className="text-gray-700">
+          {nights} noche{nights !== 1 ? 's' : ''} × {quantity} hab.
+        </div>
+        <div className="font-semibold text-gray-900">
+          Total: {formatPrice(room.price * quantity * nights)}
+        </div>
+      </div>
+    )}
+  </div>
+
+  <div className="mt-4">
+    {quantity === 0 ? (
+      /* Estado inicial: botón primario “Añadir habitación” */
+      <NiceButton
+        onClick={() => handleRoomSelection(room.id, 1)}
+        className="
+          relative w-full font-semibold rounded-lg overflow-hidden transition-all duration-700 ease-out group
+          text-white py-2.5
+        "
+        aria-label={`Añadir ${room.title}`}
+      >
+        <span className="relative z-10 flex items-center justify-center">Añadir habitación</span>
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="pointer-events-none absolute top-1 right-2 w-1 h-3 bg-gradient-to-b from-transparent via-white/30 to-transparent rotate-45 animate-pulse" />
+      </NiceButton>
+    ) : (
+      /* Tras añadir: stepper + quitar */
+      <div className="flex items-center gap-3">
+        <div className="flex flex-1 items-center justify-between rounded-lg bg-white/70 backdrop-blur-xl border border-white/30">
+          <button
+            type="button"
+            onClick={() => handleRoomSelection(room.id, Math.max(0, quantity - 1))}
+            className="px-3 py-2 rounded-l-lg hover:bg-white/90 transition-all duration-700"
+            aria-label="Disminuir cantidad"
+          >
+            −
+          </button>
+          <span className="px-4 py-2 min-w-[56px] text-center font-medium">{quantity}</span>
+          <button
+            type="button"
+            onClick={() => handleRoomSelection(room.id, quantity + 1)}
+            className="px-3 py-2 rounded-r-lg hover:bg-white/90 transition-all duration-700"
+            aria-label="Aumentar cantidad"
+          >
+            +
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => handleRoomSelection(room.id, 0)}
+          className="font-sans text-xs text-gray-600 hover:text-gray-800 transition-colors"
+          aria-label="Quitar habitación"
+        >
+          Quitar
+        </button>
+      </div>
+    )}
+
+  </div>
+</div>
+
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )}
+
+    {errors.rooms && <p className="font-sans text-red-500 text-sm text-center">{errors.rooms}</p>}
+  </div>
+)}
+
+          {currentStep === 3 && (
+  <div className="space-y-6">
+    <h2 className="font-serif text-2xl md:text-3xl font-bold">Información personal</h2>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[
+        { key: "firstName", label: "Nombre *", type: "text", placeholder: "Tu nombre" },
+        { key: "lastName", label: "Apellido *", type: "text", placeholder: "Tu apellido" },
+        { key: "email", label: "Email *", type: "email", placeholder: "tu@email.com" },
+        { key: "phone", label: "Teléfono *", type: "tel", placeholder: "+57 300 123 4567" },
+      ].map(f => (
+        <div key={f.key}>
+          <label className="block font-sans text-sm font-medium text-gray-700 mb-2">{f.label}</label>
+          <input
+            type={f.type}
+            value={(formData.personalInfo as any)[f.key]}
+            onChange={(e) => setFormData(prev => ({
+              ...prev,
+              personalInfo: { ...prev.personalInfo, [f.key]: e.target.value }
+            }))}
+            placeholder={f.placeholder}
+            className={[
+              "w-full px-4 py-3 rounded-lg font-sans",
+              "bg-white/70 backdrop-blur-xl border border-white/30 text-gray-900 placeholder-gray-500",
+              "focus:outline-none focus:border-gray-400 focus:bg-white/90 focus:scale-105 transition-all duration-500 hover:border-gray-300",
+              (errors as any)[f.key] ? "ring-2 ring-red-400" : ""
+            ].join(" ")}
+          />
+          {(errors as any)[f.key] && <p className="font-sans text-red-500 text-sm mt-1">{(errors as any)[f.key]}</p>}
+        </div>
+      ))}
+    </div>
+
+    <div>
+      <label className="block font-sans text-sm font-medium text-gray-700 mb-2">Mensaje (opcional)</label>
+      <textarea
+        value={formData.personalInfo.message}
+        onChange={(e) => setFormData(prev => ({
+          ...prev,
+          personalInfo: { ...prev.personalInfo, message: e.target.value }
+        }))}
+        rows={4}
+        placeholder="Déjanos saber si tienes alguna solicitud especial…"
+        className="w-full px-4 py-3 rounded-lg font-sans bg-white/70 backdrop-blur-xl border border-white/30 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-400 focus:bg-white/90 focus:scale-[1.01] transition-all duration-500 hover:border-gray-300"
+      />
+    </div>
+  </div>
+)}
+
+
+          {currentStep === 4 && (
+  <div className="text-center space-y-6">
+    <div className="relative w-16 h-16 mx-auto rounded-xl bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl flex items-center justify-center">
+      <Check className="w-8 h-8 text-gray-900" />
+      <div className="pointer-events-none absolute inset-0 opacity-100">
+        <div className="absolute top-2 right-3 w-1 h-3 bg-gradient-to-b from-transparent via-gray-300/60 to-transparent rotate-45 animate-pulse" />
+      </div>
+    </div>
+
+    <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-900">¡Pre-reserva enviada exitosamente!</h2>
+    <p className="font-sans text-gray-700 font-light max-w-md mx-auto">
+      Hemos recibido tu solicitud de reserva. Te contactaremos pronto para confirmar la disponibilidad y finalizar tu reserva.
+    </p>
+
+    <NiceButton onClick={() => (window.location.href = '/')} className="mt-4">
+      Volver al inicio
+    </NiceButton>
+  </div>
+            )}
+            
+            
+
+            {currentStep < 4 && (
+  <div className="flex justify-between mt-8 pt-6 border-t border-white/30">
+    <NiceButton onClick={prevStep} disabled={currentStep === 1}>
+      Anterior
+    </NiceButton>
+
+    <div className="space-x-4">
+      {currentStep < 3 && (
+        <NiceButton onClick={nextStep}>
+          Siguiente
+        </NiceButton>
+      )}
+      {currentStep === 3 && (
+        <NiceButton onClick={handleSubmit} disabled={submitting}>
+          {submitting ? 'Enviando…' : 'Enviar pre-reserva'}
+        </NiceButton>
+      )}
+    </div>
+  </div>
+)}
+
+
+       {currentStep > 1 && currentStep < 4 && formData.selectedRooms.length > 0 && (
+  <div className="mt-8 pt-6 border-t border-white/30">
+    <div className="relative bg-white/70 backdrop-blur-2xl rounded-xl p-5 border border-white/30 shadow-2xl">
+      {/* shimmer */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700">
+        <div className="absolute top-3 right-5 w-1 h-5 bg-gradient-to-b from-transparent via-gray-300/50 to-transparent rotate-45 animate-pulse" />
+      </div>
+
+      <h3 className="font-serif text-xl font-bold mb-3">Resumen de la reserva</h3>
+      <div className="space-y-1 font-sans text-sm">
+        <div className="flex justify-between"><span>Fechas:</span><span>{formatDate(formData.checkIn)} — {formatDate(formData.checkOut)}</span></div>
+        <div className="flex justify-between"><span>Noches:</span><span>{calculateNights(formData.checkIn, formData.checkOut)}</span></div>
+        <div className="flex justify-between"><span>Huéspedes:</span><span>{formData.guests}</span></div>
+        <div className="flex justify-between font-semibold text-lg pt-2 border-t border-white/30">
+          <span>Total estimado:</span>
+          <span>{formatPrice(getTotalPrice())}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
           </div>
         </div>
       </div>
