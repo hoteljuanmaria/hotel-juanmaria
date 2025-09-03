@@ -492,9 +492,7 @@ const ServiceCard = ({
         {/* Botón de acción ACTUALIZADO - ahora navega al detalle */}
         <NiceButton
           onClick={handleViewDetails}
-          variant='primary'
           size='md'
-          showIndicator={false}
           className='w-full mt-6 flex-shrink-0 py-4 px-6'
         >
           Ver Detalles
@@ -712,7 +710,7 @@ const ServicesSection = ({
                       }}
                       className='relative font-semibold rounded-xl overflow-hidden transition-all duration-500 group px-7 md:px-10 py-3 md:py-4 text-base md:text-lg shadow-2xl'
                     >
-                      <span className='relative z-10 flex items-center justify-center text-white'>
+                      <span className='relative z-10 flex items-center justify-center text-white '>
                         Explorar Servicios
                         <div className='ml-3 w-2 h-2 md:w-2.5 md:h-2.5 bg-white/70 rounded-full group-hover:bg-white transition-colors duration-300' />
                       </span>
@@ -727,18 +725,8 @@ const ServicesSection = ({
             </div>
           </div>
 
-          {/* Scroll indicator - solo desktop */}
-          <div
-            className='hidden md:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 flex-col items-center opacity-0 z-20'
-            style={{ animation: 'fadeIn 1000ms ease-out 1.5s forwards' }}
-          >
-            <div className='w-6 h-10 border-2 border-white/40 rounded-full mb-2 relative'>
-              <div className='w-1 h-3 bg-white/60 rounded-full absolute top-2 left-1/2 transform -translate-x-1/2 animate-bounce' />
-            </div>
-            <span className='font-sans text-xs text-white/70 font-medium'>
-              Descubre más
-            </span>
-          </div>
+          
+      
         </div>
 
         {/* Contenido principal de servicios */}

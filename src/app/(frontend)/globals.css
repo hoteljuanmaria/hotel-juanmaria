@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+/* globals.css */
+@media (min-width: 768px) {
+  html {
+    zoom: 0.90; /* Aplica solo en desktop */
+  }
+}
+
+
 /* Force light mode always - Override any dark mode styles */
 html,
 html[data-theme='dark'],
