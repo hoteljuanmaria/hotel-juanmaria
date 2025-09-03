@@ -45,6 +45,7 @@ const RoomCarousel = async ({ homePageData, locale = 'es' }: RoomCarouselProps) 
   const transformedRooms: PayloadRoom[] = rooms.map((room: any) => ({
     id: room.id,
     title: room.title,
+    slug: room.slug,
     shortDescription: room.shortDescription,
     price: room.price,
     currency: room.currency || 'COP',
