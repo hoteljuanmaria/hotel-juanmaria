@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     // Enviar el email
     const { data, error } = await resend.emails.send({
       from: 'Hotel Juan Maria <contactoweb@web.hoteljuanmaria.com>',
-      to: ['simoncalderonl2010@gmail.com', 'reservas@hoteljuanmaria.com'],
+      to: ['simoncalderonl2010@gmail.com',  'juanjo03212242004@gmail.com', 'reservas@hoteljuanmaria.com'],
       subject: `Nueva consulta: ${tipoConsulta} - ${nombre} ${apellido}`,
       html: emailHtml,
       replyTo: email, // Permitir responder directamente al cliente
