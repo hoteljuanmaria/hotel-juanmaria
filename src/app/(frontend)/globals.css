@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+/* globals.css */
+@media (min-width: 768px) {
+  html {
+    zoom: 0.90; /* Aplica solo en desktop */
+  }
+}
+
+
 /* Force light mode always - Override any dark mode styles */
 html,
 html[data-theme='dark'],
@@ -94,23 +102,41 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* Force high contrast for booking page */
-.booking-page *,
-.booking-page {
-  color: rgb(31, 41, 55) !important; /* gray-800 */
+/* --- BOOKING PAGE: alto contraste sin romper botones --- */
+
+/* 1) Color por defecto SOLO para tipografía */
+.booking-page { color: rgb(31 41 55); } /* gray-800 */
+.booking-page :where(p, li, span, small, strong, em, h1, h2, h3, h4, h5, h6) {
+  color: inherit;
 }
 
-.booking-page .text-gray-500 {
-  color: rgb(31, 41, 55) !important; /* Override any gray-500 */
+/* 2) NO tocar elementos interactivos (dejan su propio color/tema) */
+.booking-page :where(button, [role="button"], a, input, select, textarea) {
+  color: unset; /* no sobreescribir text-white de los botones */
 }
 
-.booking-page .text-gray-600 {
-  color: rgb(31, 41, 55) !important; /* Override any gray-600 */
+/* 3) Botones con gradiente: asegura texto blanco en cualquier caso */
+.booking-page :where(a, button)[class*="gradient"],
+.booking-page :where(a, button)[class*="NiceButton"],
+.booking-page :where(a, button)[class*="nice-button"] {
+  color: #fff !important;
 }
 
-.booking-page .text-gray-700 {
-  color: rgb(31, 41, 55) !important; /* Override any gray-700 */
+/* 4) Estado disabled de botones en booking:
+      no bajes la opacidad total (que vuelve ilegible el texto);
+      atenúa el botón con filtros, manteniendo contraste del texto */
+.booking-page :where(button:disabled, a[aria-disabled="true"]) {
+  opacity: 1 !important;
+  filter: saturate(0.7) brightness(0.95);
+  cursor: not-allowed;
 }
+
+/* 5) Accesibilidad: foco visible también en <a> estilizados como botón */
+.booking-page :where(a[class*="inline-flex"], button):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
 
 /* Container utility fallback (Tailwind v4 removes container plugin by default) */
 .container {

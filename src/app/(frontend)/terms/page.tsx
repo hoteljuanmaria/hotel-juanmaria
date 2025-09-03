@@ -287,24 +287,7 @@ const TermsConditionsPage: React.FC = () => {
             </div>
           </button>
 
-          <button className="relative font-semibold rounded-lg overflow-hidden transition-all duration-700 group px-8 py-4 border border-gray-200/60 text-gray-700 hover:border-gray-300 bg-white/70 backdrop-blur-xl">
-            <span className="relative z-10 flex items-center justify-center">
-              Descargar PDF
-              <div className="ml-2 w-2 h-2 bg-gray-600/70 rounded-full group-hover:bg-gray-600 transition-colors duration-300" />
-            </span>
-
-            {/* Floating highlight */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-            {/* Shimmer effects */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-              <div className="absolute top-1 right-2 w-1 h-3 bg-gradient-to-b from-transparent via-gray-300/30 to-transparent rotate-45 animate-pulse" />
-              <div
-                className="absolute bottom-1 left-3 w-2 h-0.5 bg-gradient-to-r from-transparent via-gray-300/20 to-transparent animate-pulse"
-                style={{ animationDelay: "0.3s" }}
-              />
-            </div>
-          </button>
+       
         </div>
       </div>
     </div>

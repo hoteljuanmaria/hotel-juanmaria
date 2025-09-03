@@ -62,8 +62,8 @@ export const AdminBookingTemplate: React.FC<AdminBookingTemplateProps> = ({
     }).format(price)
   }
 
-  const formatTimestamp = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString('es-ES', {
+  const formatTimestamp = (ts: string) => {
+    return new Date(ts).toLocaleString('es-ES', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -76,242 +76,251 @@ export const AdminBookingTemplate: React.FC<AdminBookingTemplateProps> = ({
     <Html>
       <Head />
       <Preview>
-        Nueva pre-reserva: {customerName} - {formatDate(checkIn)}
+        Nueva pre-reserva: {customerName} — {formatDate(checkIn)}
       </Preview>
-      <Body style={main}>
-        <Container style={container}>
-          {/* Header con logo */}
-          <Section style={header}>
+
+      <Body style={styles.main}>
+        <Container style={styles.card}>
+          {/* Header */}
+          <Section
+            style={{
+              ...styles.header,
+              // Fallback solid color + gradient for compatible clients
+              backgroundColor: '#111827',
+              backgroundImage:
+                'linear-gradient(135deg, #111827 0%, #1f2937 50%, #0b0b0b 100%)',
+            }}
+          >
             <Img
-              src='https://hotel-juan-maria.com/WhiteIcon.svg'
-              width='60'
-              height='60'
-              alt='Hotel Juan María'
-              style={logo}
+              src="https://hoteljuanmaria.com/GrayIcon.png"
+              width="60"
+              height="60"
+              alt="Hotel Juan María"
+              style={styles.logo}
             />
-            <Text style={headerTitle}>Hotel Juan María</Text>
-            <Text style={headerSubtitle}>Panel de Administración</Text>
+            <Text style={styles.headerTitle}>Hotel Juan María</Text>
+            <Text style={styles.headerSubtitle}>Panel de administración</Text>
           </Section>
 
-          {/* Contenido principal */}
-          <Section style={content}>
-            <Text style={title}>Nueva Pre-reserva Recibida</Text>
+          {/* Content */}
+          <Section style={styles.content}>
+            <Text style={styles.title}>Nueva pre-reserva recibida</Text>
 
-            <Section style={alertSection}>
-              <Text style={alertText}>
-                🔔 Se ha recibido una nueva solicitud de pre-reserva
-              </Text>
-              <Text style={timestampText}>
+            {/* Gentle alert (no red) */}
+            <Section style={styles.alertSection}>
+              <Text style={styles.alertText}>🔔 Se recibió una nueva solicitud</Text>
+              <Text style={styles.timestampText}>
                 Fecha/Hora: {formatTimestamp(timestamp)}
               </Text>
             </Section>
 
-            {/* Información del cliente */}
-            <Section style={customerSection}>
-              <Text style={sectionTitle}>Información del Cliente</Text>
+            {/* Customer info */}
+            <Section style={styles.block}>
+              <Text style={styles.sectionTitle}>Información del cliente</Text>
 
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Nombre completo:</Text>
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Nombre completo:</Text>
                 </Column>
-                <Column style={detailValue}>
-                  <Text style={detailValueText}>{customerName}</Text>
+                <Column style={styles.detailValue}>
+                  <Text style={styles.detailValueText}>{customerName}</Text>
                 </Column>
               </Row>
 
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Email:</Text>
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Email:</Text>
                 </Column>
-                <Column style={detailValue}>
-                  <Link href={`mailto:${customerEmail}`} style={link}>
+                <Column style={styles.detailValue}>
+                  <Link href={`mailto:${customerEmail}`} style={styles.link}>
                     {customerEmail}
                   </Link>
                 </Column>
               </Row>
 
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Teléfono:</Text>
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Teléfono:</Text>
                 </Column>
-                <Column style={detailValue}>
-                  <Link href={`tel:${customerPhone}`} style={link}>
+                <Column style={styles.detailValue}>
+                  <Link href={`tel:${customerPhone}`} style={styles.link}>
                     {customerPhone}
                   </Link>
                 </Column>
               </Row>
             </Section>
 
-            {/* Detalles de la reserva */}
-            <Section style={bookingSection}>
-              <Text style={sectionTitle}>Detalles de la Reserva</Text>
+            {/* Booking details */}
+            <Section style={{ ...styles.block, ...styles.blockMuted }}>
+              <Text style={styles.sectionTitle}>Detalles de la reserva</Text>
 
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Fecha de entrada:</Text>
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Fecha de entrada:</Text>
                 </Column>
-                <Column style={detailValue}>
-                  <Text style={detailValueText}>{formatDate(checkIn)}</Text>
+                <Column style={styles.detailValue}>
+                  <Text style={styles.detailValueText}>{formatDate(checkIn)}</Text>
                 </Column>
               </Row>
 
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Fecha de salida:</Text>
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Fecha de salida:</Text>
                 </Column>
-                <Column style={detailValue}>
-                  <Text style={detailValueText}>{formatDate(checkOut)}</Text>
-                </Column>
-              </Row>
-
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Noches:</Text>
-                </Column>
-                <Column style={detailValue}>
-                  <Text style={detailValueText}>{nights}</Text>
+                <Column style={styles.detailValue}>
+                  <Text style={styles.detailValueText}>{formatDate(checkOut)}</Text>
                 </Column>
               </Row>
 
-              <Row style={detailRow}>
-                <Column style={detailLabel}>
-                  <Text style={detailLabelText}>Huéspedes:</Text>
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Noches:</Text>
                 </Column>
-                <Column style={detailValue}>
-                  <Text style={detailValueText}>{guests}</Text>
+                <Column style={styles.detailValue}>
+                  <Text style={styles.detailValueText}>{nights}</Text>
+                </Column>
+              </Row>
+
+              <Row style={styles.detailRow}>
+                <Column style={styles.detailLabel}>
+                  <Text style={styles.detailLabelText}>Huéspedes:</Text>
+                </Column>
+                <Column style={styles.detailValue}>
+                  <Text style={styles.detailValueText}>{guests}</Text>
                 </Column>
               </Row>
             </Section>
 
-            {/* Habitaciones solicitadas */}
-            <Section style={roomsSection}>
-              <Text style={sectionTitle}>Habitaciones Solicitadas</Text>
+            {/* Rooms */}
+            <Section style={styles.roomsSection}>
+              <Text style={styles.sectionTitle}>Habitaciones solicitadas</Text>
 
-              <div style={roomsTable}>
-                <Row style={tableHeader}>
-                  <Column style={tableHeaderCell}>
-                    <Text style={tableHeaderText}>Habitación</Text>
+              <Section style={styles.tableOuter}>
+                <Row style={styles.tableHeader}>
+                  <Column style={styles.tableHeaderCell}>
+                    <Text style={styles.tableHeaderText}>Habitación</Text>
                   </Column>
-                  <Column style={tableHeaderCell}>
-                    <Text style={tableHeaderText}>Cantidad</Text>
+                  <Column style={styles.tableHeaderCell}>
+                    <Text style={styles.tableHeaderText}>Cantidad</Text>
                   </Column>
-                  <Column style={tableHeaderCell}>
-                    <Text style={tableHeaderText}>Precio/noche</Text>
+                  <Column style={styles.tableHeaderCell}>
+                    <Text style={styles.tableHeaderText}>Precio/noche</Text>
                   </Column>
-                  <Column style={tableHeaderCell}>
-                    <Text style={tableHeaderText}>Subtotal</Text>
+                  <Column style={styles.tableHeaderCell}>
+                    <Text style={styles.tableHeaderText}>Subtotal</Text>
                   </Column>
                 </Row>
 
-                {rooms.map((room, index) => (
-                  <Row key={index} style={tableRow}>
-                    <Column style={tableCell}>
-                      <Text style={tableCellText}>{room.title}</Text>
+                {rooms.map((room, idx) => (
+                  <Row
+                    key={`${room.title}-${idx}`}
+                    style={{
+                      ...styles.tableRow,
+                      backgroundColor: idx % 2 === 0 ? '#ffffff' : '#f9fafb',
+                    }}
+                  >
+                    <Column style={styles.tableCell}>
+                      <Text style={styles.tableCellText}>{room.title}</Text>
                     </Column>
-                    <Column style={tableCell}>
-                      <Text style={tableCellText}>{room.quantity}</Text>
+                    <Column style={styles.tableCell}>
+                      <Text style={styles.tableCellText}>{room.quantity}</Text>
                     </Column>
-                    <Column style={tableCell}>
-                      <Text style={tableCellText}>
+                    <Column style={styles.tableCell}>
+                      <Text style={styles.tableCellText}>
                         {formatPrice(room.price)}
                       </Text>
                     </Column>
-                    <Column style={tableCell}>
-                      <Text style={tableCellText}>
+                    <Column style={styles.tableCell}>
+                      <Text style={styles.tableCellText}>
                         {formatPrice(room.price * room.quantity * nights)}
                       </Text>
                     </Column>
                   </Row>
                 ))}
 
-                <Hr style={hr} />
+                <Hr style={styles.hr} />
 
-                <Row style={totalRow}>
-                  <Column style={totalLabelCell}>
-                    <Text style={totalLabelText}>TOTAL ESTIMADO:</Text>
+                <Row style={styles.totalRow}>
+                  <Column style={styles.totalLabelCell}>
+                    <Text style={styles.totalLabelText}>TOTAL ESTIMADO:</Text>
                   </Column>
-                  <Column style={totalValueCell}>
-                    <Text style={totalValueText}>
+                  <Column style={styles.totalValueCell}>
+                    <Text style={styles.totalValueText}>
                       {formatPrice(totalPrice)}
                     </Text>
                   </Column>
                 </Row>
-              </div>
+              </Section>
             </Section>
 
+            {/* Optional message */}
             {message && (
-              <Section style={messageSection}>
-                <Text style={sectionTitle}>Mensaje del Cliente</Text>
-                <Text style={messageText}>&ldquo;{message}&rdquo;</Text>
+              <Section style={{ ...styles.block, ...styles.blockNote }}>
+                <Text style={styles.sectionTitle}>Mensaje del cliente</Text>
+                <Text style={styles.messageText}>&ldquo;{message}&rdquo;</Text>
               </Section>
             )}
 
-            {/* Acciones recomendadas */}
-            <Section style={actionsSection}>
-              <Text style={sectionTitle}>Acciones Recomendadas</Text>
+            {/* Recommended actions */}
+            <Section style={{ ...styles.block, ...styles.blockSoft }}>
+              <Text style={styles.sectionTitle}>Acciones recomendadas</Text>
 
-              <Text style={actionItem}>
-                ✅ Verificar disponibilidad para las fechas solicitadas
+              <Text style={styles.actionItem}>✅ Verificar disponibilidad</Text>
+              <Text style={styles.actionItem}>
+                ✅ Contactar al cliente dentro de 24 horas
               </Text>
-              <Text style={actionItem}>
-                📞 Contactar al cliente dentro de las próximas 24 horas
-              </Text>
-              <Text style={actionItem}>
-                💰 Confirmar precios y métodos de pago disponibles
-              </Text>
-              <Text style={actionItem}>
-                📋 Generar cotización formal si es necesario
-              </Text>
-              <Text style={actionItem}>
-                ✉️ Enviar confirmación final al cliente
-              </Text>
+              <Text style={styles.actionItem}>✅ Confirmar precios y métodos de pago</Text>
+              <Text style={styles.actionItem}>✅ Generar cotización formal (si aplica)</Text>
+              <Text style={styles.actionItem}>✅ Enviar confirmación final</Text>
             </Section>
 
-            {/* Información de contacto rápido */}
-            <Section style={quickContactSection}>
-              <Text style={sectionTitle}>Contacto Rápido</Text>
-
-              <Row style={contactRow}>
-                <Column style={contactMethod}>
-                  <Text style={contactMethodTitle}>Email</Text>
+            {/* Quick contact */}
+            <Section style={styles.block}>
+              <Text style={styles.sectionTitle}>Contacto rápido</Text>
+              <Row style={styles.contactRow}>
+                <Column style={styles.contactMethod}>
+                  <Text style={styles.contactMethodTitle}>Email</Text>
                   <Link
-                    href={`mailto:${customerEmail}?subject=Confirmación de Reserva - Hotel Juan María&body=Estimado/a ${customerName},%0A%0AGracias por contactarnos...`}
-                    style={contactLink}
+                    href={`mailto:${customerEmail}?subject=Confirmación de Reserva - Hotel Juan María&body=Estimado/a ${customerName},%0A%0AGracias por tu solicitud. A continuación te compartimos detalles y próximos pasos...`}
+                    style={styles.primaryButton}
                   >
-                    Enviar Email
+                    Enviar email
                   </Link>
                 </Column>
-                <Column style={contactMethod}>
-                  <Text style={contactMethodTitle}>WhatsApp</Text>
+                <Column style={styles.contactMethod}>
+                  <Text style={styles.contactMethodTitle}>WhatsApp</Text>
                   <Link
-                    href={`https://wa.me/${customerPhone.replace(/\D/g, '')}?text=Hola ${customerName}, nos comunicamos desde Hotel Juan María sobre tu solicitud de reserva...`}
-                    style={contactLink}
+                    href={`https://wa.me/${customerPhone.replace(/\D/g, '')}?text=Hola ${encodeURIComponent(
+                      customerName
+                    )}, te saludamos de Hotel Juan María respecto a tu solicitud de reserva.`}
+                    style={styles.primaryButton}
                   >
                     Enviar WhatsApp
                   </Link>
                 </Column>
-                <Column style={contactMethod}>
-                  <Text style={contactMethodTitle}>Llamada</Text>
-                  <Link href={`tel:${customerPhone}`} style={contactLink}>
-                    Llamar Ahora
+                <Column style={styles.contactMethod}>
+                  <Text style={styles.contactMethodTitle}>Llamada</Text>
+                  <Link href={`tel:${customerPhone}`} style={styles.primaryButton}>
+                    Llamar ahora
                   </Link>
                 </Column>
               </Row>
             </Section>
 
-            <Text style={urgencyNote}>
-              <strong>Nota:</strong> Esta pre-reserva requiere respuesta dentro
-              de las próximas 24 horas para mantener la satisfacción del
-              cliente.
-            </Text>
+            <Section style={styles.noteOuter}>
+              <Text style={styles.noteText}>
+                <strong>Nota:</strong> Responder dentro de 24 horas mantiene la
+                experiencia premium y la tasa de conversión.
+              </Text>
+            </Section>
           </Section>
 
           {/* Footer */}
-          <Section style={footer}>
-            <Text style={footerText}>
-              Sistema de Pre-reservas Hotel Juan María
+          <Section style={styles.footer}>
+            <Text style={styles.footerText}>
+              Sistema de pre-reservas • Hotel Juan María
             </Text>
-            <Text style={footerText}>
+            <Text style={styles.footerText}>
               Generado automáticamente el {formatTimestamp(timestamp)}
             </Text>
           </Section>
@@ -321,291 +330,282 @@ export const AdminBookingTemplate: React.FC<AdminBookingTemplateProps> = ({
   )
 }
 
-// Estilos
-const main = {
-  backgroundColor: '#f3f4f6',
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-}
+/** ================================
+ *  Styles — "Liquid Luxury" (email-safe)
+ *  ================================ */
+const styles = {
+  // Page
+  main: {
+    backgroundColor: '#f3f4f6', // gray-100
+    margin: 0,
+    padding: 0,
+    fontFamily:
+      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif",
+    color: '#374151', // gray-700 body
+  },
 
-const container = {
-  margin: '0 auto',
-  padding: '20px 0 48px',
-  width: '600px',
-}
+  // Card container
+  card: {
+    width: '600px',
+    margin: '0 auto',
+    padding: '20px 0 48px',
+  },
 
-const header = {
-  backgroundColor: '#dc2626',
-  borderRadius: '8px 8px 0 0',
-  padding: '30px',
-  textAlign: 'center' as const,
-}
+  // Header (dark, subdued gradient)
+  header: {
+    borderRadius: '12px 12px 0 0', // rounded-xl top
+    padding: '28px',
+    textAlign: 'center' as const,
+  },
+  logo: {
+    display: 'block',
+    margin: '0 auto 8px',
+  },
+  headerTitle: {
+    fontFamily: "'Playfair Display', Georgia, serif",
+    color: '#ffffff',
+    fontSize: '26px',
+    fontWeight: 700,
+    margin: '8px 0 2px',
+    letterSpacing: '0.2px',
+  },
+  headerSubtitle: {
+    color: 'rgba(255,255,255,0.75)',
+    fontSize: '14px',
+    margin: 0,
+    fontWeight: 400,
+  },
 
-const logo = {
-  margin: '0 auto',
-}
+  // Content card
+  content: {
+    backgroundColor: '#ffffff',
+    border: '1px solid #e5e7eb', // gray-200
+    borderTop: 'none',
+    borderRadius: '0 0 12px 12px', // rounded-xl bottom
+    padding: '28px 28px 8px',
+  },
+  title: {
+    fontFamily: "'Playfair Display', Georgia, serif",
+    color: '#111827', // gray-900
+    fontSize: '22px',
+    fontWeight: 700,
+    textAlign: 'center' as const,
+    margin: '0 0 20px',
+  },
 
-const headerTitle = {
-  color: '#ffffff',
-  fontSize: '24px',
-  fontWeight: 'bold',
-  margin: '12px 0 4px',
-}
+  // Subtle alert (no red)
+  alertSection: {
+    backgroundColor: '#f9fafb', // gray-50
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    padding: '16px 18px',
+    margin: '0 0 20px',
+  },
+  alertText: {
+    color: '#1f2937', // gray-800
+    fontSize: '15px',
+    fontWeight: 600,
+    margin: '0 0 6px',
+  },
+  timestampText: {
+    color: '#6b7280', // gray-500/600
+    fontSize: '13px',
+    margin: 0,
+  },
 
-const headerSubtitle = {
-  color: '#fecaca',
-  fontSize: '14px',
-  margin: '0',
-}
+  // Blocks
+  block: {
+    backgroundColor: '#ffffff',
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    padding: '18px 20px',
+    margin: '16px 0',
+  },
+  blockMuted: {
+    backgroundColor: '#f8fafc', // slate-50-ish
+  },
+  blockSoft: {
+    backgroundColor: '#f9fafb', // gray-50
+  },
+  blockNote: {
+    backgroundColor: '#f9fafb',
+  },
 
-const content = {
-  backgroundColor: '#ffffff',
-  padding: '30px',
-}
+  sectionTitle: {
+    fontFamily: "'Playfair Display', Georgia, serif",
+    color: '#111827',
+    fontSize: '18px',
+    fontWeight: 700,
+    margin: '6px 0 12px',
+    paddingBottom: '8px',
+    borderBottom: '2px solid #e5e7eb',
+  },
 
-const title = {
-  color: '#dc2626',
-  fontSize: '24px',
-  fontWeight: 'bold',
-  textAlign: 'center' as const,
-  margin: '0 0 24px',
-}
+  // Details grid
+  detailRow: {
+    margin: '8px 0',
+  },
+  detailLabel: {
+    width: '35%',
+    paddingRight: '8px',
+  },
+  detailLabelText: {
+    color: '#6b7280',
+    fontSize: '14px',
+    fontWeight: 500,
+    margin: 0,
+  },
+  detailValue: {
+    width: '65%',
+  },
+  detailValueText: {
+    color: '#1f2937',
+    fontSize: '14px',
+    margin: 0,
+  },
 
-const alertSection = {
-  backgroundColor: '#fef2f2',
-  border: '1px solid #fecaca',
-  borderRadius: '8px',
-  padding: '16px',
-  margin: '0 0 24px',
-}
+  // Rooms table
+  roomsSection: {
+    margin: '20px 0',
+  },
+  tableOuter: {
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  },
+  tableHeader: {
+    backgroundColor: '#f3f4f6',
+    borderBottom: '1px solid #e5e7eb',
+  },
+  tableHeaderCell: {
+    padding: '12px',
+    borderRight: '1px solid #e5e7eb',
+  },
+  tableHeaderText: {
+    color: '#374151',
+    fontSize: '13px',
+    fontWeight: 700,
+    margin: 0,
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.3px',
+  },
+  tableRow: {
+    borderTop: '1px solid #e5e7eb',
+  },
+  tableCell: {
+    padding: '12px',
+    borderRight: '1px solid #e5e7eb',
+    verticalAlign: 'top' as const,
+  },
+  tableCellText: {
+    color: '#374151',
+    fontSize: '14px',
+    margin: 0,
+  },
+  hr: {
+    borderColor: '#e5e7eb',
+    margin: '8px 0',
+  },
+  totalRow: {
+    backgroundColor: '#f9fafb',
+  },
+  totalLabelCell: {
+    padding: '12px',
+    width: '75%',
+  },
+  totalLabelText: {
+    color: '#1f2937',
+    fontSize: '15px',
+    fontWeight: 700,
+    margin: 0,
+  },
+  totalValueCell: {
+    padding: '12px',
+    width: '25%',
+    textAlign: 'right' as const,
+  },
+  totalValueText: {
+    color: '#111827',
+    fontSize: '18px',
+    fontWeight: 800,
+    margin: 0,
+  },
 
-const alertText = {
-  color: '#dc2626',
-  fontSize: '16px',
-  fontWeight: '500',
-  margin: '0 0 8px',
-}
+  // Message
+  messageText: {
+    color: '#374151',
+    fontSize: '15px',
+    fontStyle: 'italic',
+    lineHeight: '22px',
+    margin: 0,
+  },
 
-const timestampText = {
-  color: '#991b1b',
-  fontSize: '14px',
-  margin: '0',
-}
+  // Actions
+  actionItem: {
+    color: '#374151',
+    fontSize: '14px',
+    margin: '6px 0',
+  },
 
-const sectionTitle = {
-  color: '#374151',
-  fontSize: '18px',
-  fontWeight: 'bold',
-  margin: '24px 0 12px',
-  borderBottom: '2px solid #e5e7eb',
-  paddingBottom: '8px',
-}
+  // Contact
+  contactRow: {
+    margin: '12px 0',
+  },
+  contactMethod: {
+    textAlign: 'center' as const,
+    padding: '0 8px',
+  },
+  contactMethodTitle: {
+    color: '#374151',
+    fontSize: '14px',
+    fontWeight: 600,
+    margin: '0 0 8px',
+  },
 
-const customerSection = {
-  backgroundColor: '#f9fafb',
-  borderRadius: '8px',
-  padding: '20px',
-  margin: '16px 0',
-}
+  // Buttons — primary dark (no red)
+  primaryButton: {
+    backgroundColor: '#111827',
+    color: '#ffffff',
+    fontSize: '12px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    padding: '10px 16px',
+    borderRadius: '8px', // rounded-lg
+    display: 'inline-block',
+    border: '1px solid #111827',
+  },
 
-const bookingSection = {
-  backgroundColor: '#f0f9ff',
-  borderRadius: '8px',
-  padding: '20px',
-  margin: '16px 0',
-}
+  // Links
+  link: {
+    color: '#1f2937',
+    textDecoration: 'underline',
+  },
 
-const roomsSection = {
-  margin: '24px 0',
-}
+  // Note
+  noteOuter: {
+    backgroundColor: '#f9fafb',
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    padding: '14px 16px',
+    margin: '10px 0 28px',
+    textAlign: 'center' as const,
+  },
+  noteText: {
+    color: '#374151',
+    fontSize: '13px',
+    margin: 0,
+  },
 
-const roomsTable = {
-  width: '100%',
-  border: '1px solid #e5e7eb',
-  borderRadius: '8px',
-  overflow: 'hidden',
-}
-
-const tableHeader = {
-  backgroundColor: '#f3f4f6',
-}
-
-const tableHeaderCell = {
-  padding: '12px',
-  borderRight: '1px solid #e5e7eb',
-}
-
-const tableHeaderText = {
-  color: '#374151',
-  fontSize: '14px',
-  fontWeight: 'bold',
-  margin: '0',
-}
-
-const tableRow = {
-  borderTop: '1px solid #e5e7eb',
-}
-
-const tableCell = {
-  padding: '12px',
-  borderRight: '1px solid #e5e7eb',
-}
-
-const tableCellText = {
-  color: '#374151',
-  fontSize: '14px',
-  margin: '0',
-}
-
-const detailRow = {
-  margin: '8px 0',
-}
-
-const detailLabel = {
-  width: '35%',
-}
-
-const detailLabelText = {
-  color: '#6b7280',
-  fontSize: '14px',
-  fontWeight: '500',
-  margin: '0',
-}
-
-const detailValue = {
-  width: '65%',
-}
-
-const detailValueText = {
-  color: '#1f2937',
-  fontSize: '14px',
-  margin: '0',
-}
-
-const hr = {
-  borderColor: '#e5e7eb',
-  margin: '8px 0',
-}
-
-const totalRow = {
-  backgroundColor: '#f9fafb',
-}
-
-const totalLabelCell = {
-  padding: '12px',
-  width: '75%',
-}
-
-const totalLabelText = {
-  color: '#1f2937',
-  fontSize: '16px',
-  fontWeight: 'bold',
-  margin: '0',
-}
-
-const totalValueCell = {
-  padding: '12px',
-  width: '25%',
-  textAlign: 'right' as const,
-}
-
-const totalValueText = {
-  color: '#dc2626',
-  fontSize: '18px',
-  fontWeight: 'bold',
-  margin: '0',
-}
-
-const messageSection = {
-  backgroundColor: '#fffbeb',
-  border: '1px solid #fed7aa',
-  borderRadius: '8px',
-  padding: '20px',
-  margin: '24px 0',
-}
-
-const messageText = {
-  color: '#92400e',
-  fontSize: '16px',
-  fontStyle: 'italic',
-  lineHeight: '24px',
-  margin: '0',
-}
-
-const actionsSection = {
-  backgroundColor: '#f0fdf4',
-  border: '1px solid #bbf7d0',
-  borderRadius: '8px',
-  padding: '20px',
-  margin: '24px 0',
-}
-
-const actionItem = {
-  color: '#166534',
-  fontSize: '14px',
-  margin: '8px 0',
-}
-
-const quickContactSection = {
-  backgroundColor: '#fafafa',
-  border: '1px solid #e5e7eb',
-  borderRadius: '8px',
-  padding: '20px',
-  margin: '24px 0',
-}
-
-const contactRow = {
-  margin: '16px 0',
-}
-
-const contactMethod = {
-  textAlign: 'center' as const,
-  padding: '0 8px',
-}
-
-const contactMethodTitle = {
-  color: '#374151',
-  fontSize: '14px',
-  fontWeight: '500',
-  margin: '0 0 8px',
-}
-
-const contactLink = {
-  backgroundColor: '#3b82f6',
-  color: '#ffffff',
-  fontSize: '12px',
-  fontWeight: '500',
-  textDecoration: 'none',
-  padding: '8px 16px',
-  borderRadius: '6px',
-  display: 'inline-block',
-}
-
-const link = {
-  color: '#2563eb',
-  textDecoration: 'none',
-}
-
-const urgencyNote = {
-  backgroundColor: '#fef3c7',
-  border: '1px solid #fbbf24',
-  borderRadius: '8px',
-  padding: '16px',
-  color: '#92400e',
-  fontSize: '14px',
-  textAlign: 'center' as const,
-  margin: '24px 0',
-}
-
-const footer = {
-  backgroundColor: '#f9fafb',
-  borderRadius: '0 0 8px 8px',
-  padding: '20px',
-  textAlign: 'center' as const,
-}
-
-const footerText = {
-  color: '#6b7280',
-  fontSize: '12px',
-  margin: '4px 0',
-}
+  // Footer
+  footer: {
+    backgroundColor: '#f9fafb',
+    borderRadius: '0 0 12px 12px',
+    padding: '18px',
+    textAlign: 'center' as const,
+  },
+  footerText: {
+    color: '#6b7280',
+    fontSize: '12px',
+    margin: '4px 0',
+  },
+} as const

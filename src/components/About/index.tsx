@@ -168,21 +168,95 @@ const IconComponent: React.FC<{ iconName: string; className?: string }> = ({
   return <Icon className={className} />
 }
 
-// Simple display counter component
-const DisplayCounter: React.FC<{
+// Simple display counter with in-view count-up
+const CountUp: React.FC<{
   value: number
   suffix?: string
   prefix?: string
   className?: string
-}> = ({ value, suffix = '', prefix = '', className = '' }) => {
+  durationMs?: number
+  once?: boolean
+}> = ({
+  value,
+  suffix = '',
+  prefix = '',
+  className = '',
+  durationMs = 1200,
+  once = true,
+}) => {
+  const ref = React.useRef<HTMLDivElement | null>(null)
+  const [inView, setInView] = useState(false)
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const [display, setDisplay] = useState(0)
+
+  // Detect reduced motion
+  const reduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  useEffect(() => {
+    if (!ref.current || (once && hasAnimated)) return
+    if (typeof IntersectionObserver === 'undefined') {
+      // Fallback: sin IO, dispara de una
+      setInView(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setInView(true)
+        })
+      },
+      { threshold: 0.25 }
+    )
+    io.observe(ref.current)
+    return () => io.disconnect()
+  }, [hasAnimated, once])
+
+  useEffect(() => {
+    if (!inView) return
+    if (once && hasAnimated) return
+
+    if (reduced || durationMs <= 0) {
+      setDisplay(value)
+      setHasAnimated(true)
+      return
+    }
+
+    let raf = 0
+    const start = performance.now()
+    const startVal = 0
+    const endVal = value
+
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+
+    const tick = (now: number) => {
+      const elapsed = now - start
+      const t = Math.min(1, elapsed / durationMs)
+      const eased = easeOutCubic(t)
+      const current = Math.round(startVal + (endVal - startVal) * eased)
+      setDisplay(current)
+      if (t < 1) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        setHasAnimated(true)
+      }
+    }
+
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [inView, value, durationMs, reduced, hasAnimated, once])
+
   return (
-    <div className={`counter ${className}`}>
+    <div ref={ref} className={`counter ${className}`}>
       {prefix}
-      {value.toLocaleString()}
+      {Number.isFinite(display) ? display.toLocaleString() : value.toLocaleString()}
       {suffix}
     </div>
   )
 }
+
 
 // Componente de botón optimizado
 const PremiumButton: React.FC<{
@@ -460,6 +534,56 @@ export default function AboutPage({ aboutData }: AboutPageProps) {
                   Ver Línea de Tiempo
                 </PremiumButton>
               </ImageStoryCard>
+            </div>
+          </div>
+        </section>
+
+         {/* Estadísticas con contadores simplificados */}
+        <section className='py-16 md:py-24 px-6' data-reveal>
+          <div className='max-w-7xl mx-auto'>
+            <div className='grid md:grid-cols-4 gap-8'>
+              <div className='liquid-card rounded-2xl p-8 text-center group'>
+                <CountUp
+                  value={aboutData.yearsOfExperience}
+                  suffix='+'
+                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
+                />
+                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
+                  Años de Experiencia
+                </p>
+              </div>
+
+              <div className='liquid-card rounded-2xl p-8 text-center group'>
+                <CountUp
+                  value={aboutData.satisfiedGuests}
+                  suffix='+'
+                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
+                />
+                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
+                  Huéspedes Satisfechos
+                </p>
+              </div>
+
+              <div className='liquid-card rounded-2xl p-8 text-center group'>
+                <CountUp
+                  value={aboutData.teamMembers}
+                  suffix='+'
+                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
+                />
+                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
+                  Miembros del Equipo
+                </p>
+              </div>
+
+              <div className='liquid-card rounded-2xl p-8 text-center group'>
+                <CountUp
+                  value={aboutData.foundedYear}
+                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
+                />
+                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
+                  Año de Fundación
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -774,56 +898,6 @@ export default function AboutPage({ aboutData }: AboutPageProps) {
             historyStats={aboutData.historyStats}
           />
         </div>
-
-        {/* Estadísticas con contadores simplificados */}
-        <section className='py-16 md:py-24 px-6' data-reveal>
-          <div className='max-w-7xl mx-auto'>
-            <div className='grid md:grid-cols-4 gap-8'>
-              <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <DisplayCounter
-                  value={aboutData.yearsOfExperience}
-                  suffix='+'
-                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
-                />
-                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
-                  Años de Experiencia
-                </p>
-              </div>
-
-              <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <DisplayCounter
-                  value={aboutData.satisfiedGuests}
-                  suffix='+'
-                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
-                />
-                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
-                  Huéspedes Satisfechos
-                </p>
-              </div>
-
-              <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <DisplayCounter
-                  value={aboutData.teamMembers}
-                  suffix='+'
-                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
-                />
-                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
-                  Miembros del Equipo
-                </p>
-              </div>
-
-              <div className='liquid-card rounded-2xl p-8 text-center group'>
-                <DisplayCounter
-                  value={aboutData.foundedYear}
-                  className='text-4xl font-bold text-gray-900 mb-2 md:group-hover:text-5xl transition-all duration-300'
-                />
-                <p className='font-sans text-sm font-medium text-gray-600 transition-colors duration-300 md:group-hover:text-gray-800'>
-                  Año de Fundación
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </>
   )

@@ -11,6 +11,7 @@ import { formatPrice } from '@/lib/client-utils'
 export interface PayloadRoom {
   id: string
   title: string
+  slug: string,
   shortDescription?: string
   price: number
   currency: 'COP' | 'USD'
@@ -318,10 +319,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
                     {/* Action Buttons - Only Ver Detalles */}
                     <div className='flex flex-col gap-2'>
                       <NiceButton
-                        variant='primary'
                         size='sm'
-                        href={`/habitaciones/${rooms[currentIndex].id}`}
-                        className='w-full font-medium'
+          href={`/rooms/${rooms[currentIndex].slug}`}
+                        className='w-full font-bold'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -370,10 +370,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
 
                       {/* Action Button - Only Ver Detalles */}
                       <NiceButton
-                        variant='primary'
                         size='sm'
-                        href={`/habitaciones/${rooms[(currentIndex - 1 + rooms.length) % rooms.length].id}`}
-                        className='w-full font-medium text-xs'
+                        href={`/rooms/${rooms[(currentIndex - 1 + rooms.length) % rooms.length].slug}`}
+                        className='w-full font-bold text-xs'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -409,10 +408,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
 
                       {/* Action Button - Only Ver Detalles */}
                       <NiceButton
-                        variant='primary'
                         size='sm'
-                        href={`/habitaciones/${rooms[currentIndex].id}`}
-                        className='w-full font-medium'
+                        href={`/rooms/${rooms[currentIndex].slug}`}
+                        className='w-full font-bold'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -456,10 +454,9 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
 
                       {/* Action Button - Only Ver Detalles */}
                       <NiceButton
-                        variant='primary'
                         size='sm'
-                        href={`/habitaciones/${rooms[(currentIndex + 1) % rooms.length].id}`}
-                        className='w-full font-medium text-xs'
+                        href={`/rooms/${rooms[(currentIndex + 1) % rooms.length].slug}`}
+                        className='w-full font-bold text-xs'
                       >
                         Ver Detalles
                       </NiceButton>
@@ -551,16 +548,13 @@ const ClientCarousel = ({ rooms, homePageData, locale = 'es' }: ClientCarouselPr
               } gap-4 justify-center`}
             >
               <NiceButton
-                variant='primary'
                 href={`/booking?room=${rooms[currentIndex].id}`}
-                showIndicator={true}
                 className={isMobile ? 'w-full' : ''}
               >
                 Reservar Ahora
               </NiceButton>
               <NiceButton
-                variant='secondary'
-                href={`/habitaciones/${rooms[currentIndex].id}`}
+                href={`/rooms/${rooms[currentIndex].slug}`}
                 className={isMobile ? 'w-full' : ''}
               >
                 Ver Detalles

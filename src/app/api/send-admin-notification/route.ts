@@ -31,11 +31,11 @@ export async function POST(request: NextRequest) {
     )
 
     // Email al administrador - usar el email de reservas del footer
-    const adminEmail = 'reservas@hoteljuanmaria.com' // Cambiar por el email real del administrador
+    const adminEmail = 'reservas@hoteljuanmaria.com' 
 
     const data = await resend.emails.send({
       from: 'Sistema de Reservas <sistema@web.hoteljuanmaria.com>',
-      to: [adminEmail, 'simoncalderonl2010@gmail.com'],
+      to: [adminEmail, 'simoncalderonl2010@gmail.com', 'juanjo03212242004@gmail.com'],
       subject: `🔔 Nueva pre-reserva: ${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`,
       react: AdminBookingTemplate({
         customerName: `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}`,
