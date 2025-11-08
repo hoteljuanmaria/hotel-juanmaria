@@ -20,6 +20,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -123,7 +124,11 @@ export const Pages: CollectionConfig<'pages'> = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidatePage],
+    afterChange: [
+      revalidatePage,
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],
   },

@@ -26,6 +26,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -220,7 +221,11 @@ export const Posts: CollectionConfig<'posts'> = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidatePost],
+    afterChange: [
+      revalidatePost,
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
   },

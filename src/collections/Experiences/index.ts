@@ -19,6 +19,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { revalidateExperiences } from '@/hooks/revalidateExperiences'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const Experiences: CollectionConfig = {
   slug: 'experiences',
@@ -396,6 +397,10 @@ export const Experiences: CollectionConfig = {
     maxPerDoc: 50,
   },
   hooks: {
-    afterChange: [revalidateExperiences],
+    afterChange: [
+      revalidateExperiences,
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
   },
 }

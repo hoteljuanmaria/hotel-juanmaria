@@ -11,6 +11,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { revalidateTestimonials } from './hooks/revalidateTestimonials'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
@@ -417,6 +418,10 @@ export const Testimonials: CollectionConfig = {
     maxPerDoc: 50,
   },
   hooks: {
-    afterChange: [revalidateTestimonials],
+    afterChange: [
+      revalidateTestimonials,
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
   },
 }

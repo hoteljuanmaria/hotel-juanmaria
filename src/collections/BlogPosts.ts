@@ -19,6 +19,7 @@ import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { slugField } from '@/fields/slug'
+import { translationHooks } from '@/hooks/translation-hook'
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -236,7 +237,11 @@ export const BlogPosts: CollectionConfig = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidateBlog],
+    afterChange: [
+      revalidateBlog,
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
     afterDelete: [revalidateBlogDelete],
   },
   versions: {

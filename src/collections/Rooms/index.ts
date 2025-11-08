@@ -12,6 +12,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const Rooms: CollectionConfig = {
   slug: 'rooms',
@@ -67,7 +68,11 @@ export const Rooms: CollectionConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateRooms],
+    afterChange: [
+      revalidateRooms,
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
   },
   fields: [
     {
