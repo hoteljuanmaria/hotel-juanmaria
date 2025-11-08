@@ -582,7 +582,7 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
                     <div className='flex items-center gap-2 sm:gap-3 text-gray-600 mb-1 sm:mb-2'>
                       <MapPin className='w-4 h-4 sm:w-5 sm:h-5' />
                       <span className='font-sans text-xs sm:text-sm'>
-                        Hotel Juan María, Cali
+                        Hotel Juan María, Tuluá
                       </span>
                     </div>
                     <div className='flex items-center gap-2 sm:gap-3 text-gray-600'>

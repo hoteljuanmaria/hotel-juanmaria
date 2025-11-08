@@ -52,7 +52,7 @@ export const seedFAQsPageData = {
           featured: true,
         },
         {
-          question: '¿Qué servicios incluye el spa?',
+          question: '¿Qué servicios incluye?',
           answer:
             'Nuestro spa ofrece masajes, tratamientos faciales, sauna, baño turco y paquetes de relajación. Consulte horarios y precios en recepción.',
           questionIcon: 'heart',
