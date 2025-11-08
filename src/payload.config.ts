@@ -3,35 +3,38 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
+import { buildConfig, type PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
-
-import { Categories } from './collections/Categories'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Experiences } from './collections/Experiences'
-import { BlogPosts } from './collections/BlogPosts'
-import { Posts } from './collections/Posts'
-import { Rooms } from './collections/Rooms'
-import { Testimonials } from './collections/Testimonials'
-import { Users } from './collections/Users'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
-import { ExperiencesPage } from './globals/ExperiencesPage'
-import { BlogPage } from './globals/BlogPage'
-import { CurrentMenu } from './globals/CurrentMenu'
-import { AboutPage } from './globals/AboutPage'
-import { HomePage } from './globals/HomePage'
-import { PrivacyPolicyPage } from './globals/PrivacyPolicyPage'
-import { FAQsPage } from './globals/FAQsPage'
-
+import { resendAdapter } from '@payloadcms/email-resend'
+import { metaConfig } from './metaConfig'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
-import { resendAdapter } from '@payloadcms/email-resend'
-import { metaConfig } from './metaConfig'
 import { en } from '@payloadcms/translations/languages/en'
 import { es } from '@payloadcms/translations/languages/es'
+import { translationTask } from '@/lib/tasks/translation-task'
+
+// Collections
+import { Users } from './collections/Users'
+import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Rooms } from './collections/Rooms'
+import { Testimonials } from './collections/Testimonials'
+import { Experiences } from './collections/Experiences'
+import { Categories } from './collections/Categories'
+import { BlogPosts } from './collections/BlogPosts'
+import { Posts } from './collections/Posts'
+
+// Globals
+import { Header } from './Header/config'
+import { Footer } from './Footer/config'
+import { HomePage } from './globals/HomePage'
+import { AboutPage } from './globals/AboutPage'
+import { BlogPage } from './globals/BlogPage'
+import { ExperiencesPage } from './globals/ExperiencesPage'
+import { PrivacyPolicyPage } from './globals/PrivacyPolicyPage'
+import { CurrentMenu } from './globals/CurrentMenu'
+import { FAQsPage } from './globals/FAQsPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -45,34 +48,19 @@ export default buildConfig({
         Icon: './components/Graphics/Icon',
       },
     },
+    user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
     },
-    user: Users.slug,
     livePreview: {
       breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
     },
   },
-  // This config helps us configure global or default features that the other editors can inherit
+
   editor: defaultLexical,
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
@@ -88,14 +76,22 @@ export default buildConfig({
     Experiences,
     Users,
   ],
+  globals: [
+    Header,
+    Footer,
+    HomePage,
+    ExperiencesPage,
+    BlogPage,
+    CurrentMenu,
+    AboutPage,
+    PrivacyPolicyPage,
+    FAQsPage,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, HomePage, ExperiencesPage, BlogPage, CurrentMenu, AboutPage, PrivacyPolicyPage, FAQsPage],
+
   plugins: [...plugins],
-  secret: process.env.PAYLOAD_SECRET,
   sharp,
-  typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
-  },
+
   email: resendAdapter({
     defaultFromAddress: 'info@info.hoteljuanmaria.com',
     defaultFromName: 'Hotel Juan Maria',
@@ -106,7 +102,6 @@ export default buildConfig({
     fallbackLanguage: 'es',
     supportedLanguages: { es, en },
   },
-
   localization: {
     locales: ['en', 'es'],
     defaultLocale: 'es',
@@ -115,16 +110,16 @@ export default buildConfig({
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
-        // Allow logged in users to execute this endpoint (default)
         if (req.user) return true
-
-        // If there is no logged in user, then check
-        // for the Vercel Cron secret to be present as an
-        // Authorization header:
         const authHeader = req.headers.get('authorization')
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },
     },
-    tasks: [],
+    tasks: [translationTask],
+  },
+
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 })
