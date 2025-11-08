@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { translationHooks } from '@/hooks/translation-hook'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -22,10 +23,17 @@ export const Media: CollectionConfig = {
     read: anyone,
     update: authenticated,
   },
+  hooks: {
+    afterChange: [
+      // Use the optimized reusable translation hook
+      translationHooks.esToEn,
+    ],
+  },
   fields: [
     {
       name: 'alt',
       type: 'text',
+      localized: true,
       //required: true,
     },
     {
