@@ -10,6 +10,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { revalidateFAQsPage } from './hooks/revalidateFAQsPage'
+import { translationHooks } from '@/hooks/translation-hook'
 
 // Global config to manage /faqs page content and SEO
 export const FAQsPage: GlobalConfig = {
@@ -332,6 +333,6 @@ export const FAQsPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateFAQsPage],
+    afterChange: [revalidateFAQsPage, translationHooks.global.esToEn],
   },
 }

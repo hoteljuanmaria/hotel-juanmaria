@@ -10,6 +10,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { revalidatePrivacyPolicyPage } from './hooks/revalidatePrivacyPolicyPage'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const PrivacyPolicyPage: GlobalConfig = {
   slug: 'privacy-policy-page',
@@ -320,6 +321,6 @@ export const PrivacyPolicyPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidatePrivacyPolicyPage],
+    afterChange: [revalidatePrivacyPolicyPage, translationHooks.global.esToEn],
   },
 }

@@ -2,6 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { link } from '@/fields/link'
 import { revalidateFooter } from './hooks/revalidateFooter'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
@@ -328,6 +329,6 @@ export const Footer: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [revalidateFooter],
+    afterChange: [revalidateFooter, translationHooks.global.esToEn],
   },
 }

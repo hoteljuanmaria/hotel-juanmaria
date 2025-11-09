@@ -17,6 +17,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { translationHooks } from '@/hooks/translation-hook'
 
 export const BlogPage: GlobalConfig = {
   slug: 'blogPage',
@@ -176,4 +177,7 @@ export const BlogPage: GlobalConfig = {
       ],
     },
   ],
+  hooks: {
+    afterChange: [translationHooks.global.esToEn],
+  },
 }

@@ -15,6 +15,7 @@ import {
   InlineToolbarFeature,
 } from '@payloadcms/richtext-lexical'
 import { revalidateAboutPage } from './hooks/revalidateAboutPage'
+import { translationHooks } from '@/hooks/translation-hook'
 
 // Global config to manage /about page content and SEO
 export const AboutPage: GlobalConfig = {
@@ -510,6 +511,6 @@ export const AboutPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateAboutPage],
+    afterChange: [revalidateAboutPage, translationHooks.global.esToEn],
   },
 }

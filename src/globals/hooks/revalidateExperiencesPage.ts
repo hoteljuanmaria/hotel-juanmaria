@@ -4,6 +4,12 @@ export const revalidateExperiencesPage: GlobalAfterChangeHook = ({
   doc,
   req: { payload, context },
 }) => {
+  // Skip revalidation if this update comes from a translation job
+  if (context?.skipRevalidation) {
+    console.log('[Revalidate] Skipping revalidation (translation job)')
+    return doc
+  }
+
   if (!context?.disableRevalidate) {
     try {
       if (typeof window === 'undefined') {
@@ -17,7 +23,7 @@ export const revalidateExperiencesPage: GlobalAfterChangeHook = ({
           })
       }
     } catch (error) {
-      payload.logger.warn('ExperiencesPage revalidation failed:', error)
+      payload.logger.warn({ msg: 'Revalidation failed', error: String(error) })
     }
   }
 

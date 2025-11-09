@@ -15,6 +15,7 @@ import {
   FixedToolbarFeature,
   InlineToolbarFeature,
 } from '@payloadcms/richtext-lexical'
+import { translationHooks } from '@/hooks/translation-hook'
 
 // Global config to manage /experiences static content and SEO
 export const ExperiencesPage: GlobalConfig = {
@@ -252,6 +253,6 @@ export const ExperiencesPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateExperiencesPage],
+    afterChange: [revalidateExperiencesPage, translationHooks.global.esToEn],
   },
 }
