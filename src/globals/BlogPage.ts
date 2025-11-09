@@ -178,6 +178,6 @@ export const BlogPage: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [translationHooks.global.esToEn],
+    afterChange: [translationHooks.global.esToEnForce],
   },
 }

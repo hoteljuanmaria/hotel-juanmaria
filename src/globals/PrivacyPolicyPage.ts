@@ -321,6 +321,6 @@ export const PrivacyPolicyPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidatePrivacyPolicyPage, translationHooks.global.esToEn],
+    afterChange: [revalidatePrivacyPolicyPage, translationHooks.global.esToEnForce],
   },
 }

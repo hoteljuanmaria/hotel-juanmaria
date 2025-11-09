@@ -511,6 +511,6 @@ export const AboutPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateAboutPage, translationHooks.global.esToEn],
+    afterChange: [revalidateAboutPage, translationHooks.global.esToEnForce],
   },
 }

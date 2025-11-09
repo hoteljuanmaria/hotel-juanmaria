@@ -41,6 +41,7 @@ const createCollectionTranslationHook = (
           docId: doc.id,
           locale: config.sourceLocale,
           targetLocale: config.targetLocale,
+          forceRetranslate: config.forceRetranslate || false,
         },
       })
 
@@ -91,6 +92,7 @@ const createGlobalTranslationHook = (
           global: global.slug,
           locale: config.sourceLocale,
           targetLocale: config.targetLocale,
+          forceRetranslate: config.forceRetranslate || false,
         },
       })
 

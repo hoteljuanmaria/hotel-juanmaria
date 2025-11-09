@@ -400,7 +400,7 @@ export const Experiences: CollectionConfig = {
     afterChange: [
       revalidateExperiences,
       // Use the optimized reusable translation hook
-      translationHooks.collection.esToEn,
+      translationHooks.collection.esToEnForce,
     ],
   },
 }
