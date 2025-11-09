@@ -6,12 +6,28 @@ interface TranslationConfig {
   forceRetranslate?: boolean // Si es true, traduce aunque ya exista contenido
 }
 
+// Helper para manejar errores sin romper el flujo
+const safeExecute = async (fn: () => Promise<any>, context: string) => {
+  try {
+    await fn()
+  } catch (err) {
+    console.error(`[TranslationHook] Error in ${context}:`, err)
+  }
+}
 // Hook para Collections
 const createCollectionTranslationHook = (
   config: TranslationConfig
 ): CollectionAfterChangeHook => {
-  return async ({ doc, req, collection, operation }) => {
-    // Skip if this update comes from a translation job (to prevent loops)
+  return async (args) => {
+    const { doc, req, collection, operation } = args
+
+    // Seguridad: si faltan datos base, salimos
+    if (!doc || !req || !collection) {
+      console.warn('[TranslationHook] Missing context (doc, req o collection)')
+      return doc
+    }
+
+    // Evitar loops si la tarea proviene de una traducción
     if (req.context?.skipTranslation) {
       return doc
     }
@@ -21,19 +37,29 @@ const createCollectionTranslationHook = (
       return doc
     }
 
-    // Ignorar autosave
+    // Ignorar autosave (cuando Payload guarda versiones temporales)
     if (req.query?.autosave === 'true' || req.query?.autosave === true) {
-      console.log(`[TranslationHook] Skipping autosave for ${collection.slug}:${doc.id}`)
+      console.log(`[TranslationHook] ⏭️ Skipping autosave for ${collection.slug}:${doc.id}`)
       return doc
     }
 
-    // Solo traducir si el documento está en el locale fuente
+    // Determinar el locale actual
     const currentLocale = req.locale || 'es'
     if (currentLocale !== config.sourceLocale) {
+      console.log(
+        `[TranslationHook] 🌐 Skipping translation for ${collection.slug}:${doc.id} (locale mismatch: ${currentLocale} ≠ ${config.sourceLocale})`
+      )
       return doc
     }
 
-    try {
+    // Verificar ID antes de encolar tarea
+    if (!doc.id) {
+      console.warn(`[TranslationHook] ⚠️ Missing doc.id for ${collection.slug}, skipping`)
+      return doc
+    }
+
+    // Ejecutar de forma segura
+    await safeExecute(async () => {
       await req.payload.jobs.queue({
         task: 'translate-content',
         input: {
@@ -44,16 +70,10 @@ const createCollectionTranslationHook = (
           forceRetranslate: config.forceRetranslate || false,
         },
       })
-
       console.log(
-        `[TranslationHook] Queued translation job for ${collection.slug}:${doc.id} from ${config.sourceLocale} to ${config.targetLocale}`
+        `[TranslationHook] ✅ Queued translation job for ${collection.slug}:${doc.id} (${config.sourceLocale} → ${config.targetLocale})`
       )
-    } catch (error) {
-      console.error(
-        `[TranslationHook] Failed to queue translation job for ${collection.slug}:${doc.id}:`,
-        error
-      )
-    }
+    }, `${collection.slug}:${doc.id}`)
 
     return doc
   }
@@ -64,28 +84,29 @@ const createGlobalTranslationHook = (
   config: TranslationConfig
 ): GlobalAfterChangeHook => {
   return async ({ doc, req, global }) => {
-    console.log(`[TranslationHook] Global afterChange fired for ${global.slug}`)
-    console.log(`[TranslationHook] Query params:`, req.query)
-    
-    // Ignorar autosave
-    if (req.query?.autosave === 'true' || req.query?.autosave === true) {
-      console.log(`[TranslationHook] Skipping autosave for global ${global.slug}`)
-      return doc
-    }
-    
-    // Solo traducir si el documento está en el locale fuente
-    const currentLocale = req.locale || 'es'
-    console.log(`[TranslationHook] Current locale: ${currentLocale}`)
-    console.log(`[TranslationHook] Source locale: ${config.sourceLocale}`)
-    
-    if (currentLocale !== config.sourceLocale) {
-      console.log(`[TranslationHook] Skipping translation: locale mismatch`)
+    if (!doc || !req || !global) {
+      console.warn('[TranslationHook] Missing context in global hook')
       return doc
     }
 
-    try {
-      console.log(`[TranslationHook] Queueing translation job for global ${global.slug}...`)
-      
+    console.log(`[TranslationHook] 🌍 Global afterChange fired for ${global.slug}`)
+    console.log(`[TranslationHook] Query params:`, req.query)
+
+    // Ignorar autosave
+    if (req.query?.autosave === 'true' || req.query?.autosave === true) {
+      console.log(`[TranslationHook] ⏭️ Skipping autosave for global ${global.slug}`)
+      return doc
+    }
+
+    const currentLocale = req.locale || 'es'
+    if (currentLocale !== config.sourceLocale) {
+      console.log(
+        `[TranslationHook] 🌐 Skipping translation for global ${global.slug} (locale mismatch: ${currentLocale} ≠ ${config.sourceLocale})`
+      )
+      return doc
+    }
+
+    await safeExecute(async () => {
       await req.payload.jobs.queue({
         task: 'translate-content',
         input: {
@@ -95,16 +116,10 @@ const createGlobalTranslationHook = (
           forceRetranslate: config.forceRetranslate || false,
         },
       })
-
       console.log(
-        `[TranslationHook] ✓ Queued translation job for global ${global.slug} from ${config.sourceLocale} to ${config.targetLocale}`
+        `[TranslationHook] ✅ Queued translation job for global ${global.slug} (${config.sourceLocale} → ${config.targetLocale})`
       )
-    } catch (error) {
-      console.error(
-        `[TranslationHook] ✗ Failed to queue translation job for global ${global.slug}:`,
-        error
-      )
-    }
+    }, `global:${global.slug}`)
 
     return doc
   }
@@ -129,7 +144,7 @@ export const translationHooks = {
       forceRetranslate: true,
     }),
   },
-  
+
   // Para Globals
   global: {
     esToEn: createGlobalTranslationHook({
@@ -149,5 +164,4 @@ export const translationHooks = {
   },
 }
 
-// Exports de las funciones factory por si necesitas configuraciones custom
 export { createCollectionTranslationHook, createGlobalTranslationHook }

@@ -261,23 +261,29 @@ export const Rooms: CollectionConfig = {
                     },
                   },
                 },
-                {
-                  name: 'bedType',
-                  type: 'select',
-                  required: true,
-                  options: [
-                    { label: { en: 'Single', es: 'Individual' }, value: 'single' },
-                    { label: { en: 'Double', es: 'Doble' }, value: 'double' },
-                    { label: { en: 'Queen', es: 'Queen' }, value: 'queen' },
-                    { label: { en: 'King', es: 'King' }, value: 'king' },
-                    { label: { en: 'Twin', es: 'Dos Camas' }, value: 'twin' },
-                    { label: { en: 'Bunk Bed', es: 'Litera' }, value: 'bunk' },
+               {
+                name: 'bedType',
+                type: 'select',
+                options: [
+                  { label: 'Single', value: 'single' },
+                  { label: 'Double', value: 'double' },
+                  { label: 'Queen', value: 'queen' },
+                  { label: 'King', value: 'king' },
+                  { label: 'Twin', value: 'twin' },
+                  { label: 'Bunk', value: 'bunk' },
+                ],
+                hooks: {
+                  beforeValidate: [
+                    ({ value }) => {
+                      // Convertir a minúsculas si existe un valor
+                      if (value && typeof value === 'string') {
+                        return value.toLowerCase();
+                      }
+                      return value;
+                    },
                   ],
-                  label: {
-                    en: 'Bed Type',
-                    es: 'Tipo de Cama',
-                  },
                 },
+              }
               ],
             },
             // Amenities
