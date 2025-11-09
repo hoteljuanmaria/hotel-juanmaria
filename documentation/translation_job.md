@@ -69,7 +69,11 @@ import { translationHooks } from '../lib/hooks/translation-hook'
 hooks: {
   afterChange: [
     // Opción 1: Hook predefinido ES → EN (Recomendado)
-    translationHooks.esToEn,
+    translationHooks.collection.esToEn,
+
+    O SI NO 
+
+    translationHooks.global.esToEn,
     
     // Opción 2: Hook personalizado
     translationHooks.custom({

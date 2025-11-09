@@ -3515,10 +3515,12 @@ export interface FaqsPageSelect<T extends boolean = true> {
  */
 export interface TaskTranslateContent {
   input: {
-    collection: string;
-    docId: string;
+    collection?: string | null;
+    global?: string | null;
+    docId?: string | null;
     locale?: string | null;
     targetLocale?: string | null;
+    forceRetranslate?: boolean | null;
   };
   output?: unknown;
 }

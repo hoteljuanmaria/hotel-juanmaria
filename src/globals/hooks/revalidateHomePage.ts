@@ -1,13 +1,18 @@
 import type { GlobalAfterChangeHook } from 'payload'
+import { revalidatePath } from 'next/cache'
 
-import { revalidatePath, revalidateTag } from 'next/cache'
+export const revalidateHomePage: GlobalAfterChangeHook = async ({ req }) => {
 
-export const revalidateHomePage: GlobalAfterChangeHook = ({ doc, req: { payload } }) => {
-  payload.logger.info(`Revalidating home page`)
+  if (req.context?.skipRevalidation) {
+    console.log('[Revalidate] Skipping revalidation (translation job)')
+    return
+  }
 
-  revalidatePath('/', 'page')
-  revalidateTag('homepage')
-  revalidateTag('homepage-global')
-
-  return doc
+  console.log('[Revalidate] Revalidating home page')
+  
+  try {
+    revalidatePath('/', 'layout')
+  } catch (error) {
+    console.error('[Revalidate] Failed to revalidate:', error)
+  }
 }

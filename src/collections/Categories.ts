@@ -35,7 +35,7 @@ export const Categories: CollectionConfig = {
   hooks: {
     afterChange: [
       // Use the optimized reusable translation hook
-      translationHooks.esToEn,
+      translationHooks.collection.esToEn,
     ],
   },
 }

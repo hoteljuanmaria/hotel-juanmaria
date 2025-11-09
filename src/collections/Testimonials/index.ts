@@ -421,7 +421,7 @@ export const Testimonials: CollectionConfig = {
     afterChange: [
       revalidateTestimonials,
       // Use the optimized reusable translation hook
-      translationHooks.esToEn,
+      translationHooks.collection.esToEn,
     ],
   },
 }

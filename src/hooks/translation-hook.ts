@@ -1,99 +1,151 @@
-import type { CollectionAfterChangeHook } from 'payload'
-import { translationConfig, type SupportedLocale } from '../config/translation-config'
+import type { CollectionAfterChangeHook, GlobalAfterChangeHook } from 'payload'
 
-export interface TranslationHookOptions {
-  sourceLocale?: SupportedLocale
-  targetLocale?: SupportedLocale
-  enabled?: boolean
-  onlyOnCreate?: boolean
+interface TranslationConfig {
+  sourceLocale: string
+  targetLocale: string
+  forceRetranslate?: boolean // Si es true, traduce aunque ya exista contenido
 }
 
-/**
- * Creates a reusable afterChange hook for automatic translation
- * 
- * @param options Configuration options for the translation hook
- * @returns Payload afterChange hook function
- */
-export function createTranslationHook(options: TranslationHookOptions = {}): CollectionAfterChangeHook {
-  const {
-    sourceLocale = translationConfig.defaultSourceLocale as SupportedLocale,
-    targetLocale = translationConfig.defaultTargetLocale as SupportedLocale,
-    enabled = true,
-    onlyOnCreate = false
-  } = options
+// Hook para Collections
+const createCollectionTranslationHook = (
+  config: TranslationConfig
+): CollectionAfterChangeHook => {
+  return async ({ doc, req, collection, operation }) => {
+    // Skip if this update comes from a translation job (to prevent loops)
+    if (req.context?.skipTranslation) {
+      return doc
+    }
 
-  return async ({ doc, req, operation, collection }) => {
-    // Skip if translation is disabled
-    if (!enabled) return
+    // Solo traducir en operaciones de create y update
+    if (operation !== 'create' && operation !== 'update') {
+      return doc
+    }
 
-    // Skip if operation doesn't match criteria
-    if (onlyOnCreate && operation !== 'create') return
-    if (!onlyOnCreate && operation !== 'create' && operation !== 'update') return
+    // Ignorar autosave
+    if (req.query?.autosave === 'true' || req.query?.autosave === true) {
+      console.log(`[TranslationHook] Skipping autosave for ${collection.slug}:${doc.id}`)
+      return doc
+    }
 
-    // Skip if not in source locale
-    const currentLocale = req.locale || sourceLocale
-    if (currentLocale !== sourceLocale) return
-
-    // Get collection slug dynamically from collection
-    // Handle case where collection might be undefined
-    const collectionSlug = collection?.slug
-    if (!collectionSlug) {
-      console.warn('[TranslationHook] Collection or collection slug is undefined, skipping translation')
-      return
+    // Solo traducir si el documento está en el locale fuente
+    const currentLocale = req.locale || 'es'
+    if (currentLocale !== config.sourceLocale) {
+      return doc
     }
 
     try {
       await req.payload.jobs.queue({
         task: 'translate-content',
         input: {
-          collection: collectionSlug,
+          collection: collection.slug,
           docId: doc.id,
-          locale: sourceLocale,
-          targetLocale: targetLocale,
+          locale: config.sourceLocale,
+          targetLocale: config.targetLocale,
         },
       })
-      
-      console.log(`[TranslationHook] Queued translation job for ${collectionSlug}:${doc.id} (${sourceLocale} → ${targetLocale})`)
+
+      console.log(
+        `[TranslationHook] Queued translation job for ${collection.slug}:${doc.id} from ${config.sourceLocale} to ${config.targetLocale}`
+      )
     } catch (error) {
-      console.error(`[TranslationHook] Failed to queue translation job for ${collectionSlug}:${doc.id}:`, error)
-      
-      // Don't throw error to prevent document save from failing
-      // Translation will be skipped but document will still be saved
+      console.error(
+        `[TranslationHook] Failed to queue translation job for ${collection.slug}:${doc.id}:`,
+        error
+      )
     }
+
+    return doc
   }
 }
 
-/**
- * Pre-configured hooks for common translation scenarios
- */
-export const translationHooks = {
-  /**
-   * Standard Spanish to English translation
-   */
-  esToEn: createTranslationHook({
-    sourceLocale: 'es',
-    targetLocale: 'en'
-  }),
+// Hook para Globals
+const createGlobalTranslationHook = (
+  config: TranslationConfig
+): GlobalAfterChangeHook => {
+  return async ({ doc, req, global }) => {
+    console.log(`[TranslationHook] Global afterChange fired for ${global.slug}`)
+    console.log(`[TranslationHook] Query params:`, req.query)
+    
+    // Ignorar autosave
+    if (req.query?.autosave === 'true' || req.query?.autosave === true) {
+      console.log(`[TranslationHook] Skipping autosave for global ${global.slug}`)
+      return doc
+    }
+    
+    // Solo traducir si el documento está en el locale fuente
+    const currentLocale = req.locale || 'es'
+    console.log(`[TranslationHook] Current locale: ${currentLocale}`)
+    console.log(`[TranslationHook] Source locale: ${config.sourceLocale}`)
+    
+    if (currentLocale !== config.sourceLocale) {
+      console.log(`[TranslationHook] Skipping translation: locale mismatch`)
+      return doc
+    }
 
-  /**
-   * Spanish to English, only on document creation
-   */
-  esToEnOnCreate: createTranslationHook({
-    sourceLocale: 'es',
-    targetLocale: 'en',
-    onlyOnCreate: true
-  }),
+    try {
+      console.log(`[TranslationHook] Queueing translation job for global ${global.slug}...`)
+      
+      await req.payload.jobs.queue({
+        task: 'translate-content',
+        input: {
+          global: global.slug,
+          locale: config.sourceLocale,
+          targetLocale: config.targetLocale,
+        },
+      })
 
-  /**
-   * English to Spanish translation
-   */
-  enToEs: createTranslationHook({
-    sourceLocale: 'en',
-    targetLocale: 'es'
-  }),
+      console.log(
+        `[TranslationHook] ✓ Queued translation job for global ${global.slug} from ${config.sourceLocale} to ${config.targetLocale}`
+      )
+    } catch (error) {
+      console.error(
+        `[TranslationHook] ✗ Failed to queue translation job for global ${global.slug}:`,
+        error
+      )
+    }
 
-  /**
-   * Create custom translation hook with specific options
-   */
-  custom: createTranslationHook
+    return doc
+  }
 }
+
+// Exports convenientes para los casos más comunes
+export const translationHooks = {
+  // Para Collections
+  collection: {
+    esToEn: createCollectionTranslationHook({
+      sourceLocale: 'es',
+      targetLocale: 'en',
+    }),
+    enToEs: createCollectionTranslationHook({
+      sourceLocale: 'en',
+      targetLocale: 'es',
+    }),
+    // Con force retranslate
+    esToEnForce: createCollectionTranslationHook({
+      sourceLocale: 'es',
+      targetLocale: 'en',
+      forceRetranslate: true,
+    }),
+  },
+  
+  // Para Globals
+  global: {
+    esToEn: createGlobalTranslationHook({
+      sourceLocale: 'es',
+      targetLocale: 'en',
+    }),
+    enToEs: createGlobalTranslationHook({
+      sourceLocale: 'en',
+      targetLocale: 'es',
+    }),
+    // Con force retranslate
+    esToEnForce: createGlobalTranslationHook({
+      sourceLocale: 'es',
+      targetLocale: 'en',
+      forceRetranslate: true,
+    }),
+  },
+}
+
+// Exports de las funciones factory por si necesitas configuraciones custom
+export { createCollectionTranslationHook, createGlobalTranslationHook }

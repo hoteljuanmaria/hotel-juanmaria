@@ -10,6 +10,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { revalidateHomePage } from './hooks/revalidateHomePage'
+import { translationHooks } from '@/hooks/translation-hook'
 
 // Global config to manage homepage content and SEO
 export const HomePage: GlobalConfig = {
@@ -247,6 +248,6 @@ export const HomePage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateHomePage],
+    afterChange: [revalidateHomePage, translationHooks.global.esToEn],
   },
 }
