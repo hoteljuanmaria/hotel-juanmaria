@@ -39,8 +39,16 @@ const getIconForSection = (title: string, customIcon?: string) => {
   return <Shield className='w-6 h-6' />
 }
 
-const PrivacyPolicyPage = async () => {
+type Locale = 'es' | 'en'
+
+const PrivacyPolicyPage = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) => {
   const { isEnabled: draft } = await draftMode()
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
 
   const payload = await getPayload({ config: configPromise })
 
@@ -49,6 +57,7 @@ const PrivacyPolicyPage = async () => {
       slug: 'privacy-policy-page',
       depth: 2,
       draft,
+      locale,
     })
 
     if (!privacyPageData) {

@@ -1,6 +1,12 @@
 import ContactForm from '@/components/ContactForm'
 
-const ContactPage = () => {
+type Locale = 'es' | 'en'
+
+const ContactPage = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) => {
   return (
     <div className='py-8'>
       <ContactForm />

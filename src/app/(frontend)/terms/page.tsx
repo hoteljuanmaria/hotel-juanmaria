@@ -12,6 +12,7 @@ import {
   Edit,
 } from "lucide-react";
 import { getTermsAndConditions } from "@/lib/data";
+import { useSearchParams } from "next/navigation";
 
 interface TermsSection {
   title: string;
@@ -27,7 +28,11 @@ interface TermsData {
   };
 }
 
+type Locale = 'es' | 'en'
+
 const TermsConditionsPage: React.FC = () => {
+  const searchParams = useSearchParams()
+  const locale = (searchParams.get('locale') as Locale) || 'es'
   const [termsData, setTermsData] = useState<TermsData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 

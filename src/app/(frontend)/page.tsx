@@ -9,8 +9,16 @@ import RoomCarousel from '@/components/RoomCarousel'
 import TestimonialsShowcase from '@/components/Testimonials'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
-export async function generateMetadata(): Promise<Metadata> {
+type Locale = 'es' | 'en'
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}): Promise<Metadata> {
   const { isEnabled: draft } = await draftMode()
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
 
   let homePageData
   try {
@@ -18,6 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     homePageData = await payload.findGlobal({
       slug: 'home-page',
       draft,
+      locale,
     })
   } catch (error) {
     console.error('Error fetching home page data for metadata:', error)
@@ -43,13 +52,14 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const queryHomePage = cache(async ({ draft }: { draft: boolean }) => {
+const queryHomePage = cache(async ({ draft, locale }: { draft: boolean; locale: Locale }) => {
   const payload = await getPayload({ config: configPromise })
 
   try {
     const result = await payload.findGlobal({
       slug: 'home-page',
       draft,
+      locale,
     })
 
     return result || null
@@ -59,9 +69,15 @@ const queryHomePage = cache(async ({ draft }: { draft: boolean }) => {
   }
 })
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) {
   const { isEnabled: draft } = await draftMode()
-  const homePageData = await queryHomePage({ draft })
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
+  const homePageData = await queryHomePage({ draft, locale })
 
   return (
     <>

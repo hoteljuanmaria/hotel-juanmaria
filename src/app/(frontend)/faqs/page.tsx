@@ -8,10 +8,18 @@ import FAQsPageClient from '@/components/FAQsPageClient'
 
 export const revalidate = 600 // Revalidate every 10 minutes
 
+type Locale = 'es' | 'en'
+
 // Generate metadata for the FAQs page
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}): Promise<Metadata> {
   const payload = await getPayload({ config: configPromise })
   const { isEnabled: draft } = await draftMode()
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
 
   let faqsPage: FaqsPage
 
@@ -19,6 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
     faqsPage = await payload.findGlobal({
       slug: 'faqs-page',
       draft,
+      locale,
     })
   } catch (error) {
     console.error('Error fetching FAQs page for metadata:', error)
@@ -45,9 +54,15 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function FAQsPage() {
+export default async function FAQsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) {
   const payload = await getPayload({ config: configPromise })
   const { isEnabled: draft } = await draftMode()
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
 
   let faqsPage: FaqsPage
 
@@ -55,6 +70,7 @@ export default async function FAQsPage() {
     faqsPage = await payload.findGlobal({
       slug: 'faqs-page',
       draft,
+      locale,
       depth: 2,
     })
   } catch (error) {

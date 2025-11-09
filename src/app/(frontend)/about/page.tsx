@@ -12,8 +12,16 @@ import { PayloadRedirects } from '@/components/PayloadRedirects'
 // Enable ISR with 10-minute revalidation
 export const revalidate = 600
 
-export async function generateMetadata(): Promise<Metadata> {
+type Locale = 'es' | 'en'
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}): Promise<Metadata> {
   const { isEnabled: draft } = await draftMode()
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
 
   let aboutPageData
   try {
@@ -21,6 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
     aboutPageData = await payload.findGlobal({
       slug: 'about-page',
       draft,
+      locale,
     })
   } catch (error) {
     console.error('Error fetching about page data for metadata:', error)
@@ -29,13 +38,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return generateMeta({ doc: aboutPageData as any })
 }
 
-const queryAboutPage = cache(async ({ draft }: { draft: boolean }) => {
+const queryAboutPage = cache(async ({ draft, locale }: { draft: boolean; locale: Locale }) => {
   const payload = await getPayload({ config: configPromise })
 
   try {
     const result = await payload.findGlobal({
       slug: 'about-page',
       draft,
+      locale,
       select: {
         heroTitle: true,
         heroSubtitle: true,
@@ -76,9 +86,15 @@ const queryAboutPage = cache(async ({ draft }: { draft: boolean }) => {
   }
 })
 
-export default async function About() {
+export default async function About({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) {
   const { isEnabled: draft } = await draftMode()
-  const aboutPageData = await queryAboutPage({ draft })
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
+  const aboutPageData = await queryAboutPage({ draft, locale })
   const url = '/about'
 
   if (!aboutPageData) {

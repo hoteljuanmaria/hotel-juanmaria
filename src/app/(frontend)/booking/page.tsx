@@ -1,7 +1,13 @@
 import { Suspense } from 'react'
-import BookingPage from '@/components/BookingPage'
+import BookingPageComponent from '@/components/BookingPage'
 
-function BookingPageWrapper() {
+type Locale = 'es' | 'en'
+
+export default async function BookingPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) {
   return (
     <Suspense
       fallback={
@@ -10,9 +16,7 @@ function BookingPageWrapper() {
         </div>
       }
     >
-      <BookingPage />
+      <BookingPageComponent />
     </Suspense>
   )
 }
-
-export default BookingPageWrapper
