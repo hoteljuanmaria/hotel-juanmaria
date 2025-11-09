@@ -9,14 +9,15 @@ import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
 
 type Args = {
-  searchParams: Promise<{
-    q: string
+  searchParams?: Promise<{
+    q?: string
   }>
 }
 export default async function Page({
-  searchParams: searchParamsPromise,
+  searchParams,
 }: Args) {
-  const { q: query } = await searchParamsPromise
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const query = resolvedSearchParams?.q
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
