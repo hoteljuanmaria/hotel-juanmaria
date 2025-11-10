@@ -59,10 +59,15 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
       days.push(null)
     }
 
-    // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      days.push(new Date(year, month, day))
+      // Creamos la fecha en hora local y luego la ajustamos a UTC−5
+      const localDate = new Date(year, month, day)
+      const colombiaOffset = -5 * 60 // minutos UTC−5
+      const diff = (colombiaOffset - localDate.getTimezoneOffset()) * 60 * 1000
+      const colombiaDate = new Date(localDate.getTime() + diff)
+      days.push(colombiaDate)
     }
+
 
     return days
   }
