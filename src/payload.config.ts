@@ -3,90 +3,123 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
+import { buildConfig, type PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
-
-import { Categories } from './collections/Categories'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
-import { Users } from './collections/Users'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { metaConfig } from './metaConfig'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { en } from '@payloadcms/translations/languages/en'
+import { es } from '@payloadcms/translations/languages/es'
+import { translationTask } from '@/lib/tasks/translation-task'
+
+// Collections
+import { Users } from './collections/Users'
+import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Rooms } from './collections/Rooms'
+import { Testimonials } from './collections/Testimonials'
+import { Experiences } from './collections/Experiences'
+import { Categories } from './collections/Categories'
+import { BlogPosts } from './collections/BlogPosts'
+import { Posts } from './collections/Posts'
+
+// Globals
+import { Header } from './Header/config'
+import { Footer } from './Footer/config'
+import { HomePage } from './globals/HomePage'
+import { AboutPage } from './globals/AboutPage'
+import { BlogPage } from './globals/BlogPage'
+import { ExperiencesPage } from './globals/ExperiencesPage'
+import { PrivacyPolicyPage } from './globals/PrivacyPolicyPage'
+import { CurrentMenu } from './globals/CurrentMenu'
+import { FAQsPage } from './globals/FAQsPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    meta: metaConfig,
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeDashboard: ['@/components/BeforeDashboard'],
+      graphics: {
+        Logo: './components/Graphics/Logo',
+        Icon: './components/Graphics/Icon',
+      },
     },
+    user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
     },
-    user: Users.slug,
     livePreview: {
       breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
     },
   },
-  // This config helps us configure global or default features that the other editors can inherit
+
   editor: defaultLexical,
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
-  cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
-  plugins: [
-    ...plugins,
-    // storage-adapter-placeholder
+  collections: [
+    Pages,
+    Posts,
+    BlogPosts,
+    Media,
+    Categories,
+    Rooms,
+    Testimonials,
+    Experiences,
+    Users,
   ],
-  secret: process.env.PAYLOAD_SECRET,
+  globals: [
+    Header,
+    Footer,
+    HomePage,
+    ExperiencesPage,
+    BlogPage,
+    CurrentMenu,
+    AboutPage,
+    PrivacyPolicyPage,
+    FAQsPage,
+  ],
+  cors: [getServerSideURL()].filter(Boolean),
+
+  plugins: [...plugins],
   sharp,
-  typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+
+  email: resendAdapter({
+    defaultFromAddress: 'info@info.hoteljuanmaria.com',
+    defaultFromName: 'Hotel Juan Maria',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
+
+  i18n: {
+    fallbackLanguage: 'es',
+    supportedLanguages: { es, en },
   },
+  localization: {
+    locales: ['en', 'es'],
+    defaultLocale: 'es',
+  },
+
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
-        // Allow logged in users to execute this endpoint (default)
         if (req.user) return true
-
-        // If there is no logged in user, then check
-        // for the Vercel Cron secret to be present as an
-        // Authorization header:
         const authHeader = req.headers.get('authorization')
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },
     },
-    tasks: [],
+    tasks: [translationTask],
+  },
+
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 })

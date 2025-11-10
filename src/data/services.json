@@ -1,0 +1,103 @@
+{
+  "coverImage": "/servicesCover.jpg",
+  "services": [
+    {
+      "id": 1,
+      "title": "Restaurante Zamira",
+      "description": "En la comodidad de nuestro restaurante Zamira puedes encontrar un fabuloso Menú de desayunos. Tenemos un espacio acogedor y tranquilo con la mejor atención para que tu experiencia sea placentera y agradable.",
+      "icon": "restaurant",
+      "image": "/restaurant.jpg",
+      "hours": "Lunes a Viernes: 6:30-10:00 AM, 12:00-2:30 PM, 6:30-9:00 PM | Sábado: 6:30 AM-2:30 PM | Domingo: 6:30-10:00 AM (solo desayuno)",
+      "capacity": "60 asientos",
+      "featured": false
+    },
+    {
+      "id": 2,
+      "title": "Salones para Eventos",
+      "description": "Contamos con cuatro (4) salones para eventos con capacidad de 15 a 120 personas, equipados con Ayudas Audiovisuales, Wi-Fi, Aire Acondicionado, Estación de Café y un excelente equipo listo para atenderte.",
+      "icon": "events",
+      "image": "/events.jpg",
+      "hours": "Según programación de eventos",
+      "halls": [
+        "Salón María Ximena",
+        "Salón Valeria", 
+        "Salón Andrés",
+        "Salón Rose"
+      ],
+      "capacity": "15 a 120 personas",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "title": "Eventos Sociales",
+      "description": "Cubrimos todo tipo de eventos y reuniones sociales como bodas, graduaciones, cumpleaños, primeras comuniones y otros eventos especiales.",
+      "icon": "celebration",
+      "image": "/social-events.jpg",
+      "hours": "Según programación",
+      "services_included": [
+        "Instalación de mesas redondas con sillas vestidas para 8-10 personas",
+        "Almuerzo, cena o refrigerio según la hora del evento",
+        "Centros de mesa con flores",
+        "Torta Blanca o Negra",
+        "Brindis de copa",
+        "Descorche de licor",
+        "Servicio de meseros"
+      ],
+      "featured": true
+    },
+    {
+      "id": 4,
+      "title": "Eventos Corporativos",
+      "description": "Espacios ideales para reuniones de trabajo, desayunos laborales, almuerzos y cenas corporativas con el mejor servicio profesional.",
+      "icon": "business",
+      "image": "/corporate.jpg",
+      "hours": "Según programación",
+      "services_included": [
+        "Equipos audiovisuales",
+        "Conexión Wi-Fi",
+        "Aire acondicionado",
+        "Estación de café",
+        "Servicio de catering",
+        "Atención personalizada"
+      ],
+      "featured": false
+    },
+    {
+      "id": 5,
+      "title": "Eventos Especiales en el Balcón",
+      "description": "Disfruta de una experiencia única en nuestro elegante balcón al aire libre. Perfecto para celebraciones íntimas, cócteles de empresa, reuniones especiales familiares y noches memorables bajo las estrellas con un ambiente sofisticado y exclusivo.",
+      "icon": "romantic_night",
+      "image": "/balcony-events.jpg",
+      "hours": "Disponible para eventos nocturnos",
+      "capacity": "Máximo 25 personas",
+      "services_included": [
+        "Servicio de bartender profesional",
+        "Selección de cócteles premium y bebidas especiales",
+        "Canapés y aperitivos gourmet",
+        "Opción de incluir cena completa",
+        "Ambientación nocturna especial",
+        "Música ambiente",
+        "Servicio de meseros especializados",
+        "Decoración elegante del espacio"
+      ],
+      "featured": true
+    },
+    {
+      "id": 6,
+      "title": "Noche Romántica",
+      "description": "Déjate cautivar por este plan romántico, está disponible para bodas nocturnas, aniversarios y ocasiones especiales o como regalo de amor y amistad. Es una excelente opción para hacer de ese día especial una gran ocasión para recordar.",
+      "icon": "romantic_dinner",
+      "image": "/romantic-night.jpg",
+      "hours": "Disponible para ocasiones especiales",
+      "services_included": [
+        "Suite Master o Suite Junior",
+        "Ramo de Rosas",
+        "Botella de Vino Espumoso",
+        "Cena para dos",
+        "Desayuno",
+        "Decoración especial"
+      ],
+      "featured": true
+    }
+  ]
+}

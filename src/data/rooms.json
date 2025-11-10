@@ -1,0 +1,191 @@
+{
+  "rooms": [
+    {
+      "id": 1,
+      "title": "Habitación Individual Estándar",
+      "description": "Habitación cómoda y funcional con todas las comodidades básicas, perfecta para huéspedes que viajan solos",
+      "price": 190400,
+      "currency": "COP",
+      "images": [
+        "/HabitacionIndividual1.jpeg",
+        "/HabitacionIndividual1-2.jpeg",
+        "/HabitacionIndividual1-3.jpeg"
+      ],
+      "featuredImage": "/HabitacionIndividual1F.jpeg",
+      "amenities": [
+        "Aire acondicionado",
+        "Minibar",
+        "Escritorio",
+        "TV",
+        "WiFi",
+        "Caja de seguridad",
+        "Servicio de lavandería",
+        "Agua caliente",
+        "Servicio a la habitación sin costo adicional",
+        "Parqueadero cubierto (fuera del hotel, horario restringido)",
+        "Servicio de transporte al aeropuerto (Precio en recepción)"
+      ],
+      "capacity": 1,
+      "size": "25m²",
+      "bedType": "Individual",
+      "available": true,
+      "featured": false
+    },
+    {
+      "id": 2,
+      "title": "Habitación Doble Estándar",
+      "description": "Habitación espaciosa con dos camas individuales, ideal para amigos o viajeros de negocios que comparten alojamiento",
+      "price": 238000,
+      "currency": "COP",
+      "images": [
+        "/HabitacionDoble1.jpeg",
+        "/HabitacionDoble1-2.jpeg",
+        "/HabitacionDoble1-3.jpeg"
+      ],
+      "featuredImage": "/HabitacionDoble1F.jpeg",
+      "amenities": [
+        "Aire acondicionado",
+        "Minibar",
+        "Escritorio",
+        "TV",
+        "WiFi",
+        "Caja de seguridad",
+        "Servicio de lavandería",
+        "Agua caliente",
+        "Servicio a la habitación sin costo adicional",
+        "Parqueadero cubierto (fuera del hotel, horario restringido)",
+        "Servicio de transporte al aeropuerto (Precio en recepción)"
+      ],
+      "capacity": 2,
+      "size": "35m²",
+      "bedType": "2 Camas Individuales",
+      "available": true,
+      "featured": true
+    },
+    {
+      "id": 3,
+      "title": "Habitación Triple Estándar",
+      "description": "Habitación amplia con tres camas individuales, perfecta para grupos pequeños o familias que buscan comodidad y espacio",
+      "price": 321300,
+      "currency": "COP",
+      "images": [
+        "/HabitacionTriple1.jpeg",
+        "/HabitacionTriple1-2.jpeg",
+        "/HabitacionTriple1-3.jpeg"
+      ],
+      "featuredImage": "/HabitacionTriple1.jpeg",
+      "amenities": [
+        "Aire acondicionado",
+        "Minibar",
+        "Escritorio",
+        "TV",
+        "WiFi",
+        "Caja de seguridad",
+        "Servicio de lavandería",
+        "Agua caliente",
+        "Servicio a la habitación sin costo adicional",
+        "Parqueadero cubierto (fuera del hotel, horario restringido)",
+        "Servicio de transporte al aeropuerto (Precio en recepción)"
+      ],
+      "capacity": 3,
+      "size": "45m²",
+      "bedType": "3 Camas Individuales",
+      "available": true,
+      "featured": true
+    },
+    {
+      "id": 4,
+      "title": "Habitación Cuádruple Estándar",
+      "description": "Habitación muy espaciosa con cuatro camas individuales, ideal para grupos grandes o familias numerosa que buscan alojamiento conjunto",
+      "price": 404600,
+      "currency": "COP",
+      "images": [
+        "/HabitacionCuadruple1.jpeg",
+        "/HabitacionCuadruple1-2.jpeg",
+        "/HabitacionCuadruple1-3.jpeg"
+      ],
+      "featuredImage": "/HabitacionCuadruple1.jpeg",
+      "amenities": [
+        "Aire acondicionado",
+        "Minibar",
+        "Escritorio",
+        "TV",
+        "WiFi",
+        "Caja de seguridad",
+        "Servicio de lavandería",
+        "Agua caliente",
+        "Servicio a la habitación sin costo adicional",
+        "Parqueadero cubierto (fuera del hotel, horario restringido)",
+        "Servicio de transporte al aeropuerto (Precio en recepción)"
+      ],
+      "capacity": 4,
+      "size": "55m²",
+      "bedType": "4 Camas Individuales",
+      "available": true,
+      "featured": true
+    },
+    {
+      "id": 5,
+      "title": "Junior Suite",
+      "description": "Suite elegante y moderna con diseño contemporáneo, que combina comodidad y estilo para una experiencia superior",
+      "price": 297500,
+      "currency": "COP",
+      "images": [
+        "/JuniorSuite1.jpeg",
+        "/JuniorSuite1-2.jpeg",
+        "/JuniorSuite1-3.jpeg"
+      ],
+      "featuredImage": "/JuniorSuite1F.jpeg",
+      "amenities": [
+        "Aire acondicionado",
+        "Minibar",
+        "Escritorio",
+        "TV",
+        "WiFi",
+        "Caja de seguridad",
+        "Servicio de lavandería",
+        "Agua caliente",
+        "Servicio a la habitación sin costo adicional",
+        "Parqueadero cubierto (fuera del hotel, horario restringido)",
+        "Servicio de transporte al aeropuerto (Precio en recepción)"
+      ],
+      "capacity": 2,
+      "size": "65m²",
+      "bedType": "King Size",
+      "available": true,
+      "featured": true
+    },
+    {
+      "id": 6,
+      "title": "Master Suite",
+      "description": "Suite premium con diseño sofisticado, amplios espacios y acabados de lujo para huéspedes que buscan la máxima comodidad y elegancia",
+      "price": 327250,
+      "currency": "COP",
+      "images": [
+        "/MasterSuite1.jpeg",
+        "/MasterSuite1-2.jpeg",
+        "/MasterSuite1-3.jpeg",
+        "/MasterSuite1-4.jpeg"
+      ],
+      "featuredImage": "/MasterSuite1.jpeg",
+      "amenities": [
+        "Aire acondicionado",
+        "Minibar",
+        "Escritorio",
+        "TV",
+        "WiFi",
+        "Caja de seguridad",
+        "Servicio de lavandería",
+        "Agua caliente",
+        "Servicio a la habitación sin costo adicional",
+        "Parqueadero cubierto (fuera del hotel, horario restringido)",
+        "Servicio de transporte al aeropuerto (Precio en recepción)"
+      ],
+      "capacity": 2,
+      "size": "85m²",
+      "bedType": "King Size",
+      "available": true,
+      "featured": true
+    }
+  ]
+}

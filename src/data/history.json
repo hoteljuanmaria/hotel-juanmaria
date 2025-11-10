@@ -1,0 +1,115 @@
+{
+    "historia": {
+      "cronologia": [
+        {
+          "id": 1,
+          "año": 1975,
+          "fecha": "1975-09-16",
+          "titulo": "Constitución jurídica",
+          "descripcion": "La sociedad Hotel Juan María S.A.S. se constituye formalmente el 16 de septiembre de 1975",
+          "tipo": "legal",
+          "importancia": "alta",
+          "icono": "legal"
+        },
+        {
+          "id": 2,
+          "año": 1977,
+          "fecha": "1977-06-18",
+          "titulo": "Inauguración oficial",
+          "descripcion": "El 18 de junio de 1977, durante la XXII Feria Exposición Agropecuaria de Tuluá, se abre el hotel en un punto estratégico de la ciudad",
+          "tipo": "hito",
+          "importancia": "alta",
+          "icono": "apertura"
+        },
+        {
+          "id": 3,
+          "año": 1980,
+          "rangoAños": "1980-1990",
+          "titulo": "Crecimiento y consolidación",
+          "descripcion": "El hotel se fortalece como referente regional, atendiendo tanto al segmento empresarial como al turismo, aumentando su relevancia en Tuluá",
+          "tipo": "crecimiento",
+          "importancia": "media",
+          "icono": "crecimiento"
+        },
+        {
+          "id": 4,
+          "año": 2000,
+          "rangoAños": "2000-2010",
+          "titulo": "Modernización",
+          "descripcion": "Se implementan mejoras en procesos, estándares de calidad y servicio, manteniendo competitividad en el sector",
+          "tipo": "modernizacion",
+          "importancia": "media",
+          "icono": "modernizacion"
+        },
+        {
+          "id": 5,
+          "año": 2014,
+          "titulo": "Legado cultural",
+          "descripcion": "Se conserva y refuerza el vínculo del hotel con el legado de Juan María Céspedes, figura destacada en la botánica regional; su nombre y aportes siguen presentes en la identidad institucional y local",
+          "tipo": "cultural",
+          "importancia": "media",
+          "icono": "patrimonio"
+        },
+        {
+          "id": 6,
+          "año": 2017,
+          "titulo": "40° aniversario",
+          "descripcion": "La celebración de cuatro décadas marca un hito de trayectoria y permanencia en la industria hotelera de Tuluá",
+          "tipo": "aniversario",
+          "importancia": "alta",
+          "icono": "aniversario"
+        },
+        {
+          "id": 7,
+          "año": 2025,
+          "titulo": "Más de 47 años en servicio",
+          "descripcion": "El hotel continúa prestando servicios con excelencia, orgullo y firme compromiso institucional",
+          "tipo": "actual",
+          "importancia": "alta",
+          "icono": "presente"
+        }
+      ],
+      "figurasClave": [
+        {
+          "id": 1,
+          "nombre": "Juan María Céspedes",
+          "cargo": "Sacerdote y científico",
+          "descripcion": "Figura destacada en la botánica regional, el hotel lleva su nombre en honor a sus aportes científicos y culturales",
+          "periodo": "Siglo XIX",
+          "legado": "Jardín Botánico Juan María Céspedes",
+          "imagen": ""
+        }
+      ],
+      "hitos": {
+        "fundacion": {
+          "fechaLegal": "1975-09-16",
+          "fechaApertura": "1977-06-18",
+          "eventoFundacion": "XXII Feria Exposición Agropecuaria de Tuluá"
+        },
+        "aniversarios": [
+          {
+            "año": 2017,
+            "aniversario": 40,
+            "significado": "Cuatro décadas de servicio"
+          },
+          {
+            "año": 2025,
+            "aniversario": 47,
+            "significado": "Más de cuatro décadas de excelencia"
+          }
+        ]
+      },
+      "notas": [
+        "La fundación legal en 1975 precede a la apertura formal en 1977",
+        "La inauguración coincide con un evento emblemático de la ciudad, lo que refuerza su relevancia inicial",
+        "El vínculo con Juan María Céspedes, sacerdote y científico tulueño, permanece presente desde el comienzo, conectando el hotel con el Jardín Botánico que lleva su nombre"
+      ],
+      "estadisticas": {
+        "añoFundacion": 1975,
+        "añoApertura": 1977,
+        "añosEnServicio": 47,
+        "aniversarioLegal": 49,
+        "aniversarioOperacional": 47
+      }
+    }
+  }

@@ -69,13 +69,18 @@ export interface Config {
   collections: {
     pages: Page;
     posts: Post;
+    blogs: Blog;
     media: Media;
     categories: Category;
+    rooms: Room;
+    testimonials: Testimonial;
+    experiences: Experience;
     users: User;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
     search: Search;
+    'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -85,13 +90,18 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    blogs: BlogsSelect<false> | BlogsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    rooms: RoomsSelect<false> | RoomsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    experiences: ExperiencesSelect<false> | ExperiencesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -103,17 +113,32 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'home-page': HomePage;
+    'experiences-page': ExperiencesPage;
+    blogPage: BlogPage;
+    currentMenu: CurrentMenu;
+    'about-page': AboutPage;
+    'privacy-policy-page': PrivacyPolicyPage;
+    'faqs-page': FaqsPage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'experiences-page': ExperiencesPageSelect<false> | ExperiencesPageSelect<true>;
+    blogPage: BlogPageSelect<false> | BlogPageSelect<true>;
+    currentMenu: CurrentMenuSelect<false> | CurrentMenuSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'privacy-policy-page': PrivacyPolicyPageSelect<false> | PrivacyPolicyPageSelect<true>;
+    'faqs-page': FaqsPageSelect<false> | FaqsPageSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'es';
   user: User & {
     collection: 'users';
   };
   jobs: {
     tasks: {
+      'translate-content': TaskTranslateContent;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -154,7 +179,7 @@ export interface Page {
       root: {
         type: string;
         children: {
-          type: string;
+          type: any;
           version: number;
           [k: string]: unknown;
         }[];
@@ -178,6 +203,14 @@ export interface Page {
               | ({
                   relationTo: 'posts';
                   value: string | Post;
+                } | null)
+              | ({
+                  relationTo: 'rooms';
+                  value: string | Room;
+                } | null)
+              | ({
+                  relationTo: 'experiences';
+                  value: string | Experience;
                 } | null);
             url?: string | null;
             label: string;
@@ -185,6 +218,10 @@ export interface Page {
              * Choose how the link should be rendered.
              */
             appearance?: ('default' | 'outline') | null;
+            /**
+             * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+             */
+            hash?: string | null;
           };
           id?: string | null;
         }[]
@@ -219,7 +256,7 @@ export interface Post {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -265,7 +302,7 @@ export interface Media {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -353,6 +390,10 @@ export interface Media {
 export interface Category {
   id: string;
   title: string;
+  /**
+   * Optional hex/rgb color used for UI badges
+   */
+  color?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   parent?: (string | null) | Category;
@@ -374,6 +415,8 @@ export interface Category {
 export interface User {
   id: string;
   name?: string | null;
+  totpSecret?: string | null;
+  hasTotp?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -394,6 +437,209 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rooms".
+ */
+export interface Room {
+  id: string;
+  /**
+   * The display name of the room (e.g., "Deluxe Ocean View Suite")
+   */
+  title: string;
+  /**
+   * Detailed description of the room and its features
+   */
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Brief description for cards and previews (max 200 characters)
+   */
+  shortDescription?: string | null;
+  /**
+   * Upload high-quality images of the room. First image will be used as default.
+   */
+  images: {
+    image: string | Media;
+    alt: string;
+    /**
+     * Mark as the main image for this room
+     */
+    featured?: boolean | null;
+    id?: string | null;
+  }[];
+  /**
+   * Base price per night in COP
+   */
+  price: number;
+  currency?: ('COP' | 'USD') | null;
+  capacity: number;
+  size: string;
+  bedType?: ('single' | 'double' | 'queen' | 'king' | 'twin' | 'bunk') | null;
+  amenities?:
+    | {
+        amenity?:
+          | (
+              | 'wifi'
+              | 'air-conditioning'
+              | 'tv'
+              | 'safe'
+              | 'minibar'
+              | 'room-service'
+              | 'parking'
+              | 'airport-transfer'
+              | 'breakfast'
+              | 'balcony'
+              | 'ocean-view'
+              | 'city-view'
+            )
+          | null;
+        /**
+         * Add a custom amenity not in the list above
+         */
+        customAmenity?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Uncheck to temporarily disable bookings for this room
+   */
+  available?: boolean | null;
+  /**
+   * Featured rooms appear in special sections
+   */
+  featured?: boolean | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experiences".
+ */
+export interface Experience {
+  id: string;
+  title: string;
+  /**
+   * Shown on the card component.
+   */
+  shortDescription?: string | null;
+  hours?: string | null;
+  /**
+   * Shown as “Capacidad” on the card.
+   */
+  capacity?: string | null;
+  halls?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown as a short list on the card.
+   */
+  services_included?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Options map to #sym:ServiceIcon values used on the site.
+   */
+  icon?: ('restaurant' | 'events' | 'celebration' | 'business' | 'romantic_dinner' | 'romantic_night') | null;
+  featured?: boolean | null;
+  /**
+   * Shown in the “Sobre Este Servicio” section of the detail page.
+   */
+  longDescription?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  gallery?:
+    | {
+        image: string | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  features?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  category?: string | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Controls the info card on the right side of the detail page.
+   */
+  serviceInfo?: {
+    availabilityText?: string | null;
+    typeText?: string | null;
+    reservationNote?: string | null;
+    includedText?: string | null;
+    supportText?: string | null;
+    statusText?: string | null;
+    locationText?: string | null;
+    phoneText?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CallToActionBlock".
  */
 export interface CallToActionBlock {
@@ -401,7 +647,7 @@ export interface CallToActionBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -425,6 +671,14 @@ export interface CallToActionBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'rooms';
+                value: string | Room;
+              } | null)
+            | ({
+                relationTo: 'experiences';
+                value: string | Experience;
               } | null);
           url?: string | null;
           label: string;
@@ -432,6 +686,10 @@ export interface CallToActionBlock {
            * Choose how the link should be rendered.
            */
           appearance?: ('default' | 'outline') | null;
+          /**
+           * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+           */
+          hash?: string | null;
         };
         id?: string | null;
       }[]
@@ -452,7 +710,7 @@ export interface ContentBlock {
           root: {
             type: string;
             children: {
-              type: string;
+              type: any;
               version: number;
               [k: string]: unknown;
             }[];
@@ -475,6 +733,14 @@ export interface ContentBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'rooms';
+                value: string | Room;
+              } | null)
+            | ({
+                relationTo: 'experiences';
+                value: string | Experience;
               } | null);
           url?: string | null;
           label: string;
@@ -482,6 +748,10 @@ export interface ContentBlock {
            * Choose how the link should be rendered.
            */
           appearance?: ('default' | 'outline') | null;
+          /**
+           * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+           */
+          hash?: string | null;
         };
         id?: string | null;
       }[]
@@ -509,7 +779,7 @@ export interface ArchiveBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -545,7 +815,7 @@ export interface FormBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -602,7 +872,7 @@ export interface Form {
               root: {
                 type: string;
                 children: {
-                  type: string;
+                  type: any;
                   version: number;
                   [k: string]: unknown;
                 }[];
@@ -685,7 +955,7 @@ export interface Form {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -717,7 +987,7 @@ export interface Form {
           root: {
             type: string;
             children: {
-              type: string;
+              type: any;
               version: number;
               [k: string]: unknown;
             }[];
@@ -733,6 +1003,139 @@ export interface Form {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs".
+ */
+export interface Blog {
+  id: string;
+  title: string;
+  featured?: boolean | null;
+  featuredImage?: (string | null) | Media;
+  excerpt?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  category: string | Category;
+  /**
+   * Estimated reading time in minutes
+   */
+  readTime?: number | null;
+  author?: {
+    name?: string | null;
+    role?: string | null;
+    avatar?: (string | null) | Media;
+  };
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (string | User)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: string;
+  /**
+   * Full name of the guest who left the testimonial
+   */
+  name: string;
+  /**
+   * Guest's location/origin (e.g., "Bogotá, Colombia")
+   */
+  location: string;
+  /**
+   * The testimonial text/review content
+   */
+  comment: string;
+  /**
+   * Optional profile picture of the guest
+   */
+  avatar?: (string | null) | Media;
+  /**
+   * Overall rating from 1 to 5 stars
+   */
+  rating: number;
+  /**
+   * Date when the testimonial was given
+   */
+  date: string;
+  /**
+   * Optional detailed scores for different aspects
+   */
+  scores?: {
+    habitaciones?: number | null;
+    servicio?: number | null;
+    ubicacion?: number | null;
+  };
+  /**
+   * Platform where the review was originally posted
+   */
+  platform?: ('Google' | 'TripAdvisor' | 'Booking.com' | 'Expedia' | 'Direct' | 'Other') | null;
+  /**
+   * Type of travel or guest category
+   */
+  travelType?: string | null;
+  /**
+   * Key highlights mentioned in the testimonial
+   */
+  highlights?:
+    | {
+        highlight: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Featured testimonials appear in the hero carousel
+   */
+  featured?: boolean | null;
+  /**
+   * Uncheck to temporarily hide this testimonial
+   */
+  published?: boolean | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -810,6 +1213,23 @@ export interface Search {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
@@ -860,7 +1280,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'translate-content' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -893,7 +1313,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'translate-content' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -916,12 +1336,28 @@ export interface PayloadLockedDocument {
         value: string | Post;
       } | null)
     | ({
+        relationTo: 'blogs';
+        value: string | Blog;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
     | ({
         relationTo: 'categories';
         value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'rooms';
+        value: string | Room;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: string | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'experiences';
+        value: string | Experience;
       } | null)
     | ({
         relationTo: 'users';
@@ -942,10 +1378,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'search';
         value: string | Search;
-      } | null)
-    | ({
-        relationTo: 'payload-jobs';
-        value: string | PayloadJob;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1012,6 +1444,7 @@ export interface PagesSelect<T extends boolean = true> {
                     url?: T;
                     label?: T;
                     appearance?: T;
+                    hash?: T;
                   };
               id?: T;
             };
@@ -1058,6 +1491,7 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              hash?: T;
             };
         id?: T;
       };
@@ -1084,6 +1518,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              hash?: T;
             };
         id?: T;
       };
@@ -1149,6 +1584,46 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
         name?: T;
       };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs_select".
+ */
+export interface BlogsSelect<T extends boolean = true> {
+  title?: T;
+  featured?: T;
+  featuredImage?: T;
+  excerpt?: T;
+  content?: T;
+  category?: T;
+  readTime?: T;
+  author?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+        avatar?: T;
+      };
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  authors?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1254,6 +1729,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  color?: T;
   slug?: T;
   slugLock?: T;
   parent?: T;
@@ -1270,10 +1746,167 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rooms_select".
+ */
+export interface RoomsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  shortDescription?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        featured?: T;
+        id?: T;
+      };
+  price?: T;
+  currency?: T;
+  capacity?: T;
+  size?: T;
+  bedType?: T;
+  amenities?:
+    | T
+    | {
+        amenity?: T;
+        customAmenity?: T;
+        id?: T;
+      };
+  available?: T;
+  featured?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  name?: T;
+  location?: T;
+  comment?: T;
+  avatar?: T;
+  rating?: T;
+  date?: T;
+  scores?:
+    | T
+    | {
+        habitaciones?: T;
+        servicio?: T;
+        ubicacion?: T;
+      };
+  platform?: T;
+  travelType?: T;
+  highlights?:
+    | T
+    | {
+        highlight?: T;
+        id?: T;
+      };
+  featured?: T;
+  published?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experiences_select".
+ */
+export interface ExperiencesSelect<T extends boolean = true> {
+  title?: T;
+  shortDescription?: T;
+  hours?: T;
+  capacity?: T;
+  halls?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  services_included?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  icon?: T;
+  featured?: T;
+  longDescription?: T;
+  content?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        id?: T;
+      };
+  features?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  category?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  serviceInfo?:
+    | T
+    | {
+        availabilityText?: T;
+        typeText?: T;
+        reservationNote?: T;
+        includedText?: T;
+        supportText?: T;
+        statusText?: T;
+        locationText?: T;
+        phoneText?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  totpSecret?: T;
+  hasTotp?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1485,6 +2118,14 @@ export interface SearchSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs_select".
  */
 export interface PayloadJobsSelect<T extends boolean = true> {
@@ -1565,10 +2206,55 @@ export interface Header {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'rooms';
+                value: string | Room;
+              } | null)
+            | ({
+                relationTo: 'experiences';
+                value: string | Experience;
               } | null);
           url?: string | null;
           label: string;
+          /**
+           * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+           */
+          hash?: string | null;
         };
+        hasDropdown?: boolean | null;
+        dropdownItems?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?:
+                  | ({
+                      relationTo: 'pages';
+                      value: string | Page;
+                    } | null)
+                  | ({
+                      relationTo: 'posts';
+                      value: string | Post;
+                    } | null)
+                  | ({
+                      relationTo: 'rooms';
+                      value: string | Room;
+                    } | null)
+                  | ({
+                      relationTo: 'experiences';
+                      value: string | Experience;
+                    } | null);
+                url?: string | null;
+                label: string;
+                /**
+                 * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+                 */
+                hash?: string | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1581,6 +2267,128 @@ export interface Header {
  */
 export interface Footer {
   id: string;
+  site?: {
+    /**
+     * Se usa cuando no hay nombre de hotel.
+     */
+    name?: string | null;
+    tagline?: string | null;
+    /**
+     * Texto corto bajo el nombre/lema
+     */
+    description?: string | null;
+  };
+  contact: {
+    hotel: {
+      name?: string | null;
+      address: {
+        street?: string | null;
+        neighborhood?: string | null;
+        city: string;
+        state?: string | null;
+        country?: string | null;
+      };
+    };
+    phone?: {
+      main?: string | null;
+      secondary?: string | null;
+      whatsapp?: string | null;
+    };
+    email?: {
+      reservations?: string | null;
+      marketing?: string | null;
+    };
+    hours?:
+      | {
+          label?: string | null;
+          value?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Incluye URLs completas con https://
+     */
+    social?: {
+      facebook?: string | null;
+      instagram?: string | null;
+      twitter?: string | null;
+      youtube?: string | null;
+      linkedin?: string | null;
+    };
+  };
+  /**
+   * Enlaces principales (Inicio, Sobre Nosotros, etc.)
+   */
+  companyLinks?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'rooms';
+                value: string | Room;
+              } | null)
+            | ({
+                relationTo: 'experiences';
+                value: string | Experience;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+           */
+          hash?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Enlaces de utilidad (Reservas, FAQ, etc.)
+   */
+  usefulLinks?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'rooms';
+                value: string | Room;
+              } | null)
+            | ({
+                relationTo: 'experiences';
+                value: string | Experience;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+           */
+          hash?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Campo de compatibilidad con versiones anteriores
+   */
   navItems?:
     | {
         link: {
@@ -1594,13 +2402,589 @@ export interface Footer {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'rooms';
+                value: string | Room;
+              } | null)
+            | ({
+                relationTo: 'experiences';
+                value: string | Experience;
               } | null);
           url?: string | null;
           label: string;
+          /**
+           * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+           */
+          hash?: string | null;
         };
         id?: string | null;
       }[]
     | null;
+  privacyLink: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null)
+        | ({
+            relationTo: 'rooms';
+            value: string | Room;
+          } | null)
+        | ({
+            relationTo: 'experiences';
+            value: string | Experience;
+          } | null);
+      url?: string | null;
+      label: string;
+      /**
+       * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+       */
+      hash?: string | null;
+    };
+  };
+  termsLink: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null)
+        | ({
+            relationTo: 'rooms';
+            value: string | Room;
+          } | null)
+        | ({
+            relationTo: 'experiences';
+            value: string | Experience;
+          } | null);
+      url?: string | null;
+      label: string;
+      /**
+       * Optional section ID to append as a hash fragment (without #). Example: rooms-list
+       */
+      hash?: string | null;
+    };
+  };
+  enabled?: boolean | null;
+  title?: string | null;
+  description?: string | null;
+  placeholder?: string | null;
+  buttonLabel?: string | null;
+  showScrollTop?: boolean | null;
+  /**
+   * Muestra el botón cuando se supera este scroll vertical.
+   */
+  scrollTopThreshold?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: string;
+  /**
+   * Main title displayed on the hero section
+   */
+  heroTitle: string;
+  /**
+   * Subtitle text displayed below the main title
+   */
+  heroSubtitle: string;
+  /**
+   * Background image for the hero section
+   */
+  heroBackgroundImage: string | Media;
+  /**
+   * Text for the mobile booking button
+   */
+  mobileButtonText: string;
+  /**
+   * Text for the desktop booking button
+   */
+  desktopButtonText: string;
+  /**
+   * Title for the rooms carousel section
+   */
+  roomsTitle: string;
+  /**
+   * Subtitle for the rooms carousel section
+   */
+  roomsSubtitle: string;
+  /**
+   * Background color for the rooms section
+   */
+  roomsBackgroundColor: 'gray-50' | 'white' | 'blue-50';
+  /**
+   * Title for the testimonials section
+   */
+  testimonialsTitle: string;
+  /**
+   * Subtitle for the testimonials section
+   */
+  testimonialsSubtitle: string;
+  /**
+   * Background image for the testimonials section
+   */
+  testimonialsBackgroundImage: string | Media;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experiences-page".
+ */
+export interface ExperiencesPage {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  descriptionText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  heroBackground?: (string | null) | Media;
+  /**
+   * Cards de estadísticas en el hero. Ej.: 6 Servicios Premium, 4 Salones para Eventos...
+   */
+  features?:
+    | {
+        number: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  intro?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  sectionImages?:
+    | {
+        image: string | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Define las columnas a mostrar en la tabla comparativa de salones.
+   */
+  capacityOptions?:
+    | {
+        key: 'size' | 'banquet' | 'classroom' | 'conference';
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  halls?:
+    | {
+        name: string;
+        size?: number | null;
+        banquet?: number | null;
+        classroom?: number | null;
+        conference?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  hallsInfoNote?: string | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogPage".
+ */
+export interface BlogPage {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  introduction?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  heroImage?: (string | null) | Media;
+  featured?: {
+    enabled?: boolean | null;
+    posts?: (string | Blog)[] | null;
+  };
+  newsletter?: {
+    title?: string | null;
+    description?: string | null;
+    buttonText?: string | null;
+  };
+  labels?: {
+    allCategoryLabel?: string | null;
+    readArticle?: string | null;
+    read?: string | null;
+    subscribeTitle?: string | null;
+    subscribeCta?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * PDF actual del menú del hotel (la URL /menu siempre redirige al último PDF).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "currentMenu".
+ */
+export interface CurrentMenu {
+  id: string;
+  /**
+   * Sube aquí el PDF vigente del menú.
+   */
+  pdf: string | Media;
+  note?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroBackgroundImage?: (string | null) | Media;
+  panoramicImage?: (string | null) | Media;
+  storyTitle: string;
+  storyContent: string;
+  storyHighlights?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  storyImage?: (string | null) | Media;
+  heritageTitle: string;
+  heritageContent: string;
+  heritageImage?: (string | null) | Media;
+  missionTitle: string;
+  missionContent: string;
+  visionTitle: string;
+  visionContent: string;
+  values?:
+    | {
+        title: string;
+        description: string;
+        icon: 'shield-check' | 'handshake' | 'heart' | 'trending-up' | 'calendar' | 'award';
+        id?: string | null;
+      }[]
+    | null;
+  qualityPolicyTitle: string;
+  qualityPolicyContent: string;
+  qualityPolicyImage?: (string | null) | Media;
+  team?:
+    | {
+        name: string;
+        position: string;
+        bio: string;
+        image?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  yearsOfExperience: number;
+  satisfiedGuests: number;
+  teamMembers: number;
+  foundedYear: number;
+  galleryImages?:
+    | {
+        image?: (string | null) | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  timelineEvents?:
+    | {
+        icon: string;
+        year: number;
+        /**
+         * Optional specific date within the year
+         */
+        date?: string | null;
+        /**
+         * For events spanning multiple years (e.g., "1990-1995")
+         */
+        yearRange?: string | null;
+        title: string;
+        description: string;
+        type: 'legal' | 'hito' | 'crecimiento' | 'modernizacion' | 'cultural' | 'aniversario' | 'actual';
+        importance: 'alto' | 'medio' | 'bajo';
+        id?: string | null;
+      }[]
+    | null;
+  historyStats: {
+    foundedYear: number;
+    openedYear: number;
+    yearsInService: number;
+    legalAnniversary: number;
+    operationalAnniversary: number;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-policy-page".
+ */
+export interface PrivacyPolicyPage {
+  id: string;
+  title: string;
+  /**
+   * Date when the privacy policy was last updated
+   */
+  lastUpdated: string;
+  /**
+   * Main introduction paragraph displayed below the title
+   */
+  introduction: string;
+  sections: {
+    title: string;
+    content: string;
+    /**
+     * Icon will be auto-selected based on section title if not specified
+     */
+    icon?:
+      | ('file-text' | 'eye' | 'shield' | 'lock' | 'users' | 'clock' | 'globe' | 'settings' | 'mail' | 'phone')
+      | null;
+    id?: string | null;
+  }[];
+  contactSection: {
+    title?: string | null;
+    email: {
+      label?: string | null;
+      address: string;
+    };
+    phone: {
+      label?: string | null;
+      number: string;
+    };
+    businessHours?: {
+      label?: string | null;
+      schedule?: string | null;
+    };
+  };
+  uiText?: {
+    loadingMessage?: string | null;
+    errorMessage?: string | null;
+    backToTopButton?: string | null;
+    lastUpdatedPrefix?: string | null;
+  };
+  design?: {
+    /**
+     * Control whether to display animated floating orbs in the background
+     */
+    showFloatingOrbs?: boolean | null;
+    /**
+     * Control whether to enable hover effects and transitions
+     */
+    enableAnimations?: boolean | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs-page".
+ */
+export interface FaqsPage {
+  id: string;
+  /**
+   * Main title displayed on the FAQs page
+   */
+  title: string;
+  /**
+   * Optional subtitle or description for the FAQs page
+   */
+  subtitle?: string | null;
+  /**
+   * Optional background image for the FAQs page hero section
+   */
+  backgroundImage?: (string | null) | Media;
+  /**
+   * Organize FAQs into different categories for better navigation
+   */
+  categories?:
+    | {
+        categoryTitle: string;
+        /**
+         * Optional description for this FAQ category
+         */
+        categoryDescription?: string | null;
+        categoryIcon:
+          | 'clock'
+          | 'utensils'
+          | 'car'
+          | 'shield'
+          | 'help-circle'
+          | 'wifi'
+          | 'heart'
+          | 'plane'
+          | 'credit-card'
+          | 'database'
+          | 'leaf';
+        questions: {
+          question: string;
+          answer: string;
+          /**
+           * Optional specific icon for this question
+           */
+          questionIcon?:
+            | (
+                | 'clock'
+                | 'utensils'
+                | 'car'
+                | 'wifi'
+                | 'shield'
+                | 'heart'
+                | 'plane'
+                | 'x'
+                | 'leaf'
+                | 'credit-card'
+                | 'database'
+                | 'help-circle'
+              )
+            | null;
+          /**
+           * Mark as featured to highlight this question
+           */
+          featured?: boolean | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Title for the contact support section at the bottom
+   */
+  supportTitle?: string | null;
+  /**
+   * Description text for the support section
+   */
+  supportDescription?: string | null;
+  contactButtonText?: string | null;
+  /**
+   * URL or route for the contact button
+   */
+  contactButtonLink?: string | null;
+  backToTopText?: string | null;
+  /**
+   * Display the quick stats section (total questions, categories, etc.)
+   */
+  showStats?: boolean | null;
+  /**
+   * Enable search functionality for FAQs (future feature)
+   */
+  enableSearch?: boolean | null;
+  /**
+   * Enable visual animations and transitions
+   */
+  animationsEnabled?: boolean | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1620,6 +3004,23 @@ export interface HeaderSelect<T extends boolean = true> {
               reference?: T;
               url?: T;
               label?: T;
+              hash?: T;
+            };
+        hasDropdown?: T;
+        dropdownItems?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    hash?: T;
+                  };
+              id?: T;
             };
         id?: T;
       };
@@ -1632,6 +3033,90 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  site?:
+    | T
+    | {
+        name?: T;
+        tagline?: T;
+        description?: T;
+      };
+  contact?:
+    | T
+    | {
+        hotel?:
+          | T
+          | {
+              name?: T;
+              address?:
+                | T
+                | {
+                    street?: T;
+                    neighborhood?: T;
+                    city?: T;
+                    state?: T;
+                    country?: T;
+                  };
+            };
+        phone?:
+          | T
+          | {
+              main?: T;
+              secondary?: T;
+              whatsapp?: T;
+            };
+        email?:
+          | T
+          | {
+              reservations?: T;
+              marketing?: T;
+            };
+        hours?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
+        social?:
+          | T
+          | {
+              facebook?: T;
+              instagram?: T;
+              twitter?: T;
+              youtube?: T;
+              linkedin?: T;
+            };
+      };
+  companyLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              hash?: T;
+            };
+        id?: T;
+      };
+  usefulLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              hash?: T;
+            };
+        id?: T;
+      };
   navItems?:
     | T
     | {
@@ -1643,12 +3128,402 @@ export interface FooterSelect<T extends boolean = true> {
               reference?: T;
               url?: T;
               label?: T;
+              hash?: T;
             };
         id?: T;
+      };
+  privacyLink?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              hash?: T;
+            };
+      };
+  termsLink?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              hash?: T;
+            };
+      };
+  enabled?: T;
+  title?: T;
+  description?: T;
+  placeholder?: T;
+  buttonLabel?: T;
+  showScrollTop?: T;
+  scrollTopThreshold?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  heroTitle?: T;
+  heroSubtitle?: T;
+  heroBackgroundImage?: T;
+  mobileButtonText?: T;
+  desktopButtonText?: T;
+  roomsTitle?: T;
+  roomsSubtitle?: T;
+  roomsBackgroundColor?: T;
+  testimonialsTitle?: T;
+  testimonialsSubtitle?: T;
+  testimonialsBackgroundImage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experiences-page_select".
+ */
+export interface ExperiencesPageSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  descriptionText?: T;
+  heroBackground?: T;
+  features?:
+    | T
+    | {
+        number?: T;
+        label?: T;
+        id?: T;
+      };
+  intro?: T;
+  sectionImages?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        id?: T;
+      };
+  capacityOptions?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        id?: T;
+      };
+  halls?:
+    | T
+    | {
+        name?: T;
+        size?: T;
+        banquet?: T;
+        classroom?: T;
+        conference?: T;
+        id?: T;
+      };
+  hallsInfoNote?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogPage_select".
+ */
+export interface BlogPageSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  introduction?: T;
+  heroImage?: T;
+  featured?:
+    | T
+    | {
+        enabled?: T;
+        posts?: T;
+      };
+  newsletter?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        buttonText?: T;
+      };
+  labels?:
+    | T
+    | {
+        allCategoryLabel?: T;
+        readArticle?: T;
+        read?: T;
+        subscribeTitle?: T;
+        subscribeCta?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
       };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "currentMenu_select".
+ */
+export interface CurrentMenuSelect<T extends boolean = true> {
+  pdf?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  heroTitle?: T;
+  heroSubtitle?: T;
+  heroBackgroundImage?: T;
+  panoramicImage?: T;
+  storyTitle?: T;
+  storyContent?: T;
+  storyHighlights?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  storyImage?: T;
+  heritageTitle?: T;
+  heritageContent?: T;
+  heritageImage?: T;
+  missionTitle?: T;
+  missionContent?: T;
+  visionTitle?: T;
+  visionContent?: T;
+  values?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        icon?: T;
+        id?: T;
+      };
+  qualityPolicyTitle?: T;
+  qualityPolicyContent?: T;
+  qualityPolicyImage?: T;
+  team?:
+    | T
+    | {
+        name?: T;
+        position?: T;
+        bio?: T;
+        image?: T;
+        id?: T;
+      };
+  yearsOfExperience?: T;
+  satisfiedGuests?: T;
+  teamMembers?: T;
+  foundedYear?: T;
+  galleryImages?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        id?: T;
+      };
+  timelineEvents?:
+    | T
+    | {
+        year?: T;
+        date?: T;
+        yearRange?: T;
+        title?: T;
+        description?: T;
+        type?: T;
+        importance?: T;
+        id?: T;
+      };
+  historyStats?:
+    | T
+    | {
+        foundedYear?: T;
+        openedYear?: T;
+        yearsInService?: T;
+        legalAnniversary?: T;
+        operationalAnniversary?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-policy-page_select".
+ */
+export interface PrivacyPolicyPageSelect<T extends boolean = true> {
+  title?: T;
+  lastUpdated?: T;
+  introduction?: T;
+  sections?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        icon?: T;
+        id?: T;
+      };
+  contactSection?:
+    | T
+    | {
+        title?: T;
+        email?:
+          | T
+          | {
+              label?: T;
+              address?: T;
+            };
+        phone?:
+          | T
+          | {
+              label?: T;
+              number?: T;
+            };
+        businessHours?:
+          | T
+          | {
+              label?: T;
+              schedule?: T;
+            };
+      };
+  uiText?:
+    | T
+    | {
+        loadingMessage?: T;
+        errorMessage?: T;
+        backToTopButton?: T;
+        lastUpdatedPrefix?: T;
+      };
+  design?:
+    | T
+    | {
+        showFloatingOrbs?: T;
+        enableAnimations?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs-page_select".
+ */
+export interface FaqsPageSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  backgroundImage?: T;
+  categories?:
+    | T
+    | {
+        categoryTitle?: T;
+        categoryDescription?: T;
+        categoryIcon?: T;
+        questions?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              questionIcon?: T;
+              featured?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  supportTitle?: T;
+  supportDescription?: T;
+  contactButtonText?: T;
+  contactButtonLink?: T;
+  backToTopText?: T;
+  showStats?: T;
+  enableSearch?: T;
+  animationsEnabled?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskTranslate-content".
+ */
+export interface TaskTranslateContent {
+  input: {
+    collection?: string | null;
+    global?: string | null;
+    docId?: string | null;
+    locale?: string | null;
+    targetLocale?: string | null;
+    forceRetranslate?: boolean | null;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1666,8 +3541,24 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'posts';
           value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'blogs';
+          value: string | Blog;
+        } | null)
+      | ({
+          relationTo: 'rooms';
+          value: string | Room;
+        } | null)
+      | ({
+          relationTo: 'testimonials';
+          value: string | Testimonial;
+        } | null)
+      | ({
+          relationTo: 'experiences';
+          value: string | Experience;
         } | null);
-    global?: string | null;
+    global?: ('home-page' | 'experiences-page' | 'about-page' | 'privacy-policy-page' | 'faqs-page') | null;
     user?: (string | null) | User;
   };
   output?: unknown;
@@ -1682,7 +3573,7 @@ export interface BannerBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];

@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Host
+Host: https://hoteljuanmaria.com
+
+# Sitemaps
+Sitemap: https://hoteljuanmaria.com/sitemap.xml

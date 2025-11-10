@@ -1,0 +1,97 @@
+{
+  "about": {
+    "hero": {
+      "title": "Sobre el Hotel Juan María",
+      "subtitle": "Más de cuatro décadas de tradición y excelencia en hospitalidad desde 1977",
+      "backgroundImage": "/images/about/about-hero.jpg"
+    },
+    "story": {
+      "title": "Nuestra Historia",
+      "content": "El Hotel Juan María nació como respuesta a una necesidad sentida por la comunidad tulueña y sus alrededores: disponer de un espacio de hospedaje que ofreciera comodidad, calidad y oportunidad. Gracias al impulso y visión de sus fundadores, este proyecto se convirtió en realidad en 1977, brindando desde sus inicios un servicio hotelero pensado para satisfacer tanto al visitante de negocios como al turista. Su privilegiada ubicación, en una de las principales arterias comerciales de la ciudad, facilita el acceso ágil y oportuno a los diferentes puntos estratégicos de Tuluá, permitiendo a nuestros huéspedes optimizar sus desplazamientos y actividades.",
+      "highlights": [
+        "Más de 47 años de experiencia en hospitalidad desde 1977",
+        "Ubicación estratégica en una de las principales arterias comerciales de Tuluá",
+        "Servicio pensado tanto para visitantes de negocios como turistas",
+        "Contribución constante al desarrollo económico y turístico de la región",
+        "Tarifas competitivas con estándares de calidad superiores"
+      ]
+    },
+    "heritage": {
+      "title": "Nuestro Nombre",
+      "content": "El hotel lleva el nombre de Juan María Céspedes, sacerdote, científico y patriota tulueño, quien dedicó su vida al estudio de la flora en la zona rural del municipio, siendo además el impulsor del hoy reconocido Eco-Turístico Jardín Botánico Juan María Céspedes, un homenaje vivo a su legado."
+    },
+    "mission": {
+      "title": "Nuestra Misión",
+      "content": "Ayudar a hacer realidad los sueños de nuestros clientes; contribuir al desarrollo comercial, industrial y turístico de la región, creando ambientes ideales para el descanso, la tranquilidad y la productividad."
+    },
+    "vision": {
+      "title": "Nuestra Visión",
+      "content": "Ser reconocidos como el motor del crecimiento comercial, industrial y turístico de la región, trabajando con pasión e innovación para ser la opción preferida por nuestros clientes."
+    },
+    "values": [
+      {
+        "title": "Integridad",
+        "description": "Tener respeto y lealtad hacia sí mismo, hacia su familia y hacia otros. Ser honesto en su trabajo; ser ético en las relaciones con clientes, proveedores y otras entidades externas.",
+        "icon": "shield-check"
+      },
+      {
+        "title": "Compromiso",
+        "description": "Lograr los resultados para asegurar el éxito económico continuo de la empresa, manteniendo una actitud positiva y entusiasta, haciendo más del mínimo en su trabajo.",
+        "icon": "handshake"
+      },
+      {
+        "title": "Servicio",
+        "description": "Satisfacer de manera oportuna y razonable las necesidades del cliente interno y externo, manteniendo un espíritu espontáneo de colaboración y apoyo con otros sin interés o egoísmo.",
+        "icon": "heart"
+      },
+      {
+        "title": "Progreso",
+        "description": "Promover una cultura de aprendizaje continuo que apoye el desarrollo de la empresa, sus empleados y sus familias.",
+        "icon": "trending-up"
+      }
+    ],
+    "qualityPolicy": {
+      "title": "Política de Calidad",
+      "content": "Brindar un servicio personalizado, adecuado y oportuno para satisfacer las necesidades de nuestros clientes a precios competitivos, que contribuyan al desarrollo comercial, industrial y turístico de la región; con un personal competente y comprometido; guiados por las directrices de una cultura de mejoramiento continuo y enfocados en la gestión del riesgo."
+    },
+    "team": [
+  {
+    "name": "Néstor",
+    "position": "Recepcionista",
+    "bio": "30 años de servicio con el corazón. Desde hace tres décadas, recibe a nuestros huéspedes como si llegaran a su propio hogar. Su calidez, amabilidad y conocimiento del hotel han acompañado a cientos de visitantes que, gracias a él, se sienten siempre bienvenidos.",
+    "image": "/Team1.jpg"
+  },
+  {
+    "name": "Diego",
+    "position": "Recepcionista",
+    "bio": "30 años de servicio y hospitalidad. Durante tres décadas, ha sido uno de los rostros amables que dan la bienvenida a nuestros huéspedes. Con su experiencia, dedicación y calidez ha acompañado a generaciones de visitantes, ofreciendo siempre un trato cercano y profesional.",
+    "image": "/Team2.jpg"
+  },
+  {
+    "name": "José",
+    "position": "Botones",
+    "bio": "28 años de historias compartidas. Comenzó su recorrido como mesero, y hoy, después de 28 años, es quien acompaña con amabilidad a cada huésped desde su llegada. Con una sonrisa siempre lista y un trato cálido, ha sido testigo de innumerables historias y momentos felices en el hotel.",
+    "image": "/Team3.jpg"
+  },
+  {
+    "name": "Julián",
+    "position": "Responsable de Calidad",
+    "bio": "18 años cuidando cada detalle. Su compromiso diario asegura que cada rincón del hotel esté impecable y que cada servicio supere las expectativas de nuestros huéspedes. Gracias a su trabajo silencioso pero esencial, garantizamos la calidad que nos distingue.",
+    "image": "/Team4.jpg"
+  }
+],
+    "stats": {
+      "yearsOfExperience": 47,
+      "satisfiedGuests": 500000,
+      "teamMembers": 15,
+      "foundedYear": 1977
+    },
+    "panoramic": "/PanoramicaFachada.jpg",
+    "images": [
+      "/FachadaAzul.jpg",
+      "/FachadaDia.jpg",
+      "/FachadaNoche.jpg",
+      "/Vertical.jpeg"
+    ]
+  }
+}
