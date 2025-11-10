@@ -16,7 +16,7 @@ export const revalidateRedirects: CollectionAfterChangeHook = ({
         })
     }
   } catch (error) {
-    payload.logger.warn('Redirects revalidation failed:', error)
+    payload.logger.warn({ msg: 'Redirects revalidation failed:', error: String(error) })
   }
 
   return doc
