@@ -32,7 +32,7 @@
           },
           {
             "title": "Procedimientos de Consulta y Reclamos",
-            "content": "Las consultas serán atendidas en máximo 10 días hábiles. Los reclamos serán tramitados en máximo 15 días hábiles. Durante el trámite se incluirá la leyenda 'reclamo en trámite' en la base de datos. Para ejercer sus derechos, puede contactarnos en datos@hoteljuanmaria.com o al teléfono (2) 224-4562."
+            "content": "Las consultas serán atendidas en máximo 10 días hábiles. Los reclamos serán tramitados en máximo 15 días hábiles. Durante el trámite se incluirá la leyenda 'reclamo en trámite' en la base de datos. Para ejercer sus derechos"
           },
           {
             "title": "Transferencia Internacional",
@@ -44,7 +44,7 @@
           },
           {
             "title": "Contacto para Datos Personales",
-            "content": "Para consultas, reclamos, quejas o ejercicio de derechos relacionados con datos personales: Email: datos@hoteljuanmaria.com, Teléfono: (2) 224-4562, Horario: Lunes a viernes 8:00 AM - 6:00 PM, Sábados 8:00 AM - 12:00 PM"
+            "content": "Para consultas, reclamos, quejas o ejercicio de derechos relacionados con datos personales por favor contactarnos."
           }
         ]
       }
@@ -114,8 +114,8 @@
           "answer": "No permitimos mascotas, excepto animales de servicio debidamente certificados conforme a la legislación vigente."
         },
         {
-          "question": "¿Qué servicios incluye el spa?",
-          "answer": "Nuestro spa ofrece masajes, tratamientos faciales, sauna, baño turco y paquetes de relajación. Consulte horarios y precios en recepción."
+          "question": "¿Qué servicios incluye el alojamiento?",
+          "answer": "Ofrecemos servicios extras como paquetes de pareja, noche romantica y experienicas personalizadas. Consulte horarios y precios en recepción."
         },
         {
           "question": "¿Tienen servicio de transporte al aeropuerto?",
@@ -135,7 +135,7 @@
         },
         {
           "question": "¿Cómo puedo ejercer mis derechos sobre datos personales?",
-          "answer": "Puede ejercer sus derechos de acceso, rectificación, actualización o supresión de datos contactándonos en datos@hoteljuanmaria.com o llamando al (2) 224-4562 en horario de atención."
+          "answer": "Puede ejercer sus derechos de acceso, rectificación, actualización o supresión de datos contactándonos en por correo o llamando en horario de atención."
         },
         {
           "question": "¿Qué compromisos tienen con la sostenibilidad?",

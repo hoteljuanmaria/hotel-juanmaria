@@ -40,7 +40,7 @@ export const seedPrivacyPage = async (payload: Payload): Promise<void> => {
         },
         {
           title: 'Procedimientos de Consulta y Reclamos',
-          content: 'Las consultas serán atendidas en máximo 10 días hábiles. Los reclamos serán tramitados en máximo 15 días hábiles. Durante el trámite se incluirá la leyenda "reclamo en trámite" en la base de datos. Para ejercer sus derechos, puede contactarnos en datos@hoteljuanmaria.com o al teléfono (2) 224-4562.',
+          content: 'Las consultas serán atendidas en máximo 10 días hábiles. Los reclamos serán tramitados en máximo 15 días hábiles. Durante el trámite se incluirá la leyenda "reclamo en trámite" en la base de datos. Para ejercer sus derechos, puede contactarnos usando el botón contacto, a tráves de esta misma página web.',
           icon: 'clock',
         },
         {
@@ -56,10 +56,10 @@ export const seedPrivacyPage = async (payload: Payload): Promise<void> => {
       ],
       contactSection: {
         email: {
-          address: 'datos@hoteljuanmaria.com',
+          address: 'reservas@hoteljuanmaria.com',
         },
         phone: {
-          number: '(2) 224-4562',
+          number: '225 0623',
         },
       },
       publishedAt: new Date().toISOString(),

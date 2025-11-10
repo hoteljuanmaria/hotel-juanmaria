@@ -119,7 +119,7 @@ export const seedFAQsPageData = {
         {
           question: '¿Cómo puedo ejercer mis derechos sobre datos personales?',
           answer:
-            'Puede ejercer sus derechos de acceso, rectificación, actualización o supresión de datos contactándonos en datos@hoteljuanmaria.com o llamando al (2) 224-4562 en horario de atención.',
+            'Puede ejercer sus derechos de acceso, rectificación, actualización o supresión de datos.',
           questionIcon: 'database',
           featured: false,
         },
