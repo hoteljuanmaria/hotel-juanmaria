@@ -364,7 +364,7 @@ const RoomCard = React.memo(
             </div>
             <div className='flex items-center gap-1'>
               <Bed className='w-4 h-4' />
-              <span>{getBedTypeLabel(room.bedType, getValidLocale(locale))}</span>
+              <span>{getBedTypeLabel(room.bedType ?? 'single', getValidLocale(locale))}</span>
             </div>
           </div>
 
@@ -492,7 +492,7 @@ const RoomListItem = React.memo(
                   </div>
                   <div className='flex items-center gap-1'>
                     <Bed className='w-3 h-3 sm:w-4 sm:h-4' />
-                    <span>{getBedTypeLabel(room.bedType, getValidLocale(locale))}</span>
+                      <span>{getBedTypeLabel(room.bedType ?? 'single', getValidLocale(locale))}</span>
                   </div>
                 </div>
               </div>
