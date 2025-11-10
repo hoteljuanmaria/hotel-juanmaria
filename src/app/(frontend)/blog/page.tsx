@@ -8,13 +8,23 @@ import { getPayload } from 'payload'
 export const revalidate = 600
 export const dynamic = 'force-static'
 
-export default async function BlogsPage() {
+type Locale = 'es' | 'en'
+
+export default async function BlogsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
+
   const payload = await getPayload({ config: configPromise })
 
   // Fetch global for main blog page. Limit fields to what's needed by the UI.
   const blogGlobal = await payload.findGlobal({
     slug: 'blogPage',
     depth: 1,
+    locale,
     select: {
       title: true,
       subtitle: true,
@@ -33,6 +43,7 @@ export default async function BlogsPage() {
       collection: 'blogs',
       depth: 1,
       limit: 100,
+      locale,
       overrideAccess: false,
       select: {
         id: true,
@@ -53,6 +64,7 @@ export default async function BlogsPage() {
       collection: 'categories',
       depth: 0,
       limit: 100,
+      locale,
       overrideAccess: false,
       select: { id: true, title: true, color: true },
     }),
@@ -147,10 +159,18 @@ export default async function BlogsPage() {
   )
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}): Promise<Metadata> {
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
+
   const payload = await getPayload({ config: configPromise })
   const blogGlobal = await payload.findGlobal({
     slug: 'blogPage',
+    locale,
     select: { meta: true, title: true },
   })
   const title = blogGlobal?.meta?.title || blogGlobal?.title || 'Blog'

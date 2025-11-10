@@ -231,7 +231,7 @@ const ContactForm = () => {
                       {...register('telefono')}
                       type="tel"
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200 hover:border-gray-400"
-                      placeholder="+57 300 123 4567"
+                      placeholder="+57 315 4902239"
                     />
                     {errors.telefono && <p className="mt-1 text-sm text-red-600">{errors.telefono.message}</p>}
                   </div>

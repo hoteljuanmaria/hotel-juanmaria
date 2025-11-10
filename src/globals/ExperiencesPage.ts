@@ -253,6 +253,6 @@ export const ExperiencesPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateExperiencesPage, translationHooks.global.esToEn],
+    afterChange: [revalidateExperiencesPage, translationHooks.global.esToEnForce],
   },
 }

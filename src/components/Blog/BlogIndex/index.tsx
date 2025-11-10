@@ -52,15 +52,15 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  const normalizePost = (p: any): DisplayPost => {
+ const normalizePost = (p: any): DisplayPost => {
     // Supports both BlogPost (lib/data) and BlogPostDTO (server)
     const featuredImage =
-      typeof p.featuredImage === 'string' && p.featuredImage
+      typeof p.featuredImage === 'string' && p.featuredImage.trim() !== ''
         ? p.featuredImage
         : '/website-template-OG.webp'
     const author = p.author || {}
     const authorAvatar =
-      typeof author.avatar === 'string' && author.avatar
+      typeof author.avatar === 'string' && author.avatar.trim() !== ''
         ? author.avatar
         : '/favicon.svg'
     return {
@@ -73,8 +73,8 @@ export default function BlogSection({ initialData }: BlogSectionProps) {
       readTime: Number(p.readTime ?? 3),
       category: String(p.category ?? 'General'),
       author: {
-        name: String(author.name ?? ''),
-        role: String(author.role ?? ''),
+        name: String(author.name ?? 'Autor Desconocido'),
+        role: String(author.role ?? 'Equipo Hotel'),
         avatar: authorAvatar,
       },
       featured: Boolean(p.featured ?? false),

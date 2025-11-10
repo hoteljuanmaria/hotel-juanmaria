@@ -837,8 +837,13 @@ export default function AboutPage({ aboutData }: AboutPageProps) {
                 imagePosition='right'
                 className='lg:min-h-96'
               >
-                <PremiumButton variant='primary'>
-                  Ver Certificaciones
+                <PremiumButton
+                  variant="primary"
+                  onClick={() => {
+                    window.location.href = '/privacy'
+                  }}
+                >
+                  Nuestra política
                 </PremiumButton>
               </ImageStoryCard>
             </div>

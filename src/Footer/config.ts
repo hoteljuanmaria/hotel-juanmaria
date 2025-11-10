@@ -329,6 +329,6 @@ export const Footer: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [revalidateFooter, translationHooks.global.esToEn],
+    afterChange: [revalidateFooter, translationHooks.global.esToEnForce],
   },
 }

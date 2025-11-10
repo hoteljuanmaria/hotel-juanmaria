@@ -486,7 +486,7 @@ export interface Room {
   currency?: ('COP' | 'USD') | null;
   capacity: number;
   size: string;
-  bedType: 'single' | 'double' | 'queen' | 'king' | 'twin' | 'bunk';
+  bedType?: ('single' | 'double' | 'queen' | 'king' | 'twin' | 'bunk') | null;
   amenities?:
     | {
         amenity?:
@@ -2771,6 +2771,7 @@ export interface AboutPage {
     | null;
   timelineEvents?:
     | {
+        icon: string;
         year: number;
         /**
          * Optional specific date within the year

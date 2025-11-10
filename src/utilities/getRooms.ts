@@ -91,7 +91,7 @@ const convertPayloadRoom = (room: Room): BookingRoom => {
     amenities: room.amenities?.map(getAmenityText) || [],
     capacity: room.capacity,
     size: room.size,
-    bedType: room.bedType,
+    bedType: room.bedType || 'single',
     available: room.available !== false,
     featured: room.featured || false,
     slug: room.slug || undefined,

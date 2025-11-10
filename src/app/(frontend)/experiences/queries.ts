@@ -57,85 +57,87 @@ export type ExperiencesPageGlobal = {
   meta?: { title?: string | null; description?: string | null; image?: any }
 }
 
-const _getExperiencesPage = unstable_cache(
-  async () => {
-    const payload = await getPayload({ config: configPromise })
-    const page = await payload.findGlobal({
-      // Cast to any until types are regenerated to include this global slug
-      slug: 'experiences-page' as any,
-      depth: 1,
-      // select only what we need
-      select: {
-        title: true,
-        subtitle: true,
-        descriptionText: true,
-        heroBackground: true,
-        intro: true,
-        sectionImages: true,
-        features: true,
-        halls: true,
-        capacityOptions: true,
-        hallsInfoNote: true,
-        meta: {
-          title: true,
-          description: true,
-          image: true,
-        },
-      },
-    })
-    return page as unknown as ExperiencesPageGlobal
-  },
-  ['experiences-page'],
-  {
-    // Revalidate when the global experiences-page changes
-    tags: ['global_experiences-page'],
-  },
-)
+type Locale = 'es' | 'en'
 
-export async function getExperiencesPage() {
+export async function getExperiencesPage(locale: Locale = 'es') {
+  const _getExperiencesPage = unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const page = await payload.findGlobal({
+        // Cast to any until types are regenerated to include this global slug
+        slug: 'experiences-page' as any,
+        depth: 1,
+        locale,
+        // select only what we need
+        select: {
+          title: true,
+          subtitle: true,
+          descriptionText: true,
+          heroBackground: true,
+          intro: true,
+          sectionImages: true,
+          features: true,
+          halls: true,
+          capacityOptions: true,
+          hallsInfoNote: true,
+          meta: {
+            title: true,
+            description: true,
+            image: true,
+          },
+        },
+      })
+      return page as unknown as ExperiencesPageGlobal
+    },
+    ['experiences-page', locale],
+    {
+      // Revalidate when the global experiences-page changes
+      tags: ['global_experiences-page'],
+    },
+  )
   return _getExperiencesPage()
 }
 
-const _listExperiences = unstable_cache(
-  async () => {
-    const payload = await getPayload({ config: configPromise })
-    const result = await payload.find({
-      // Cast to any until types are regenerated to include this collection slug
-      collection: 'experiences' as any,
-      limit: 24,
-      where: {
-        _status: { equals: 'published' },
-      },
-      depth: 1,
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        shortDescription: true,
-        hours: true,
-        featured: true,
-        icon: true,
-        gallery: true,
-        category: true,
-        tags: true,
-        halls: true,
-        services_included: true,
-        meta: { title: true, description: true, image: true },
-        publishedAt: true,
-        capacity: true,
-      },
-      sort: '-publishedAt',
-    })
-    return result.docs as unknown as ExperienceListItem[]
-  },
-  ['experiences', 'list', 'v1'],
-  {
-    // Revalidate when any experience changes
-    tags: ['collection_experiences'],
-  },
-)
-
-export async function listExperiences() {
+export async function listExperiences(locale: Locale = 'es') {
+  const _listExperiences = unstable_cache(
+    async () => {
+      const payload = await getPayload({ config: configPromise })
+      const result = await payload.find({
+        // Cast to any until types are regenerated to include this collection slug
+        collection: 'experiences' as any,
+        limit: 24,
+        locale,
+        where: {
+          _status: { equals: 'published' },
+        },
+        depth: 1,
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          shortDescription: true,
+          hours: true,
+          featured: true,
+          icon: true,
+          gallery: true,
+          category: true,
+          tags: true,
+          halls: true,
+          services_included: true,
+          meta: { title: true, description: true, image: true },
+          publishedAt: true,
+          capacity: true,
+        },
+        sort: '-publishedAt',
+      })
+      return result.docs as unknown as ExperienceListItem[]
+    },
+    ['experiences', 'list', 'v1', locale],
+    {
+      // Revalidate when any experience changes
+      tags: ['collection_experiences'],
+    },
+  )
   return _listExperiences()
 }
 

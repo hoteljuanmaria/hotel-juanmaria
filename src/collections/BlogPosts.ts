@@ -240,7 +240,7 @@ export const BlogPosts: CollectionConfig = {
     afterChange: [
       revalidateBlog,
       // Use the optimized reusable translation hook
-      translationHooks.collection.esToEn,
+      translationHooks.collection.esToEnForce,
     ],
     afterDelete: [revalidateBlogDelete],
   },

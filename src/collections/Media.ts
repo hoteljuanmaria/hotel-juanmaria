@@ -26,7 +26,7 @@ export const Media: CollectionConfig = {
   hooks: {
     afterChange: [
       // Use the optimized reusable translation hook
-      translationHooks.collection.esToEn,
+      translationHooks.collection.esToEnForce,
     ],
   },
   fields: [

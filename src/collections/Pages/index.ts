@@ -127,7 +127,7 @@ export const Pages: CollectionConfig<'pages'> = {
     afterChange: [
       revalidatePage,
       // Use the optimized reusable translation hook
-      translationHooks.collection.esToEn,
+      translationHooks.collection.esToEnForce,
     ],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],

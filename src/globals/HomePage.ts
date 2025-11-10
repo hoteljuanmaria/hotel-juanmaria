@@ -248,6 +248,6 @@ export const HomePage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateHomePage, translationHooks.global.esToEn],
+    afterChange: [revalidateHomePage, translationHooks.global.esToEnForce],
   },
 }

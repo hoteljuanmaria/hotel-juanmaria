@@ -333,6 +333,6 @@ export const FAQsPage: GlobalConfig = {
     },
   },
   hooks: {
-    afterChange: [revalidateFAQsPage, translationHooks.global.esToEn],
+    afterChange: [revalidateFAQsPage, translationHooks.global.esToEnForce],
   },
 }

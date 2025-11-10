@@ -224,7 +224,7 @@ export const Posts: CollectionConfig<'posts'> = {
     afterChange: [
       revalidatePost,
       // Use the optimized reusable translation hook
-      translationHooks.collection.esToEn,
+      translationHooks.collection.esToEnForce,
     ],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],

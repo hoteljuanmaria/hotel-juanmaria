@@ -43,9 +43,8 @@ export async function GET() {
 
     console.log(`📋 Found ${pendingJobs.docs.length} pending translation job(s)`)
     
-    // Process jobs
-    const results = await payload.jobs.run({
-      limit: 10 // Process up to 10 jobs at once
+      const results = await payload.jobs.run({
+      limit: 1 // Procesa de a un job a la vez
     })
 
     console.log(`🎯 Processed job(s)`)

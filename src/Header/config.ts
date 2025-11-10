@@ -54,6 +54,6 @@ export const Header: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [revalidateHeader, translationHooks.global.esToEn],
+    afterChange: [revalidateHeader, translationHooks.global.esToEnForce],
   },
 }

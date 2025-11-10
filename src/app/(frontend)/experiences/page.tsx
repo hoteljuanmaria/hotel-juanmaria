@@ -8,10 +8,19 @@ import RichText from '@/components/RichText'
 import type { Metadata } from 'next'
 import { generateMeta } from '@/utilities/generateMeta'
 
-export default async function ExperienciasPage() {
+type Locale = 'es' | 'en'
+
+export default async function ExperienciasPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
+
   const [page, experiences] = await Promise.all([
-    getExperiencesPage().catch(() => null),
-    listExperiences().catch(() => [] as ExperienceListItem[]),
+    getExperiencesPage(locale).catch(() => null),
+    listExperiences(locale).catch(() => [] as ExperienceListItem[]),
   ])
 
   // Adapt experiences to ServicesSection card shape
@@ -66,7 +75,13 @@ export default async function ExperienciasPage() {
   )
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const page = await getExperiencesPage().catch(() => null)
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ locale?: Locale }>
+}): Promise<Metadata> {
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const locale: Locale = (resolvedSearchParams?.locale as Locale) || 'es'
+  const page = await getExperiencesPage(locale).catch(() => null)
   return generateMeta({ doc: page as any })
 }

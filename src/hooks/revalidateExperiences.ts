@@ -22,7 +22,7 @@ export const revalidateExperiences: CollectionAfterChangeHook = ({
           })
       }
     } catch (error) {
-      payload.logger.warn('Experiences revalidation failed:', error)
+      payload.logger.warn({ msg: 'Experiences revalidation failed:', error: String(error) })
     }
   }
 
