@@ -42,7 +42,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
           })
       }
     } catch (error) {
-      payload.logger.warn('Page revalidation failed:', error)
+      payload.logger.warn(`Page revalidation failed: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
   return doc
