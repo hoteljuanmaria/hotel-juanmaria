@@ -93,7 +93,7 @@ function transformRoom(room: Room): BookingRoom {
     slug: room.slug || '',
     price: room.price,
     capacity: room.capacity,
-    bedType: room.bedType,
+    bedType: room.bedType || 'single',
     size: room.size,
     shortDescription: room.shortDescription || undefined,
     available: room.available || false,
