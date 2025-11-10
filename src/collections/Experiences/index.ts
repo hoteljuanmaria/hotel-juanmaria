@@ -342,7 +342,7 @@ export const Experiences: CollectionConfig = {
                   name: 'phoneText',
                   type: 'text',
                   label: { en: 'Phone', es: 'Teléfono' },
-                  admin: { placeholder: '+57 (2) 123-4567' },
+                  admin: { placeholder: '+57 315 4902239' },
                 },
               ],
             },

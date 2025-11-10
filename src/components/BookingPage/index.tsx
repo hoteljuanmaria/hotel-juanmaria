@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { getBedTypeLabel } from '@/lib/client-utils'
+import { useParams, useSearchParams } from 'next/navigation'
 import { Plus, Minus } from 'lucide-react'
 import {
   Calendar,
@@ -52,7 +53,17 @@ interface BookingStep {
   completed: boolean
 }
 
+export type Locale = 'es' | 'en'
+
 const BookingPage = () => {
+
+  const { locale } = useParams()
+
+  const normalizedLocale: Locale = 
+    locale && typeof locale === 'string' && (locale === 'es' || locale === 'en') 
+      ? locale 
+      : 'es'  // fallback
+  
   const searchParams = useSearchParams()
   const [currentStep, setCurrentStep] = useState(1)
   const [allRooms, setAllRooms] = useState<BookingRoom[]>([])
@@ -61,6 +72,8 @@ const BookingPage = () => {
   const [submitting, setSubmitting] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
   const [dateRange, setDateRange] = useState<DateRange>({})
+
+  
 
   const [formData, setFormData] = useState<BookingFormData>({
     checkIn: '',
@@ -503,7 +516,7 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
                   <div className="flex flex-wrap items-center gap-4 font-sans text-sm font-light text-gray-700">
                     <span className="inline-flex items-center gap-1"><Users className="w-4 h-4"/>{' '}Máx {room.capacity} huéspedes</span>
                     <span className="inline-flex items-center gap-1"><Home className="w-4 h-4"/>{room.size}</span>
-                    <span>{room.bedType}</span>
+                    {getBedTypeLabel(room.bedType ?? '', normalizedLocale ?? 'es')}
                   </div>
 
                   {room.amenities?.length > 0 && (

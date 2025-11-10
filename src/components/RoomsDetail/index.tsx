@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import {
   ChevronLeft,
   ChevronRight,
@@ -21,6 +23,7 @@ import {
 } from 'lucide-react'
 import type { Room } from '@/payload-types'
 import { getRoomBySlug } from '@/lib/actions/rooms'
+import { getBedTypeLabel } from '@/lib/client-utils'
 
 interface RoomDetailProps {
   slug: string
@@ -34,6 +37,30 @@ const formatPrice = (price: number): string => {
   }).format(price)
 }
 
+export type Locale = 'es' | 'en'
+
+const getAmenityLabel = (amenity: string | undefined | null, locale: Locale): string => {
+  if (!amenity) return ''
+
+  const labels: Record<string, { es: string; en: string }> = {
+    wifi: { es: 'WiFi', en: 'WiFi' },
+    'air-conditioning': { es: 'Aire acondicionado', en: 'Air Conditioning' },
+    tv: { es: 'Televisor', en: 'TV' },
+    safe: { es: 'Caja fuerte', en: 'Safe' },
+    minibar: { es: 'Minibar', en: 'Minibar' },
+    'room-service': { es: 'Servicio a la habitación', en: 'Room Service' },
+    parking: { es: 'Parqueadero', en: 'Parking' },
+    'airport-transfer': { es: 'Traslado aeropuerto', en: 'Airport Transfer' },
+    breakfast: { es: 'Desayuno', en: 'Breakfast' },
+    balcony: { es: 'Balcón', en: 'Balcony' },
+    'ocean-view': { es: 'Vista al mar', en: 'Ocean View' },
+    'city-view': { es: 'Vista a la ciudad', en: 'City View' },
+  }
+
+  return labels[amenity]?.[locale] || amenity
+}
+
+
 const RoomDetail = ({ slug }: RoomDetailProps) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null)
@@ -41,6 +68,15 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
   const [error, setError] = useState<string | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [previewImageIndex, setPreviewImageIndex] = useState(0)
+
+  const router = useRouter()
+
+  const { locale } = useParams()
+
+  const normalizedLocale: Locale = 
+    locale && typeof locale === 'string' && (locale === 'es' || locale === 'en') 
+      ? locale 
+      : 'es'  // fallback
 
   useEffect(() => {
     const loadRoom = async () => {
@@ -483,7 +519,7 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
                     <div className='flex items-center gap-1 sm:gap-2'>
                       <Bed className='w-3 h-3 sm:w-4 sm:h-4' />
                       <span className='font-sans text-xs sm:text-sm md:text-base'>
-                        {selectedRoom.bedType}
+                         {getBedTypeLabel(selectedRoom?.bedType ?? '', normalizedLocale ?? 'es')}
                       </span>
                     </div>
                   </div>
@@ -540,9 +576,9 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
                       <span className='font-sans text-sm sm:text-base text-gray-600'>
                         Tipo de cama
                       </span>
-                      <span className='font-sans text-sm sm:text-base font-semibold text-gray-900'>
-                        {selectedRoom.bedType}
-                      </span>
+                   <span className='font-sans text-sm sm:text-base font-semibold text-gray-900'>
+                    {getBedTypeLabel(selectedRoom?.bedType ?? '', normalizedLocale ?? 'es')}
+                  </span>
                     </div>
                     <div className='flex justify-between items-center py-2 sm:py-3'>
                       <span className='font-sans text-sm sm:text-base text-gray-600'>
@@ -559,7 +595,10 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
 
                   {/* Botones de acción - Responsive */}
                   <div className='space-y-3 sm:space-y-4'>
-                    <button className='w-full relative font-semibold rounded-lg overflow-hidden transition-all duration-700 group py-3 sm:py-4 px-4 sm:px-6'>
+                  <button
+                      onClick={() => router.push('/booking')}
+                      className='w-full relative font-semibold rounded-lg overflow-hidden transition-all duration-700 group py-3 sm:py-4 px-4 sm:px-6'
+                    >
                       <span className='relative z-10 flex items-center justify-center text-white text-sm sm:text-base'>
                         Reservar Ahora
                         <div className='ml-2 w-2 h-2 bg-white/70 rounded-full group-hover:bg-white transition-colors duration-300' />
@@ -567,13 +606,6 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
 
                       <div className='absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black' />
                       <div className='absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700' />
-                    </button>
-
-                    <button className='w-full border border-gray-200/60 text-gray-700 hover:border-gray-300 py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold transition-all duration-500 hover:bg-gray-50/60 relative overflow-hidden group text-sm sm:text-base'>
-                      <span className='relative z-10'>
-                        Consultar Disponibilidad
-                      </span>
-                      <div className='absolute inset-0 bg-gradient-to-r from-gray-50/0 via-gray-100/40 to-gray-50/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-center'></div>
                     </button>
                   </div>
 
@@ -588,7 +620,7 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
                     <div className='flex items-center gap-2 sm:gap-3 text-gray-600'>
                       <Phone className='w-4 h-4 sm:w-5 sm:h-5' />
                       <span className='font-sans text-xs sm:text-sm'>
-                        +57 (2) 123-4567
+                         +57 315 4902239
                       </span>
                     </div>
                   </div>
@@ -618,27 +650,28 @@ const RoomDetail = ({ slug }: RoomDetailProps) => {
                 />
               </div>
 
-              <div className='relative z-10'>
-                <h2 className='font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6'>
-                  Amenidades y Servicios
-                </h2>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
-                  {selectedRoom.amenities?.map((amenity, index) => (
-                    <div
-                      key={index}
-                      className='flex items-center gap-2 sm:gap-3 p-3 rounded-lg bg-gray-50/60 hover:bg-gray-100/60 transition-all duration-300'
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div className='text-gray-600 flex-shrink-0'>
-                        {getAmenityIcon(amenity)}
-                      </div>
-                      <span className='font-sans text-sm sm:text-base text-gray-700'>
-                        {getAmenityText(amenity)}
-                      </span>
-                    </div>
-                  ))}
+           <div className='relative z-10'>
+            <h2 className='font-serif text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6'>
+              {normalizedLocale === 'es' ? 'Amenidades y Servicios' : 'Amenities & Services'}
+            </h2>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
+              {selectedRoom.amenities?.map((amenityObj, index) => (
+                <div
+                  key={index}
+                  className='flex items-center gap-2 sm:gap-3 p-3 rounded-lg bg-gray-50/60 hover:bg-gray-100/60 transition-all duration-300'
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div className='text-gray-600 flex-shrink-0'>
+                    {getAmenityIcon(amenityObj)}
+                  </div>
+                  <span className='font-sans text-sm sm:text-base text-gray-700'>
+                    {getAmenityLabel(amenityObj.amenity ?? amenityObj.customAmenity ?? '', normalizedLocale)}
+                  </span>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
+
             </div>
 
             {/* Galería de imágenes adicionales - Responsive */}
