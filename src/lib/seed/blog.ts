@@ -400,8 +400,9 @@ export async function seedBlog() {
       },
     })
   } catch (err) {
-    payload.logger.error('Failed to update BlogPage global', err)
-  }
+          payload.logger.error(`Failed to update BlogPage global ${err instanceof Error ? err.message : String(err)}`)
+      }
+
 
   return { count: createdPostIDs.length, posts: createdPostIDs }
 }
