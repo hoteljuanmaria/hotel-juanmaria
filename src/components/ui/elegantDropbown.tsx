@@ -141,6 +141,7 @@ const ElegantDropdown: React.FC<ElegantDropdownProps> = ({
             const active = selectedOption?.value === opt.value
             return (
               <button
+                type = "button"
                 key={opt.value}
                 onClick={() => handleSelect(opt)}
                 className={itemClasses(active)}
