@@ -154,8 +154,8 @@ export const ContactFormEmail: React.FC<ContactFormEmailProps> = ({
                 Carrera 28 No. 27-10, Barrio Centro, Tuluá, Valle del Cauca
               </Text>
               <Text style={styles.footerText}>
-                Teléfono: <Link href="tel:+573154902333" style={styles.linkDark}>+57 315 490-2333</Link> ·
-                WhatsApp: <Link href="tel:+573006078808" style={styles.linkDark}>+57 300 607-8808</Link>
+                Teléfono: <Link href="tel:+573154902339" style={styles.linkDark}>+57 315 490-2333</Link> ·
+                WhatsApp: <Link href="tel:+573154902339" style={styles.linkDark}> +57 315 490-2333</Link>
               </Text>
             </Section>
           </Section>

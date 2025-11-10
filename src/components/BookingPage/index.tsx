@@ -627,7 +627,7 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
         { key: "firstName", label: "Nombre *", type: "text", placeholder: "Tu nombre" },
         { key: "lastName", label: "Apellido *", type: "text", placeholder: "Tu apellido" },
         { key: "email", label: "Email *", type: "email", placeholder: "tu@email.com" },
-        { key: "phone", label: "Teléfono *", type: "tel", placeholder: "+57 300 123 4567" },
+        { key: "phone", label: "Teléfono *", type: "tel", placeholder: "+57 315 490 2239" },
       ].map(f => (
         <div key={f.key}>
           <label className="block font-sans text-sm font-medium text-gray-700 mb-2">{f.label}</label>
