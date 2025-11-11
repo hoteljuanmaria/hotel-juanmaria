@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react'
 import {
   Calendar,
   Users,
-Home,
+  Home,
   ChevronRight,
   Check,
   X,
@@ -280,7 +280,7 @@ const BookingPage = () => {
   }
 
   return (
-    <div className='booking-page min-h-screen relative'>
+    <div className='booking-page min-h-screen relative overflow-x-hidden'>
    {/* Background */}
 <div className="fixed inset-0 z-0">
   <Image
@@ -298,25 +298,52 @@ const BookingPage = () => {
 </div>
 
 {/* Content wrapper */}
-<div className="relative z-10 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
-  <div className="max-w-5xl mx-auto">
+<div className="relative z-10 pt-20 sm:pt-28 lg:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
+  <div className="max-w-5xl mx-auto w-full">
 
           {/* Header */}
-<div className="text-center mb-12">
-  <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+<div className="text-center mb-12 px-2">
+  <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 break-words">
     Pre-reserva tu estadía
   </h1>
-  <p className="font-sans text-lg md:text-xl font-light text-gray-700 max-w-2xl mx-auto">
+  <p className="font-sans text-base sm:text-lg md:text-xl font-light text-gray-700 max-w-2xl mx-auto">
     Completa el formulario para solicitar tu reserva. Te contactaremos pronto para confirmar disponibilidad.
   </p>
 </div>
 
-{/* Progress Steps (glass + shimmer) */}
+{/* Progress Steps - Mobile: Vertical, Desktop: Horizontal */}
 <div className="mb-8">
-  <div className="flex items-center justify-between">
+  {/* Mobile: Vertical Stack */}
+  <div className="md:hidden space-y-3">
+    {steps.map((step) => {
+      const isActive = currentStep === step.id
+      const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
+      return (
+        <div key={step.id} className="flex items-center gap-3">
+          <div
+            className={[
+              "relative group/step w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+              "bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl",
+              "transition-all duration-700 ease-out",
+              isActive ? "ring-2 ring-gray-800" : "",
+              isDone ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white" : "text-gray-800"
+            ].join(" ")}
+          >
+            {isDone ? <Check className="w-4 h-4" /> : <span className="text-sm font-medium">{step.id}</span>}
+          </div>
+          <span className={`font-sans text-sm ${currentStep >= step.id ? "text-gray-900 font-medium" : "text-gray-700"}`}>
+            {step.title}
+          </span>
+        </div>
+      )
+    })}
+  </div>
+
+  {/* Desktop: Horizontal */}
+  <div className="hidden md:flex items-center justify-between">
     {steps.map((step, index) => {
       const isActive = currentStep === step.id
-const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
+      const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
       return (
         <div key={step.id} className="flex items-center">
           <div
@@ -340,7 +367,7 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
           </span>
 
           {index < steps.length - 1 && (
-            <div className="mx-4 h-[2px] w-10 sm:w-16 lg:w-24 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 rounded-full opacity-70" />
+            <div className="mx-4 h-[2px] w-10 lg:w-16 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 rounded-full opacity-70" />
           )}
         </div>
       )
@@ -349,14 +376,14 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
 </div>
 
           {/* Content */}
-          <div className='bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 lg:p-10'>
+          <div className='bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-10'>
         {currentStep === 1 && (
   <div className="space-y-8">
     <h2 className="font-serif text-2xl md:text-3xl font-bold text-center">Fechas y huéspedes</h2>
 
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="grid grid-cols-1 gap-6">
       {/* Fechas de estadía (sin layout shift en error) */}
-<div className="lg:col-span-6">
+<div className="w-full">
   <label className="block font-sans text-sm font-medium text-gray-800 mb-2">
     Fechas de estadía
   </label>
@@ -375,11 +402,11 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
     ].join(" ")}
   >
     <div className="flex items-center justify-between h-full">
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         {formData.checkIn && formData.checkOut ? (
           <>
             <div className="font-sans text-sm font-light text-gray-600 mb-1">Fechas seleccionadas</div>
-            <div className="font-sans font-medium text-gray-900">
+            <div className="font-sans font-medium text-gray-900 truncate">
               {formatDate(formData.checkIn)} — {formatDate(formData.checkOut)}
             </div>
             <div className="font-sans text-sm font-light text-gray-800 mt-1">
@@ -393,7 +420,7 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
           </>
         )}
       </div>
-      <Calendar className="w-6 h-6 text-gray-500 ml-3" />
+      <Calendar className="w-6 h-6 text-gray-500 ml-3 shrink-0" />
     </div>
   </button>
 
@@ -403,62 +430,64 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
   </p>
 </div>
 
-<div className="lg:col-span-3 flex flex-col justify-end">
-  <label className="block font-sans text-sm font-medium text-gray-800 mb-2">Huéspedes</label>
+      {/* Huéspedes y Habitaciones en grid responsivo */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="flex flex-col">
+          <label className="block font-sans text-sm font-medium text-gray-800 mb-2">Huéspedes</label>
 
-  <div className="flex items-center justify-between h-[92px] px-2 rounded-xl bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl">
-    <button
-      type="button"
-      onClick={() => setFormData(p => ({ ...p, guests: Math.max(1, p.guests - 1) }))}
-      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90 disabled:opacity-40"
-      disabled={formData.guests <= 1}
-      aria-label="Disminuir huéspedes"
-    >
-      <Minus className="w-5 h-5" />
-    </button>
-    <div className="font-sans text-2xl font-normal text-gray-900 select-none">{formData.guests}</div>
-    <button
-      type="button"
-      onClick={() => setFormData(p => ({ ...p, guests: p.guests + 1 }))}
-      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90"
-      aria-label="Aumentar huéspedes"
-    >
-      <Plus className="w-5 h-5" />
-    </button>
-  </div>
+          <div className="flex items-center justify-between h-[92px] px-2 rounded-xl bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, guests: Math.max(1, p.guests - 1) }))}
+              className="relative font-semibold rounded-lg px-3 sm:px-4 py-3 transition-all duration-700 hover:bg-white/90 disabled:opacity-40"
+              disabled={formData.guests <= 1}
+              aria-label="Disminuir huéspedes"
+            >
+              <Minus className="w-5 h-5" />
+            </button>
+            <div className="font-sans text-2xl font-normal text-gray-900 select-none">{formData.guests}</div>
+            <button
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, guests: p.guests + 1 }))}
+              className="relative font-semibold rounded-lg px-3 sm:px-4 py-3 transition-all duration-700 hover:bg-white/90"
+              aria-label="Aumentar huéspedes"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+          </div>
 
-  {/* helper vacío para mantener altura */}
-  <p className="h-5 mt-2 font-sans text-sm">&nbsp;</p>
-</div>
+          {/* helper vacío para mantener altura */}
+          <p className="h-5 mt-2 font-sans text-sm">&nbsp;</p>
+        </div>
 
-<div className="lg:col-span-3 flex flex-col justify-end">
-  <label className="block font-sans text-sm font-medium text-gray-800 mb-2">Habitaciones</label>
+        <div className="flex flex-col">
+          <label className="block font-sans text-sm font-medium text-gray-800 mb-2">Habitaciones</label>
 
-  <div className="flex items-center justify-between h-[92px] px-2 rounded-xl bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl">
-    <button
-      type="button"
-      onClick={() => setFormData(p => ({ ...p, rooms: Math.max(1, p.rooms - 1) }))}
-      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90 disabled:opacity-40"
-      disabled={formData.rooms <= 1}
-      aria-label="Disminuir habitaciones"
-    >
-      <Minus className="w-5 h-5" />
-    </button>
-    <div className="font-sans text-2xl font-normal text-gray-900 select-none">{formData.rooms}</div>
-    <button
-      type="button"
-      onClick={() => setFormData(p => ({ ...p, rooms: p.rooms + 1 }))}
-      className="relative font-semibold rounded-lg px-4 py-3 transition-all duration-700 hover:bg-white/90"
-      aria-label="Aumentar habitaciones"
-    >
-      <Plus className="w-5 h-5" />
-    </button>
-  </div>
+          <div className="flex items-center justify-between h-[92px] px-2 rounded-xl bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, rooms: Math.max(1, p.rooms - 1) }))}
+              className="relative font-semibold rounded-lg px-3 sm:px-4 py-3 transition-all duration-700 hover:bg-white/90 disabled:opacity-40"
+              disabled={formData.rooms <= 1}
+              aria-label="Disminuir habitaciones"
+            >
+              <Minus className="w-5 h-5" />
+            </button>
+            <div className="font-sans text-2xl font-normal text-gray-900 select-none">{formData.rooms}</div>
+            <button
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, rooms: p.rooms + 1 }))}
+              className="relative font-semibold rounded-lg px-3 sm:px-4 py-3 transition-all duration-700 hover:bg-white/90"
+              aria-label="Aumentar habitaciones"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+          </div>
 
-  {/* helper vacío para mantener altura */}
-  <p className="h-5 mt-2 font-sans text-sm">&nbsp;</p>
-</div>
-
+          {/* helper vacío para mantener altura */}
+          <p className="h-5 mt-2 font-sans text-sm">&nbsp;</p>
+        </div>
+      </div>
     </div>
   </div>
 )}
@@ -481,7 +510,7 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
           return (
             <div
               key={room.id}
-              className="group relative p-6 rounded-xl bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl transition-all duration-700 hover:scale-[1.01] hover:-translate-y-1"
+              className="group relative p-4 sm:p-6 rounded-xl bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl transition-all duration-700 hover:scale-[1.01] hover:-translate-y-1"
             >
               {/* Card shimmer */}
               <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
@@ -489,10 +518,10 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
                 <div className="absolute bottom-4 left-6 w-4 h-0.5 bg-gradient-to-r from-transparent via-gray-300/50 to-transparent animate-pulse" style={{ animationDelay: '0.5s' }} />
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6">
                 {/* Image */}
-                <div className="lg:col-span-1">
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+                <div className="w-full">
+                  <div className="relative aspect-[16/9] sm:aspect-[4/3] rounded-lg overflow-hidden">
                     {room.featuredImage && (
                       <Image
                         src={room.featuredImage}
@@ -504,16 +533,16 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
                   </div>
                 </div>
 
-                {/* Details */}
-                <div className="lg:col-span-2 space-y-3">
+                {/* Details + Pricing unified for mobile */}
+                <div className="space-y-4">
                   <div>
-                    <h3 className="font-serif text-xl md:text-2xl font-bold text-gray-900 mb-1">{room.title}</h3>
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-1">{room.title}</h3>
                     <p className="font-sans text-sm font-light text-gray-700 leading-relaxed">
                       {room.shortDescription || room.description}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4 font-sans text-sm font-light text-gray-700">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 font-sans text-xs sm:text-sm font-light text-gray-700">
                     <span className="inline-flex items-center gap-1"><Users className="w-4 h-4"/>{' '}Máx {room.capacity} huéspedes</span>
                     <span className="inline-flex items-center gap-1"><Home className="w-4 h-4"/>{room.size}</span>
                     {getBedTypeLabel(room.bedType ?? '', normalizedLocale ?? 'es')}
@@ -534,79 +563,70 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
                       )}
                     </div>
                   )}
+
+                  {/* Pricing & Selection */}
+                  <div className="flex items-end justify-between pt-4 border-t border-white/20">
+                    <div>
+                      <div className="font-sans text-xl sm:text-2xl font-bold text-gray-900">{formatPrice(room.price)}</div>
+                      <div className="font-sans text-xs sm:text-sm font-light text-gray-700">por noche</div>
+
+                      {quantity > 0 && (
+                        <div className="mt-2 font-sans text-xs sm:text-sm">
+                          <div className="text-gray-700">
+                            {nights} noche{nights !== 1 ? 's' : ''} × {quantity} hab.
+                          </div>
+                          <div className="font-semibold text-gray-900">
+                            Total: {formatPrice(room.price * quantity * nights)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="shrink-0">
+                      {quantity === 0 ? (
+                        <NiceButton
+                          onClick={() => handleRoomSelection(room.id, 1)}
+                          className="relative font-semibold rounded-lg overflow-hidden transition-all duration-700 ease-out group text-white py-2 px-4 text-sm"
+                          aria-label={`Añadir ${room.title}`}
+                        >
+                          <span className="relative z-10">Añadir</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-black" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                        </NiceButton>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2 rounded-lg bg-white/70 backdrop-blur-xl border border-white/30">
+                            <button
+                              type="button"
+                              onClick={() => handleRoomSelection(room.id, Math.max(0, quantity - 1))}
+                              className="px-2 sm:px-3 py-2 rounded-l-lg hover:bg-white/90 transition-all duration-700"
+                              aria-label="Disminuir cantidad"
+                            >
+                              −
+                            </button>
+                            <span className="px-2 sm:px-4 py-2 min-w-[40px] sm:min-w-[56px] text-center font-medium text-sm">{quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRoomSelection(room.id, quantity + 1)}
+                              className="px-2 sm:px-3 py-2 rounded-r-lg hover:bg-white/90 transition-all duration-700"
+                              aria-label="Aumentar cantidad"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRoomSelection(room.id, 0)}
+                            className="font-sans text-xs text-gray-600 hover:text-gray-800 transition-colors text-center"
+                            aria-label="Quitar habitación"
+                          >
+                            Quitar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-
-               {/* Pricing & Selection – CTA claro */}
-<div className="lg:col-span-1 flex flex-col justify-between">
-  <div className="text-right">
-    <div className="font-sans text-2xl font-bold text-gray-900">{formatPrice(room.price)}</div>
-    <div className="font-sans text-sm font-light text-gray-700">por noche</div>
-
-    {quantity > 0 && (
-      <div className="mt-2 font-sans text-sm">
-        <div className="text-gray-700">
-          {nights} noche{nights !== 1 ? 's' : ''} × {quantity} hab.
-        </div>
-        <div className="font-semibold text-gray-900">
-          Total: {formatPrice(room.price * quantity * nights)}
-        </div>
-      </div>
-    )}
-  </div>
-
-  <div className="mt-4">
-    {quantity === 0 ? (
-      /* Estado inicial: botón primario “Añadir habitación” */
-      <NiceButton
-        onClick={() => handleRoomSelection(room.id, 1)}
-        className="
-          relative w-full font-semibold rounded-lg overflow-hidden transition-all duration-700 ease-out group
-          text-white py-2.5
-        "
-        aria-label={`Añadir ${room.title}`}
-      >
-        <span className="relative z-10 flex items-center justify-center">Añadir habitación</span>
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-black" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        <div className="pointer-events-none absolute top-1 right-2 w-1 h-3 bg-gradient-to-b from-transparent via-white/30 to-transparent rotate-45 animate-pulse" />
-      </NiceButton>
-    ) : (
-      /* Tras añadir: stepper + quitar */
-      <div className="flex items-center gap-3">
-        <div className="flex flex-1 items-center justify-between rounded-lg bg-white/70 backdrop-blur-xl border border-white/30">
-          <button
-            type="button"
-            onClick={() => handleRoomSelection(room.id, Math.max(0, quantity - 1))}
-            className="px-3 py-2 rounded-l-lg hover:bg-white/90 transition-all duration-700"
-            aria-label="Disminuir cantidad"
-          >
-            −
-          </button>
-          <span className="px-4 py-2 min-w-[56px] text-center font-medium">{quantity}</span>
-          <button
-            type="button"
-            onClick={() => handleRoomSelection(room.id, quantity + 1)}
-            className="px-3 py-2 rounded-r-lg hover:bg-white/90 transition-all duration-700"
-            aria-label="Aumentar cantidad"
-          >
-            +
-          </button>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => handleRoomSelection(room.id, 0)}
-          className="font-sans text-xs text-gray-600 hover:text-gray-800 transition-colors"
-          aria-label="Quitar habitación"
-        >
-          Quitar
-        </button>
-      </div>
-    )}
-
-  </div>
-</div>
-
               </div>
             </div>
           )
@@ -691,19 +711,19 @@ const isDone = currentStep > step.id || (step.id === 4 && currentStep === 4)
             
 
             {currentStep < 4 && (
-  <div className="flex justify-between mt-8 pt-6 border-t border-white/30">
-    <NiceButton onClick={prevStep} disabled={currentStep === 1}>
+  <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-0 mt-8 pt-6 border-t border-white/30">
+    <NiceButton onClick={prevStep} disabled={currentStep === 1} className="w-full sm:w-auto">
       Anterior
     </NiceButton>
 
-    <div className="space-x-4">
+    <div className="flex flex-col sm:flex-row gap-4 sm:space-x-4 sm:gap-0">
       {currentStep < 3 && (
-        <NiceButton onClick={nextStep}>
+        <NiceButton onClick={nextStep} className="w-full sm:w-auto">
           Siguiente
         </NiceButton>
       )}
       {currentStep === 3 && (
-        <NiceButton onClick={handleSubmit} disabled={submitting}>
+        <NiceButton onClick={handleSubmit} disabled={submitting} className="w-full sm:w-auto">
           {submitting ? 'Enviando…' : 'Enviar pre-reserva'}
         </NiceButton>
       )}
