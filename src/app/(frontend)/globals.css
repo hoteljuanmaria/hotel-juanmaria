@@ -7,6 +7,23 @@
   }
 }
 
+/* globals.css */
+html, body, #__next {
+  overflow-x: hidden;       /* evita scroll horizontal */
+  overscroll-behavior-x: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Evita pan horizontal accidental dentro del contenido principal */
+.booking-root {
+  touch-action: pan-y; /* permite sólo desplazamiento vertical */
+}
+
+/* Opcional: quita scrollbar visual si usas overflow-x-auto en algún sitio */
+.no-scrollbar {
+  scrollbar-width: none; /* firefox */
+}
+.no-scrollbar::-webkit-scrollbar { display: none; } /* chrome */
 
 /* Force light mode always - Override any dark mode styles */
 html,
