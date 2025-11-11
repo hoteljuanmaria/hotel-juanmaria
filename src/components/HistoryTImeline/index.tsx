@@ -19,7 +19,6 @@ interface TimelineEvent {
     | 'aniversario'
     | 'actual'
   importance: 'alto' | 'medio' | 'bajo'
-  icon: string
 }
 
 interface HistoryStats {
@@ -82,8 +81,7 @@ export default function HistoryTimeline({ timelineEvents, historyStats }: Histor
             title: event.title || '',
             description: event.description || '',
             type: event.type || 'hito',
-            importance: event.importance || 'medio',
-            icon: event.icon || 'calendar',
+            importance: event.importance || 'medio'
           }))
 
           setTimeline(processedTimeline.sort((a, b) => a.year - b.year))
