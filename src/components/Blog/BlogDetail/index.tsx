@@ -337,7 +337,7 @@ export default function BlogDetail({
                            prose-headings:font-serif prose-headings:text-gray-900
                            prose-p:text-gray-700 prose-strong:text-gray-900
                            prose-a:underline hover:prose-a:no-underline
-                           prose-li:marker:text-gray-400'
+                           prose-li:marker:text-gray-400 text-justify'
               />
             ) : (
               <p className='text-gray-500'>[Sin contenido]</p>

@@ -13,6 +13,7 @@ import {
   Instagram,
   Linkedin,
 } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 
 interface ContactInfo {
   hotel: {
@@ -68,6 +69,7 @@ type FooterProps = {
   }
 }
 
+
 const Footer: React.FC<FooterProps> = ({
   contactInfo,
   siteSettings,
@@ -81,6 +83,7 @@ const Footer: React.FC<FooterProps> = ({
   const [showScrollTop, setShowScrollTop] = useState(false)
   const threshold = options?.scrollTopThreshold ?? 400
   const showScrollBtn = options?.showScrollTopEnabled !== false
+
 
   useEffect(() => {
     if (!showScrollBtn) return
@@ -119,9 +122,11 @@ const Footer: React.FC<FooterProps> = ({
       }))
   }
 
-  // No loading state here; data comes from server component
-
   const socialLinks = getSocialLinks()
+
+  const searchParams = useSearchParams()
+  const locale = searchParams.get('locale') || 'es' // idioma por defecto
+  const label = locale === 'en' ? 'Contact us' : 'Contáctenos'
 
   return (
     <div>
@@ -152,7 +157,7 @@ const Footer: React.FC<FooterProps> = ({
 
                 {/* Social media - Only show if we have social links */}
                 {socialLinks.length > 0 && (
-                  <div className='flex space-x-3'>
+                  <div className='flex space-x-4'>
                     {socialLinks.map((social) => (
                       <Link
                         key={social.label}
@@ -173,6 +178,14 @@ const Footer: React.FC<FooterProps> = ({
                         <Phone className='w-4 h-4 text-gray-600 hover:text-gray-900 transition-colors duration-300' />
                       </Link>
                     )}
+                    <p className='text-xs text-gray-500 mt-3 text-center'>
+                        <Link
+                          href={`/${locale}/contact`}
+                          className='text-gray-700 hover:text-gray-900 underline underline-offset-2 decoration-gray-400 hover:decoration-gray-600 transition-all duration-300'
+                        >
+                          {label}
+                        </Link>
+                      </p>
                   </div>
                 )}
               </div>

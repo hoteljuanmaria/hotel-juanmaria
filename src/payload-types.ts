@@ -2771,7 +2771,6 @@ export interface AboutPage {
     | null;
   timelineEvents?:
     | {
-        icon: string;
         year: number;
         /**
          * Optional specific date within the year

@@ -181,7 +181,7 @@ const ServiceDetail = ({ experienceData }: Props) => {
                 <h2 className='font-serif text-xl md:text-2xl font-bold text-gray-900 mb-4'>
                   Sobre Este Servicio
                 </h2>
-                <div className='font-sans text-sm md:text-base text-gray-700 leading-relaxed space-y-3'>
+                <div className='font-sans text-sm md:text-base text-gray-700 leading-relaxed space-y-3 text-justify'>
                   {((selectedService as any).longDescription as any) ? (
                     <p>{(selectedService as any).longDescription}</p>
                   ) : (
