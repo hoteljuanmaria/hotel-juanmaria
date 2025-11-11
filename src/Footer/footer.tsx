@@ -13,7 +13,6 @@ import {
   Instagram,
   Linkedin,
 } from 'lucide-react'
-import { useSearchParams } from 'next/navigation'
 
 interface ContactInfo {
   hotel: {
@@ -124,10 +123,6 @@ const Footer: React.FC<FooterProps> = ({
 
   const socialLinks = getSocialLinks()
 
-  const searchParams = useSearchParams()
-  const locale = searchParams.get('locale') || 'es' // idioma por defecto
-  const label = locale === 'en' ? 'Contact us' : 'Contáctenos'
-
   return (
     <div>
       <footer className='relative bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden'>
@@ -180,10 +175,9 @@ const Footer: React.FC<FooterProps> = ({
                     )}
                     <p className='text-xs text-gray-500 mt-3 text-center'>
                         <Link
-                          href={`/${locale}/contact`}
+                          href='/contact'    
                           className='text-gray-700 hover:text-gray-900 underline underline-offset-2 decoration-gray-400 hover:decoration-gray-600 transition-all duration-300'
                         >
-                          {label}
                         </Link>
                       </p>
                   </div>
