@@ -147,10 +147,24 @@ const BookingPage = () => {
   }
 
  const filterAvailableRooms = () => {
-    // Mostrar todas las habitaciones disponibles
-    const filtered = allRooms.filter((room) => room.available)
-    setFilteredRooms(filtered)
+  let filtered = []
+
+  if (formData.guests < 4) {
+    // Mostrar habitaciones disponibles con capacidad mínima
+    const guestsPerRoom = Math.ceil(formData.guests / formData.rooms)
+
+    filtered = allRooms.filter(room => {
+      if (!room.available) return false
+      return room.capacity >= guestsPerRoom
+    })
+  } else {
+    // Para 4 o más huéspedes, mostrar todas las habitaciones disponibles
+    filtered = allRooms.filter(room => room.available)
   }
+
+  setFilteredRooms(filtered)
+}
+
 
   // Calcular capacidad total de habitaciones seleccionadas
   const getTotalCapacity = () => {
@@ -166,21 +180,14 @@ const BookingPage = () => {
     if (!room) return false
     
     // Contar total de habitaciones seleccionadas
-    const totalRooms = formData.selectedRooms.reduce((sum, sr) => sum + sr.quantity, 0)
+    const totalRooms = getTotalRooms()
     
-    // Si ya tiene esta habitación, permitir si no excede 5 total
-    const existingRoom = formData.selectedRooms.find(sr => sr.roomId === roomId)
-    if (existingRoom) {
-      return totalRooms < 5
-    }
+    // No permitir exceder el número de habitaciones que el usuario indicó
+    if (totalRooms >= formData.rooms) return false
     
-    // Si es nueva habitación, verificar que no exceda 5
-    if (totalRooms >= 5) return false
-    
-    const currentCapacity = getTotalCapacity()
-    const newCapacity = currentCapacity + room.capacity
-    
-    return newCapacity <= formData.guests + 2 // Permitir un pequeño margen
+    // Permitir añadir cualquier habitación mientras no exceda el límite de habitaciones
+    // La validación de capacidad se hace cuando intenta avanzar de paso
+    return true
   }
 
   // Contar total de habitaciones seleccionadas
@@ -237,13 +244,17 @@ const BookingPage = () => {
           newErrors.rooms = 'Debe haber al menos 1 habitación'
         break
      case 2:
+        const totalSelectedRooms = getTotalRooms()
+        const totalCapacity = getTotalCapacity()
+        
         if (formData.selectedRooms.length === 0) {
-          newErrors.rooms = 'Selecciona al menos una habitación'
-        } else {
-          const totalCapacity = getTotalCapacity()
-          if (totalCapacity < formData.guests) {
-            newErrors.rooms = `Las habitaciones seleccionadas tienen capacidad para ${totalCapacity} huésped${totalCapacity !== 1 ? 'es' : ''}, pero necesitas acomodar ${formData.guests}. Añade más habitaciones o aumenta la cantidad.`
-          }
+          newErrors.rooms = `Debes seleccionar ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''}`
+        } else if (totalSelectedRooms < formData.rooms) {
+          newErrors.rooms = `Has seleccionado ${totalSelectedRooms} de ${formData.rooms} habitaciones requeridas. Selecciona ${formData.rooms - totalSelectedRooms} más.`
+        } else if (totalSelectedRooms > formData.rooms) {
+          newErrors.rooms = `Has seleccionado ${totalSelectedRooms} habitaciones pero indicaste ${formData.rooms}. Ajusta tu selección o regresa al paso anterior.`
+        } else if (totalCapacity < formData.guests) {
+          newErrors.rooms = `Las ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''} seleccionadas tienen capacidad para ${totalCapacity} huésped${totalCapacity !== 1 ? 'es' : ''}, pero necesitas acomodar ${formData.guests}.`
         }
         break
       case 3:
@@ -491,6 +502,7 @@ const BookingPage = () => {
               onClick={() => setFormData(p => ({ ...p, guests: p.guests + 1 }))}
               className="relative font-semibold rounded-lg px-3 sm:px-4 py-3 transition-all duration-700 hover:bg-white/90"
               aria-label="Aumentar huéspedes"
+              disabled={formData.guests >= 10} // <- aquí
             >
               <Plus className="w-5 h-5" />
             </button>
@@ -537,11 +549,76 @@ const BookingPage = () => {
   <div className="space-y-6">
     <h2 className="font-serif text-2xl md:text-3xl font-bold">Selecciona tus habitaciones</h2>
 
-    {filteredRooms.length === 0 ? (
+{filteredRooms.length === 0 ? (
       <div className="text-center py-10">
         <p className="font-sans text-gray-800 font-medium">No hay habitaciones disponibles para los criterios seleccionados</p>
       </div>
+    ) : getTotalRooms() === formData.rooms && getTotalCapacity() >= formData.guests ? (
+      // VISTA COLAPSADA - Selección completa
+      <div className="space-y-4">
+        <div className="p-5 rounded-xl bg-gradient-to-br from-gray-50 to-white-50 border-2 border-gray-400 shadow-lg">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="flex-1">
+              <h3 className="font-serif text-lg font-bold text-gray-900 mb-1">
+                Habitaciones seleccionadas
+              </h3>
+              <p className="font-sans text-sm text-gray-800">
+                {formData.rooms} habitación{formData.rooms !== 1 ? 'es' : ''} • Capacidad total: {getTotalCapacity()}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                // Trigger para "editar" - podemos hacer scroll o simplemente cambiar un estado
+                setFormData(prev => ({ ...prev, selectedRooms: [] }))
+              }}
+              className="px-4 py-2 rounded-lg font-sans text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 transition-all duration-300"
+            >
+              Editar
+            </button>
+          </div>
+
+          {/* Lista compacta de habitaciones seleccionadas */}
+          <div className="space-y-3">
+            {formData.selectedRooms.map(sr => {
+              const room = filteredRooms.find(r => r.id === sr.roomId)
+              if (!room) return null
+              const nights = calculateNights(formData.checkIn, formData.checkOut)
+              return (
+                <div key={room.id} className="flex items-center justify-between p-4 rounded-lg bg-white border border-gray-200">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {room.featuredImage && (
+                      <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                        <Image
+                          src={room.featuredImage}
+                          alt={room.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-sans font-bold text-gray-900 truncate">{room.title}</h4>
+                      <p className="font-sans text-sm text-gray-600">
+                        {sr.quantity > 1 ? `${sr.quantity} habitaciones • ` : ''}Capacidad: {room.capacity * sr.quantity}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0 ml-3">
+                    <p className="font-sans font-bold text-gray-900 whitespace-nowrap">
+                      {formatPrice(room.price * sr.quantity * nights)}
+                    </p>
+                    <p className="font-sans text-xs text-gray-600">
+                      {nights} noche{nights !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
     ) : (
+      // VISTA EXPANDIDA - Seleccionando habitaciones
       <div className="space-y-6">
         {filteredRooms.map(room => {
           const selectedRoom = formData.selectedRooms.find(sr => sr.roomId === room.id)
@@ -622,111 +699,93 @@ const BookingPage = () => {
                         </div>
                       )}
                     </div>
-
-                   <div className="shrink-0">
+                    <div className="shrink-0">
                       {quantity === 0 ? (
-                        <NiceButton
-                          onClick={() => handleRoomSelection(room.id, 1)}
-                          disabled={!canAddRoom(room.id, 0)}
-                          className="relative font-semibold rounded-lg overflow-hidden transition-all duration-700 ease-out group text-white py-2 px-4 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                          aria-label={`Añadir ${room.title}`}
-                        >
-                          <span className="relative z-10">Añadir</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-black" />
-                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                        </NiceButton>
+                      <button
+                        onClick={() => handleRoomSelection(room.id, 1)}
+                        disabled={!canAddRoom(room.id, 0)}
+                        className="relative px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-sans font-semibold text-sm sm:text-base text-white bg-gradient-to-r from-gray-900 via-gray-800 to-black hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg"
+                        aria-label={`Añadir ${room.title}`}
+                      >
+                        Añadir
+                      </button>
                       ) : (
-                        <div className="flex flex-col gap-2">
-                          <div className="flex items-center gap-2 rounded-lg bg-white/70 backdrop-blur-xl border border-white/30">
-                            <button
-                              type="button"
-                              onClick={() => handleRoomSelection(room.id, Math.max(0, quantity - 1))}
-                              className="px-2 sm:px-3 py-2 rounded-l-lg hover:bg-white/90 transition-all duration-700"
-                              aria-label="Disminuir cantidad"
-                            >
-                              −
-                            </button>
-                            <span className="px-2 sm:px-4 py-2 min-w-[40px] sm:min-w-[56px] text-center font-medium text-sm">{quantity}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRoomSelection(room.id, quantity + 1)}
-                              disabled={!canAddRoom(room.id, quantity)}
-                              className="px-2 sm:px-3 py-2 rounded-r-lg hover:bg-white/90 transition-all duration-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                              aria-label="Aumentar cantidad"
-                            >
-                              +
-                            </button>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRoomSelection(room.id, 0)}
-                            className="font-sans text-xs text-gray-600 hover:text-gray-800 transition-colors text-center"
-                            aria-label="Quitar habitación"
-                          >
-                            Quitar
-                          </button>
+                      <div className="flex flex-col gap-2.5">
+                        <div className="flex flex-col sm:flex-row items-center gap-2.5 rounded-xl bg-white/80 backdrop-blur-xl border-2 border-gray-200 shadow-md p-1 sm:p-0">
+                        <button
+                          type="button"
+                          onClick={() => handleRoomSelection(room.id, Math.max(0, quantity - 1))}
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-l-xl hover:bg-gray-100 active:bg-gray-200 transition-all duration-200 font-semibold text-base sm:text-lg"
+                          aria-label="Disminuir cantidad"
+                        >
+                          −
+                        </button>
+                        <span className="px-4 sm:px-5 py-2 sm:py-2.5 text-center font-bold text-sm sm:text-base text-gray-900 min-w-[50px] sm:min-w-[60px]">{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRoomSelection(room.id, quantity + 1)}
+                          disabled={!canAddRoom(room.id, quantity)}
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-r-xl hover:bg-gray-100 active:bg-gray-200 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed font-semibold text-base sm:text-lg"
+                          aria-label="Aumentar cantidad"
+                        >
+                          +
+                        </button>
                         </div>
+                        <button
+                        type="button"
+                        onClick={() => handleRoomSelection(room.id, 0)}
+                        className="font-sans text-sm font-medium text-red-600 hover:text-red-700 active:text-red-800 transition-colors text-center py-1"
+                        aria-label="Quitar habitación"
+                        >
+                        Quitar
+                        </button>
+                      </div>
                       )}
                     </div>
+                    </div>
+                  </div>
                   </div>
                 </div>
+                )
+              })}
               </div>
-            </div>
-          )
-        })}
-      </div>
     )}
 
-
-    {/* Banner de capacidad - Siempre visible y más grande */}
+  {/* Banner de capacidad y habitaciones - Siempre visible */}
     <div className={`p-5 rounded-xl border-2 ${
-      getTotalCapacity() >= formData.guests 
-        ? 'bg-green-100 border-green-400' 
+      getTotalRooms() === formData.rooms && getTotalCapacity() >= formData.guests
+        ? 'bg-gray-100 border-gray-400' 
         : 'bg-amber-100 border-amber-400'
     }`}>
       <div className="flex items-start gap-3">
         <div className="text-2xl">
-          {getTotalCapacity() >= formData.guests ? '✓' : '⚠️'}
+          {getTotalRooms() === formData.rooms && getTotalCapacity() >= formData.guests ? '✓' : '⚠️'}
         </div>
         <div className="flex-1">
           <p className="font-sans text-base font-bold mb-1">
-            {getTotalCapacity() >= formData.guests 
-              ? 'Capacidad suficiente' 
-              : 'Necesitas más capacidad'}
+            {getTotalRooms() === formData.rooms && getTotalCapacity() >= formData.guests
+              ? 'Selección completa' 
+              : getTotalRooms() < formData.rooms
+                ? 'Faltan habitaciones por seleccionar'
+                : getTotalRooms() > formData.rooms
+                  ? 'Has seleccionado más habitaciones de las requeridas'
+                  : 'Necesitas más capacidad'}
           </p>
           <p className="font-sans text-sm">
             {formData.selectedRooms.length === 0 
-              ? `Necesitas acomodar ${formData.guests} huésped${formData.guests !== 1 ? 'es' : ''}. Selecciona tus habitaciones.`
-              : `${getTotalCapacity()} de ${formData.guests} huésped${formData.guests !== 1 ? 'es' : ''} acomodado${formData.guests !== 1 ? 's' : ''}`
+              ? `Debes seleccionar ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''} para ${formData.guests} huésped${formData.guests !== 1 ? 'es' : ''}.`
+              : getTotalRooms() !== formData.rooms
+                ? `${getTotalRooms()} de ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''} seleccionada${getTotalRooms() !== 1 ? 's' : ''}`
+                : `${getTotalCapacity()} de ${formData.guests} huésped${formData.guests !== 1 ? 'es' : ''} acomodado${formData.guests !== 1 ? 's' : ''}`
             }
           </p>
           <p className="font-sans text-xs mt-1 opacity-75">
-            Habitaciones seleccionadas: {getTotalRooms()} de 5 máximo
+            {Math.ceil(formData.guests / formData.rooms)} huésped{Math.ceil(formData.guests / formData.rooms) !== 1 ? 'es' : ''} por habitación como mínimo
           </p>
         </div>
       </div>
     </div>
 
-    {/* Alerta de límite alcanzado */}
-    {getTotalRooms() >= 5 && (
-      <div className="p-5 rounded-xl border-2 bg-blue-50 border-blue-400">
-        <div className="flex items-start gap-3">
-          <div className="text-2xl">ℹ️</div>
-          <div className="flex-1">
-            <p className="font-sans text-base font-bold mb-1">
-              Límite de habitaciones alcanzado
-            </p>
-            <p className="font-sans text-sm mb-2">
-              Has alcanzado el máximo de 5 habitaciones por reserva online. Para reservas más grandes, por favor contacta directamente al hotel.
-            </p>
-            <div className="font-sans text-sm space-y-1">
-              <p><strong>Teléfono:</strong> <a href="tel:+573154902239" className="text-blue-600 hover:underline">+57 315 490 2239</a></p>
-              <p><strong>Email:</strong> <a href="mailto:hoteljuanmaria2015@gmail.com" className="text-blue-600 hover:underline">hoteljuanmaria2015@gmail.com</a></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
     
     {errors.rooms && <p className="font-sans text-red-500 text-sm text-center">{errors.rooms}</p>}
   </div>
@@ -828,30 +887,30 @@ const BookingPage = () => {
 
 {currentStep > 1 && currentStep < 4 && formData.selectedRooms.length > 0 && (
   <div className="mt-8 pt-6 border-t border-white/30">
-    <div className="relative bg-white/70 backdrop-blur-2xl rounded-xl p-5 border border-white/30 shadow-2xl">
+    <div className="relative bg-white/90 backdrop-blur-2xl rounded-2xl p-5 sm:p-6 border-2 border-gray-200 shadow-2xl">
       {/* shimmer */}
       <div className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700">
         <div className="absolute top-3 right-5 w-1 h-5 bg-gradient-to-b from-transparent via-gray-300/50 to-transparent rotate-45 animate-pulse" />
       </div>
-<h3 className="font-serif text-xl font-bold mb-4">Resumen de la reserva</h3>
-<div className="space-y-5 font-sans text-sm">
+<h3 className="font-serif text-xl sm:text-2xl font-bold mb-5 text-gray-900">Resumen de la reserva</h3>
+<div className="space-y-4 font-sans text-sm sm:text-base">
 
   {/* Fechas */}
-  <div className="flex justify-between">
-    <span className="font-medium text-gray-700">Fechas:</span>
-    <span className="text-gray-900">{formatDate(formData.checkIn)} — {formatDate(formData.checkOut)}</span>
+  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0 pb-3 border-b border-gray-200">
+    <span className="font-semibold text-gray-700">Fechas</span>
+    <span className="text-gray-900 font-medium">{formatDate(formData.checkIn)} — {formatDate(formData.checkOut)}</span>
   </div>
 
   {/* Noches */}
-  <div className="flex justify-between">
-    <span className="font-medium text-gray-700">Noches:</span>
-    <span className="text-gray-900">{calculateNights(formData.checkIn, formData.checkOut)}</span>
+  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0 pb-3 border-b border-gray-200">
+    <span className="font-semibold text-gray-700">Noches</span>
+    <span className="text-gray-900 font-medium">{calculateNights(formData.checkIn, formData.checkOut)}</span>
   </div>
 
   {/* Huéspedes */}
-  <div className="flex justify-between">
-    <span className="font-medium text-gray-700">Huéspedes:</span>
-    <span className="text-gray-900">{formData.guests}</span>
+  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0 pb-3 border-b border-gray-200">
+    <span className="font-semibold text-gray-700">Huéspedes</span>
+    <span className="text-gray-900 font-medium">{formData.guests}</span>
   </div>
 
   {/* Habitaciones */}
@@ -880,16 +939,16 @@ const BookingPage = () => {
     {/* Capacidad total */}
     <div className="flex justify-between items-center mt-3 font-medium text-sm">
       <span>Total capacidad:</span>
-      <span className={getTotalCapacity() < formData.guests ? "text-red-600" : "text-green-600"}>
+      <span className={getTotalCapacity() < formData.guests ? "text-red-600" : "text-gray-600"}>
         {getTotalCapacity()} huésped{getTotalCapacity() !== 1 ? 'es' : ''}
       </span>
     </div>
   </div>
 
   {/* Total precio */}
-  <div className="flex justify-between font-semibold text-lg pt-4 border-t border-gray-200">
-    <span>Total estimado:</span>
-    <span>{formatPrice(getTotalPrice())}</span>
+  <div className="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-0 pt-5 border-t-2 border-gray-300">
+    <span className="font-bold text-lg text-gray-900">Total estimado (IVA incluido)</span>
+    <span className="font-bold text-2xl sm:text-xl text-gray-900">{formatPrice(getTotalPrice())}</span>
   </div>
 </div>
 

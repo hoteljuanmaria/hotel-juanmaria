@@ -27,6 +27,11 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
   )
   const [tempToDate, setTempToDate] = useState<Date | undefined>()
 
+  // Máxima fecha seleccionable: 3 meses desde hoy
+  const maxSelectableDate = new Date()
+  maxSelectableDate.setMonth(maxSelectableDate.getMonth() + 3)
+  maxSelectableDate.setHours(0, 0, 0, 0)
+
   const months = [
     'Enero',
     'Febrero',
@@ -68,12 +73,17 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
       days.push(colombiaDate)
     }
 
-
     return days
   }
 
+  const isBeyondMaxDate = (date: Date) => {
+    const checkDate = new Date(date)
+    checkDate.setHours(0, 0, 0, 0)
+    return checkDate > maxSelectableDate
+  }
+
   const handleDateClick = (date: Date) => {
-    if (isPastDate(date)) return
+    if (isPastDate(date) || isBeyondMaxDate(date)) return
 
     // If no start date selected or clicking before start date
     if (!selectedRange.from || date < selectedRange.from) {
@@ -102,6 +112,7 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
       selectedRange.from &&
       !selectedRange.to &&
       !isPastDate(date) &&
+      !isBeyondMaxDate(date) &&
       date >= selectedRange.from
     ) {
       setTempToDate(date)
@@ -283,30 +294,29 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
             const rangeEnd = isRangeEnd(date)
             const today = isToday(date)
             const past = isPastDate(date)
+            const beyond = isBeyondMaxDate(date)
 
             return (
               <button
                 key={date.getTime()}
                 onClick={() => handleDateClick(date)}
                 onMouseEnter={() => handleMouseEnter(date)}
-                disabled={past}
+                disabled={past || beyond}
                 className={`
                   relative p-2 text-sm font-medium rounded-lg transition-all duration-200
                   ${
-                   past
-  ? 'text-gray-300 cursor-not-allowed'
-  : 'text-gray-700 cursor-pointer hover:text-current'
-
+                    past || beyond
+                      ? 'text-gray-300 cursor-not-allowed'
+                      : 'text-gray-700 cursor-pointer hover:text-current'
                   }
                   ${
-  selected
-    ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white hover:text-white shadow-lg z-10'
-    : ''
-}
-
+                    selected
+                      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white hover:text-white shadow-lg z-10'
+                      : ''
+                  }
                   ${inRange && !selected ? 'bg-gray-900/20 text-gray-900' : ''}
                   ${today && !selected ? 'ring-2 ring-gray-400/50' : ''}
-                  ${!past && !selected && !inRange ? 'hover:bg-gray-100/60 hover:scale-105' : ''}
+                  ${!past && !selected && !inRange && !beyond ? 'hover:bg-gray-100/60 hover:scale-105' : ''}
                 `}
               >
                 <span className='relative z-20'>{date.getDate()}</span>
@@ -368,6 +378,14 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                 Selecciona la fecha de salida
               </div>
             )}
+            <div className='text-xs text-gray-400 mt-2'>
+              Nota: solo se pueden seleccionar fechas hasta{' '}
+              {maxSelectableDate.toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </div>
           </div>
         )}
 
