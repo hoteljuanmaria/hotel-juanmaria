@@ -59,11 +59,11 @@ const BookingPage = () => {
 
   const { locale } = useParams()
 
-  const normalizedLocale: Locale = 
-    locale && typeof locale === 'string' && (locale === 'es' || locale === 'en') 
-      ? locale 
+  const normalizedLocale: Locale =
+    locale && typeof locale === 'string' && (locale === 'es' || locale === 'en')
+      ? locale
       : 'es'  // fallback
-  
+
   const searchParams = useSearchParams()
   const [currentStep, setCurrentStep] = useState(1)
   const [allRooms, setAllRooms] = useState<BookingRoom[]>([])
@@ -73,7 +73,7 @@ const BookingPage = () => {
   const [showCalendar, setShowCalendar] = useState(false)
   const [dateRange, setDateRange] = useState<DateRange>({})
 
-  
+
 
   const [formData, setFormData] = useState<BookingFormData>({
     checkIn: '',
@@ -130,8 +130,14 @@ const BookingPage = () => {
       const urlCheckOut = searchParams.get('checkOut')
 
       if (urlCheckIn && urlCheckOut) {
-        const checkInDate = new Date(urlCheckIn)
-        const checkOutDate = new Date(urlCheckOut)
+        // Parsear fechas como locales (YYYY-MM-DD) sin conversión UTC
+        const parseLocalDate = (dateStr: string) => {
+          const [year, month, day] = dateStr.split('-').map(Number)
+          return new Date(year, month - 1, day, 12, 0, 0, 0)
+        }
+
+        const checkInDate = parseLocalDate(urlCheckIn)
+        const checkOutDate = parseLocalDate(urlCheckOut)
         setDateRange({ from: checkInDate, to: checkOutDate })
         setFormData((prev) => ({
           ...prev,
@@ -178,13 +184,13 @@ const BookingPage = () => {
   const canAddRoom = (roomId: string, currentQuantity: number) => {
     const room = allRooms.find((r) => r.id === roomId)
     if (!room) return false
-    
+
     // Contar total de habitaciones seleccionadas
     const totalRooms = getTotalRooms()
-    
+
     // No permitir exceder el número de habitaciones que el usuario indicó
     if (totalRooms >= formData.rooms) return false
-    
+
     // Permitir añadir cualquier habitación mientras no exceda el límite de habitaciones
     // La validación de capacidad se hace cuando intenta avanzar de paso
     return true
@@ -198,10 +204,18 @@ const BookingPage = () => {
   const handleDateSelect = (newDateRange: DateRange) => {
     setDateRange(newDateRange)
     if (newDateRange.from && newDateRange.to) {
+      // Convertir fechas a formato YYYY-MM-DD en hora local (sin conversión UTC)
+      const formatLocalDate = (date: Date) => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+
       setFormData((prev) => ({
         ...prev,
-        checkIn: newDateRange.from!.toISOString().split('T')[0],
-        checkOut: newDateRange.to!.toISOString().split('T')[0],
+        checkIn: formatLocalDate(newDateRange.from!),
+        checkOut: formatLocalDate(newDateRange.to!),
       }))
       setShowCalendar(false)
     }
@@ -246,7 +260,7 @@ const BookingPage = () => {
      case 2:
         const totalSelectedRooms = getTotalRooms()
         const totalCapacity = getTotalCapacity()
-        
+
         if (formData.selectedRooms.length === 0) {
           newErrors.rooms = `Debes seleccionar ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''}`
         } else if (totalSelectedRooms < formData.rooms) {
@@ -315,7 +329,10 @@ const BookingPage = () => {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return ''
-    return new Date(dateString).toLocaleDateString('es-ES', {
+    // Parsear la fecha como local (YYYY-MM-DD) sin conversión UTC
+    const [year, month, day] = dateString.split('-').map(Number)
+    const localDate = new Date(year, month - 1, day)
+    return localDate.toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -754,7 +771,7 @@ const BookingPage = () => {
   {/* Banner de capacidad y habitaciones - Siempre visible */}
     <div className={`p-5 rounded-xl border-2 ${
       getTotalRooms() === formData.rooms && getTotalCapacity() >= formData.guests
-        ? 'bg-gray-100 border-gray-400' 
+        ? 'bg-gray-100 border-gray-400'
         : 'bg-amber-100 border-amber-400'
     }`}>
       <div className="flex items-start gap-3">
@@ -764,7 +781,7 @@ const BookingPage = () => {
         <div className="flex-1">
           <p className="font-sans text-base font-bold mb-1">
             {getTotalRooms() === formData.rooms && getTotalCapacity() >= formData.guests
-              ? 'Selección completa' 
+              ? 'Selección completa'
               : getTotalRooms() < formData.rooms
                 ? 'Faltan habitaciones por seleccionar'
                 : getTotalRooms() > formData.rooms
@@ -772,7 +789,7 @@ const BookingPage = () => {
                   : 'Necesitas más capacidad'}
           </p>
           <p className="font-sans text-sm">
-            {formData.selectedRooms.length === 0 
+            {formData.selectedRooms.length === 0
               ? `Debes seleccionar ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''} para ${formData.guests} huésped${formData.guests !== 1 ? 'es' : ''}.`
               : getTotalRooms() !== formData.rooms
                 ? `${getTotalRooms()} de ${formData.rooms} habitación${formData.rooms !== 1 ? 'es' : ''} seleccionada${getTotalRooms() !== 1 ? 's' : ''}`
@@ -786,7 +803,7 @@ const BookingPage = () => {
       </div>
     </div>
 
-    
+
     {errors.rooms && <p className="font-sans text-red-500 text-sm text-center">{errors.rooms}</p>}
   </div>
 )}
@@ -860,8 +877,8 @@ const BookingPage = () => {
     </NiceButton>
   </div>
             )}
-            
-            
+
+
 
             {currentStep < 4 && (
   <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-0 mt-8 pt-6 border-t border-white/30">
@@ -916,7 +933,7 @@ const BookingPage = () => {
   {/* Habitaciones */}
   <div className="pt-4 border-t border-gray-200 space-y-3">
     <div className="font-medium text-gray-800 mb-2">Habitaciones seleccionadas</div>
-    
+
     <div className="space-y-2">
       {formData.selectedRooms.map((sr) => {
         const room = allRooms.find((r) => r.id === sr.roomId)

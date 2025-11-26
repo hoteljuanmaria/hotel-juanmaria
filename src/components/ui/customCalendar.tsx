@@ -65,12 +65,9 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      // Creamos la fecha en hora local y luego la ajustamos a UTC−5
-      const localDate = new Date(year, month, day)
-      const colombiaOffset = -5 * 60 // minutos UTC−5
-      const diff = (colombiaOffset - localDate.getTimezoneOffset()) * 60 * 1000
-      const colombiaDate = new Date(localDate.getTime() + diff)
-      days.push(colombiaDate)
+      // Crear fecha en hora local sin conversiones de zona horaria
+      const localDate = new Date(year, month, day, 12, 0, 0, 0) // Usar mediodía para evitar problemas de zona horaria
+      days.push(localDate)
     }
 
     return days
