@@ -96,7 +96,10 @@ export const HomePage: GlobalConfig = {
               type: 'text',
               localized: true,
               required: true,
-              label: { en: 'Desktop Button Text', es: 'Texto del Botón Escritorio' },
+              label: {
+                en: 'Desktop Button Text',
+                es: 'Texto del Botón Escritorio',
+              },
               admin: {
                 description: {
                   en: 'Text for the desktop booking button',
@@ -107,14 +110,20 @@ export const HomePage: GlobalConfig = {
           ],
         },
         {
-          label: { en: 'Room Carousel Section', es: 'Sección Carrusel de Habitaciones' },
+          label: {
+            en: 'Room Carousel Section',
+            es: 'Sección Carrusel de Habitaciones',
+          },
           fields: [
             {
               name: 'roomsTitle',
               type: 'text',
               localized: true,
               required: true,
-              label: { en: 'Rooms Section Title', es: 'Título Sección Habitaciones' },
+              label: {
+                en: 'Rooms Section Title',
+                es: 'Título Sección Habitaciones',
+              },
               admin: {
                 description: {
                   en: 'Title for the rooms carousel section',
@@ -127,7 +136,10 @@ export const HomePage: GlobalConfig = {
               type: 'textarea',
               localized: true,
               required: true,
-              label: { en: 'Rooms Section Subtitle', es: 'Subtítulo Sección Habitaciones' },
+              label: {
+                en: 'Rooms Section Subtitle',
+                es: 'Subtítulo Sección Habitaciones',
+              },
               admin: {
                 description: {
                   en: 'Subtitle for the rooms carousel section',
@@ -141,9 +153,15 @@ export const HomePage: GlobalConfig = {
               required: true,
               defaultValue: 'gray-50',
               options: [
-                { label: { en: 'Gray Light', es: 'Gris Claro' }, value: 'gray-50' },
+                {
+                  label: { en: 'Gray Light', es: 'Gris Claro' },
+                  value: 'gray-50',
+                },
                 { label: { en: 'White', es: 'Blanco' }, value: 'white' },
-                { label: { en: 'Blue Light', es: 'Azul Claro' }, value: 'blue-50' },
+                {
+                  label: { en: 'Blue Light', es: 'Azul Claro' },
+                  value: 'blue-50',
+                },
               ],
               label: { en: 'Background Color', es: 'Color de Fondo' },
               admin: {
@@ -176,7 +194,10 @@ export const HomePage: GlobalConfig = {
               type: 'textarea',
               localized: true,
               required: true,
-              label: { en: 'Testimonials Subtitle', es: 'Subtítulo Testimonios' },
+              label: {
+                en: 'Testimonials Subtitle',
+                es: 'Subtítulo Testimonios',
+              },
               admin: {
                 description: {
                   en: 'Subtitle for the testimonials section',
